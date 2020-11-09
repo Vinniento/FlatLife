@@ -7,16 +7,16 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="fh.wfp2.flatlife.HomeFragment"
+        android:name="fh.wfp2.flatlife.ui.views.HomeFragment"
         android:label="home_fragment"
         tools:layout="@layout/home_fragment" />
     <fragment
         android:id="@+id/tasksFragment"
-        android:name="fh.wfp2.flatlife.TasksFragment"
+        android:name="fh.wfp2.flatlife.ui.views.TasksFragment"
         android:label="TasksFragment" />
     <fragment
         android:id="@+id/todoFragment"
-        android:name="fh.wfp2.flatlife.TodoFragment"
+        android:name="fh.wfp2.flatlife.ui.views.TodoFragment"
         android:label="todo_fragment"
         tools:layout="@layout/todo_fragment" />
 </navigation>

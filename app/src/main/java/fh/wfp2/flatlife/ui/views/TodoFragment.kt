@@ -1,4 +1,4 @@
-package fh.wfp2.flatlife
+package fh.wfp2.flatlife.ui.views
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.databinding.TodoFragmentBinding
+import fh.wfp2.flatlife.ui.viewmodels.TodoViewModel
 import timber.log.Timber
 
 
@@ -25,7 +27,10 @@ class TodoFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = DataBindingUtil.inflate(inflater, R.layout.todo_fragment, container, false)
+        _binding = DataBindingUtil.inflate(
+            inflater,
+            R.layout.todo_fragment, container, false
+        )
         _viewModel = ViewModelProvider(this).get(TodoViewModel::class.java)
 
         //onClickListener here

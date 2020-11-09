@@ -26,6 +26,8 @@ class MainActivity : AppCompatActivity() /*, NavigationView.OnNavigationItemSele
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Timber.i("onCreate Called")
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         _drawerLayout = binding.drawerLayout
 
@@ -67,7 +69,6 @@ class MainActivity : AppCompatActivity() /*, NavigationView.OnNavigationItemSele
         //set the fragments that should implement the drawer menu
 
 
-        Timber.i("onCreate Called and done")
     }
 
     override fun onBackPressed() {
