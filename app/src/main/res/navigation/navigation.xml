@@ -10,4 +10,8 @@
         android:name="fh.wfp2.flatlife.HomeFragment"
         android:label="home_fragment"
         tools:layout="@layout/home_fragment" />
+    <fragment
+        android:id="@+id/tasksFragment3"
+        android:name="fh.wfp2.flatlife.TasksFragment"
+        android:label="TasksFragment" />
 </navigation>

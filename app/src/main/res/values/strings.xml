@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">FlatLife</string>
     <string name="welcome_text">Welcome to FlatLife</string>
+    <string name="navigation_drawer_open">Nav Drawer Open</string>
+    <string name="navigation_drawer_close">Nav Drawer Closed</string>
 </resources>
