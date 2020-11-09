@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
@@ -30,8 +29,27 @@ class MainActivity : AppCompatActivity() /*, NavigationView.OnNavigationItemSele
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         _drawerLayout = binding.drawerLayout
 
-        _toolbar = findViewById(R.id.toolbar)
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        _navController = navHostFragment.navController
+
+
+//die domain namen werden vorgeschlagen, je nachdem wie sie im navigation.xml stehen
+        val topLevelDestinations = setOf(
+            R.id.homeFragment,
+            R.id.tasksFragment,
+            R.id.todoFragment
+        )
+        _appBarConfiguration = AppBarConfiguration.Builder(topLevelDestinations)
+            .setOpenableLayout(_drawerLayout)
+            .build()
+
         setSupportActionBar(binding.toolbar)
+        setupActionBarWithNavController(_navController, _appBarConfiguration)
+        binding.navigationView.setupWithNavController(_navController)
+
+
+        _toolbar = findViewById(R.id.toolbar)
         _drawerLayout = findViewById(R.id.drawer_layout)
 
         _toggle = ActionBarDrawerToggle(
@@ -45,29 +63,18 @@ class MainActivity : AppCompatActivity() /*, NavigationView.OnNavigationItemSele
 
         _toggle.syncState()
 
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        _navController = navHostFragment.navController
+
         //set the fragments that should implement the drawer menu
 
-        val topLevelDestinations = setOf(
-            R.id.homeFragment,
-            R.id.tasksFragment
-        )
-        _appBarConfiguration = AppBarConfiguration.Builder(topLevelDestinations)
-            .setOpenableLayout(_drawerLayout)
-            .build()
 
-        setupActionBarWithNavController(_navController, _appBarConfiguration)
-        binding.navigationView.setupWithNavController(_navController)
         Timber.i("onCreate Called and done")
     }
 
     override fun onBackPressed() {
-        if (_drawerLayout.isDrawerOpen(GravityCompat.START))
+        /*if (_drawerLayout.isDrawerOpen(GravityCompat.START))
             _drawerLayout.closeDrawer(GravityCompat.START)
-        else
-            super.onBackPressed()
+        else*/
+        super.onBackPressed()
     }
 
     override fun onSupportNavigateUp(): Boolean {

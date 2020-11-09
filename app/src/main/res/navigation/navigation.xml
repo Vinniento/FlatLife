@@ -11,7 +11,12 @@
         android:label="home_fragment"
         tools:layout="@layout/home_fragment" />
     <fragment
-        android:id="@+id/tasksFragment3"
+        android:id="@+id/tasksFragment"
         android:name="fh.wfp2.flatlife.TasksFragment"
         android:label="TasksFragment" />
+    <fragment
+        android:id="@+id/todoFragment"
+        android:name="fh.wfp2.flatlife.TodoFragment"
+        android:label="todo_fragment"
+        tools:layout="@layout/todo_fragment" />
 </navigation>
