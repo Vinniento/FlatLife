@@ -29,7 +29,6 @@
         <item name="cornerSizeBottomLeft">@dimen/card_corner_radius</item>
         <item name="backgroundColor">@android:color/holo_blue_bright</item>
         <item name="background">@android:color/holo_blue_dark</item>
-        <item name="tint">@android:color</item>
     </style>
 
 </resources>
