@@ -1,6 +1,5 @@
 package fh.wfp2.flatlife.data
 
-import androidx.lifecycle.LiveData
 import fh.wfp2.flatlife.data.room.Task
 import fh.wfp2.flatlife.data.room.TaskDao
 
@@ -15,7 +14,7 @@ class TaskRepository(private val taskDao: TaskDao) {
         taskDao.insert(task)
     }
 
-    suspend fun getAllTasks(): LiveData<List<Task>> = taskDao.getAllTasks()
+    suspend fun getAllTasks(): List<Task> = taskDao.getAllTasks()
 
     fun getHighestTask(): Task? = taskDao.getHighestID()
 

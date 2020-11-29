@@ -16,7 +16,8 @@ class TasksViewModel(application: Application) : AndroidViewModel(application) {
     val lastTask: LiveData<Task?>
         get() = lastTaskMutable
 
-    private val lastTaskMutable = MutableLiveData<Task?>()
+    val lastTaskMutable = MutableLiveData<Task?>()
+    val allTasksMutable = MutableLiveData<List<Task>>()
 
     private val taskViewModelJob = Job()
     private val uiScope = CoroutineScope(taskViewModelJob + Dispatchers.Main)
@@ -31,7 +32,7 @@ class TasksViewModel(application: Application) : AndroidViewModel(application) {
         repository = TaskRepository(userDao)
         Timber.i("Repository created in viewModel")
         uiScope.launch {
-            lastTaskMutable.value = getHighestID()
+            allTasksMutable.value = getAllTasks()
         }
     }
 
@@ -50,11 +51,14 @@ class TasksViewModel(application: Application) : AndroidViewModel(application) {
         }
 
     }
-    /* fun getAllTasks() = ioScope.launch(errorHandler) {
-        // allTasksMutable.postValue(repository.allTasks.value)
-         allTasksMutable.postValue(repository.getAllTasks().value)
-         Timber.i("All tasks retrieved: ${allTasksList.value.toString()}")
-     }*/
+
+    private suspend fun getAllTasks(): List<Task> {
+        return withContext(Dispatchers.IO) {
+            var allTasks = repository.getAllTasks()
+            Timber.i("All tasks retrieved: ${allTasksMutable.value.toString()}")
+            allTasks
+        }
+    }
 
     /*
     class TasksViewModel(private val repository: TaskRepository) : ViewModel() {

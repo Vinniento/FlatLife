@@ -1,6 +1,5 @@
 package fh.wfp2.flatlife.data.room
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -16,7 +15,7 @@ interface TaskDao {
     suspend fun update(task: Task)
 
     @Query("SELECT * FROM tasks")
-    fun getAllTasks(): LiveData<List<Task>>
+    fun getAllTasks(): List<Task>
 
     @Query("SELECT * from tasks order by taskid desc limit 1")
     fun getHighestID(): Task

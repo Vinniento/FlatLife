@@ -55,21 +55,22 @@ class TasksFragment : Fragment() {
 
 
         //Recyclerview
-        val adapter = TaskAdapter(listOf(viewModel.lastTask.value))
+        val adapter = TaskAdapter()
         val recyclerView = binding.taskListRecyclerview
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        /*viewModel.allTasksList.observe(viewLifecycleOwner, Observer { task ->
-            adapter.setData(task)
-
-        })*/
+        viewModel.allTasksMutable.observe(viewLifecycleOwner, Observer { task ->
+            task?.let {
+                adapter.taskList = task
+            }
+        })
 
         //binding.taskViewModel = viewModel
         Timber.i("ViewModel created and added to binding")
         task_list_recyclerview.layoutManager = LinearLayoutManager(context)
 
         viewModel.lastTask.observe(viewLifecycleOwner, Observer {
-            task_list_recyclerview.adapter = TaskAdapter(listOf(viewModel.lastTask.value))
+            task_list_recyclerview.adapter = TaskAdapter()
         })
 
         binding.addTask.setOnClickListener {
@@ -84,7 +85,7 @@ class TasksFragment : Fragment() {
 
             )
             // viewModel.getAllTasks()
-            }
+        }
 
 
     }

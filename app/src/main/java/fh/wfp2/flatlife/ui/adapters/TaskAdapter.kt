@@ -12,10 +12,14 @@ import fh.wfp2.flatlife.data.room.Task
 import kotlinx.android.synthetic.main.task_item.view.*
 import timber.log.Timber
 
-class TaskAdapter(private val taskList: List<Task?>) :
+class TaskAdapter :
     RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
-    //private var taskList = emptyList<Task>()
+    var taskList = listOf<Task>()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
     override fun getItemCount(): Int = taskList.size
 
@@ -31,15 +35,12 @@ class TaskAdapter(private val taskList: List<Task?>) :
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         val currentItem = taskList[position]
-        holder.taskName.text = currentItem?.name
-        holder.dueBy.text = currentItem?.dueBy
+        holder.taskName.text = currentItem.name
+        holder.dueBy.text = currentItem.dueBy
 
     }
 
-    /*fun setData (taskList: List<Task>){
-        this.taskList = taskList
-        notifyDataSetChanged()
-    }*/
+
     class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         val taskName: TextView = itemView.task_name_textview
