@@ -1,29 +1,100 @@
 package fh.wfp2.flatlife.ui.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
+import android.app.Application
+import androidx.lifecycle.*
 import fh.wfp2.flatlife.data.TaskRepository
 import fh.wfp2.flatlife.data.room.Task
-import kotlinx.coroutines.launch
+import fh.wfp2.flatlife.data.room.TaskRoomDatabase
+import kotlinx.coroutines.*
+import timber.log.Timber
 
-class TasksViewModel(private val repository: TaskRepository) : ViewModel() {
 
-    val allTasks: LiveData<List<Task>> =
-        repository.allTasks //.asLiveData() muss man mit extension functions machen?
+class TasksViewModel(application: Application) : AndroidViewModel(application) {
+//class TasksViewModel(application: Application) : ViewModel() {
 
-    fun insert(task: Task) = viewModelScope.launch {
-        repository.insert(task)
+    private val repository: TaskRepository
+    val lastTask: LiveData<Task?>
+        get() = lastTaskMutable
+
+    private val lastTaskMutable = MutableLiveData<Task?>()
+
+    private val taskViewModelJob = Job()
+    private val uiScope = CoroutineScope(taskViewModelJob + Dispatchers.Main)
+    private val ioScope = CoroutineScope(taskViewModelJob + Dispatchers.IO)
+
+    private val errorHandler = CoroutineExceptionHandler { _, throwable ->
+        Timber.e(throwable.message.toString())
     }
+
+    init {
+        val userDao = TaskRoomDatabase.getInstance(application).taskDao()
+        repository = TaskRepository(userDao)
+        Timber.i("Repository created in viewModel")
+        uiScope.launch {
+            lastTaskMutable.value = getHighestID()
+        }
+    }
+
+    fun insert(task: Task) {
+        uiScope.launch(errorHandler) {
+            repository.insert(task)
+            Timber.i("Task added ${task.name}")
+            // allTasksMutable.value?.forEach { Log.i("viewModel", "${it.name}") }
+        }
+    }
+
+    private suspend fun getHighestID(): Task? {
+        return withContext(Dispatchers.IO) {
+            var task = repository.getHighestTask()
+            task
+        }
+
+    }
+    /* fun getAllTasks() = ioScope.launch(errorHandler) {
+        // allTasksMutable.postValue(repository.allTasks.value)
+         allTasksMutable.postValue(repository.getAllTasks().value)
+         Timber.i("All tasks retrieved: ${allTasksList.value.toString()}")
+     }*/
+
+    /*
+    class TasksViewModel(private val repository: TaskRepository) : ViewModel() {
+    //class TasksViewModel(application: Application) : ViewModel() {
+
+        //private val repository = TaskRepository
+
+        val allTasks: LiveData<List<Task>> =
+            repository.allTasks //.asLiveData() muss man mit extension functions machen?
+
+        fun insert(task: Task) = viewModelScope.launch {
+            repository.insert(task)
+        }
+    }
+
+    class TaskViewModelFactory(private val repository: TaskRepository) : ViewModelProvider.Factory {
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(TasksViewModel::class.java)) {
+                @Suppress("UNCHECKED_CAST")
+                return TasksViewModel(repository) as T
+            }
+            throw IllegalArgumentException("Unknown ViewModel Class")
+        }
+    }
+    */
+    override fun onCleared() {
+        super.onCleared()
+        taskViewModelJob.cancel()
+    }
+
 }
 
-class TaskViewModelFactory(private val repository: TaskRepository) : ViewModelProvider.Factory {
+class TaskViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(TasksViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return TasksViewModel(repository) as T
+            Timber.i("Creating viewModel")
+            return TasksViewModel(application) as T
         }
         throw IllegalArgumentException("Unknown ViewModel Class")
     }
 }
+

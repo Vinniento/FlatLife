@@ -1,63 +1,97 @@
 package fh.wfp2.flatlife.ui.views
 
-import android.app.AlertDialog
+import android.app.Dialog
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
+import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import fh.wfp2.flatlife.R
+import fh.wfp2.flatlife.data.room.Task
 import fh.wfp2.flatlife.databinding.TasksFragmentBinding
+import fh.wfp2.flatlife.ui.adapters.TaskAdapter
+import fh.wfp2.flatlife.ui.viewmodels.TaskViewModelFactory
 import fh.wfp2.flatlife.ui.viewmodels.TasksViewModel
 import kotlinx.android.synthetic.main.tasks_fragment.*
 import timber.log.Timber
+import kotlin.random.Random
 
 
 class TasksFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = TasksFragment()
-    }
-
-    private lateinit var _viewModel: TasksViewModel
-    private lateinit var _binding: TasksFragmentBinding
+    private lateinit var viewModel: TasksViewModel
+    private lateinit var viewModelFactory: TaskViewModelFactory
+    private lateinit var binding: TasksFragmentBinding
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = DataBindingUtil.inflate(
+        binding = DataBindingUtil.inflate(
             inflater,
             R.layout.tasks_fragment, container, false
         )
-        _viewModel = ViewModelProvider(this).get(TasksViewModel::class.java)
 
-        //onClickListener here
-        _binding.addTask.setOnClickListener {
-            enterTaskPopup()
-        }
-        return _binding.root
+        return binding.root
+
     }
 
-    fun enterTaskPopup() {
-        val builder = AlertDialog.Builder(activity)
-        val inflater = layoutInflater
-        val dialogLayout = inflater.inflate(R.layout.add_task_popup, null)
-        val editText = dialogLayout.findViewById<EditText>(R.id.taskNameEdittext)
-        with(builder) {
-            setTitle("Enter Task")
-            setPositiveButton("Add") { dialog, which ->
-                tasks.text = tasks.text.toString() + "\n" + editText.text.toString()
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val application = requireNotNull(this.activity).application
+        viewModelFactory = TaskViewModelFactory(application)
+
+        viewModel = ViewModelProvider(this, viewModelFactory).get(TasksViewModel::class.java)
+
+        //onClickListener here
+
+
+        //Recyclerview
+        val adapter = TaskAdapter(listOf(viewModel.lastTask.value))
+        val recyclerView = binding.taskListRecyclerview
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        /*viewModel.allTasksList.observe(viewLifecycleOwner, Observer { task ->
+            adapter.setData(task)
+
+        })*/
+
+        //binding.taskViewModel = viewModel
+        Timber.i("ViewModel created and added to binding")
+        task_list_recyclerview.layoutManager = LinearLayoutManager(context)
+
+        viewModel.lastTask.observe(viewLifecycleOwner, Observer {
+            task_list_recyclerview.adapter = TaskAdapter(listOf(viewModel.lastTask.value))
+        })
+
+        binding.addTask.setOnClickListener {
+            viewModel.insert(
+                Task(
+                    Random.nextLong(),
+                    name = binding.taskNameTextview.text.toString(),
+                    createdAt = "today",
+                    dueBy = "tomorrow ",
+                    createdBy = "Blub"
+                )
+
+            )
+            // viewModel.getAllTasks()
             }
-            setNegativeButton("Cancel") { dialog, which -> Timber.i("Task creation cancelled") }
-            setView(dialogLayout)
-            show()
-        }
-        _viewModel
+
+
+    }
+
+    fun enterTaskPopup(taskDialog: Dialog) {
+        taskDialog.layoutInflater.inflate(R.layout.add_task_popup, null)
+        taskDialog.show()
     }
 
     override fun onResume() {

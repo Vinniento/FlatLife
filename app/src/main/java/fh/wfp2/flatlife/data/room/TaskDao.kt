@@ -15,6 +15,9 @@ interface TaskDao {
     @Update
     suspend fun update(task: Task)
 
-    @Query("SELECT * FROM TASKS")
+    @Query("SELECT * FROM tasks")
     fun getAllTasks(): LiveData<List<Task>>
+
+    @Query("SELECT * from tasks order by taskid desc limit 1")
+    fun getHighestID(): Task
 }
