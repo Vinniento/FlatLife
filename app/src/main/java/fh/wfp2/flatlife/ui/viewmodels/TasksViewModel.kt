@@ -15,9 +15,11 @@ class TasksViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: TaskRepository
     val lastTask: LiveData<Task?>
         get() = lastTaskMutable
+    val allTasks: LiveData<List<Task>>
+        get() = allTasksMutable
 
     val lastTaskMutable = MutableLiveData<Task?>()
-    val allTasksMutable = MutableLiveData<List<Task>>()
+    private val allTasksMutable = MutableLiveData<List<Task>>()
 
     private val taskViewModelJob = Job()
     private val uiScope = CoroutineScope(taskViewModelJob + Dispatchers.Main)

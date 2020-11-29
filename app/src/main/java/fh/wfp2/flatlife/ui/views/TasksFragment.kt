@@ -59,7 +59,7 @@ class TasksFragment : Fragment() {
         val recyclerView = binding.taskListRecyclerview
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        viewModel.allTasksMutable.observe(viewLifecycleOwner, Observer { task ->
+        viewModel.allTasks.observe(viewLifecycleOwner, Observer { task ->
             task?.let {
                 adapter.taskList = task
             }
