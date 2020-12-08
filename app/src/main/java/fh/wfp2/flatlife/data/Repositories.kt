@@ -2,6 +2,8 @@ package fh.wfp2.flatlife.data
 
 import fh.wfp2.flatlife.data.room.Task
 import fh.wfp2.flatlife.data.room.TaskDao
+import fh.wfp2.flatlife.data.room.Todo
+import fh.wfp2.flatlife.data.room.TodoDao
 
 class TaskRepository(private val taskDao: TaskDao) {
     //object TaskRepository{
@@ -28,5 +30,17 @@ class TaskRepository(private val taskDao: TaskDao) {
                    instance ?: TaskRepository(taskDao).also { instance = it }
                }
        }*/
+}
+
+class TodoRepository(private val todoDao: TodoDao) {
+
+    suspend fun insert(todo: Todo) {
+        todoDao.insert(todo)
+    }
+
+    suspend fun getAllTodos(): List<Todo> = todoDao.getAllTodos()
+
+    fun getTodoWithHighestID(): Todo = todoDao.getTodoWithHighestID()
+
 }
 

@@ -17,7 +17,7 @@
         android:background="@color/light_gray">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/task_name_textview"
+            android:id="@+id/tv_todo_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
@@ -28,13 +28,13 @@
 
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/task_dueBy_textview"
+            android:id="@+id/tv_task_dueBy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:text="DueBy"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/task_name_textview"
+            app:layout_constraintStart_toEndOf="@id/tv_todo_name"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

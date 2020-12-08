@@ -20,3 +20,18 @@ interface TaskDao {
     @Query("SELECT * from tasks order by taskid desc limit 1")
     fun getHighestID(): Task
 }
+
+@Dao
+interface TodoDao {
+    @Insert
+    suspend fun insert(todo: Todo)
+
+    @Update
+    suspend fun update(todo: Todo)
+
+    @Query("SELECT * FROM todos")
+    fun getAllTodos(): List<Todo>
+
+    @Query("SELECT * from todos order by todoId desc limit 1")
+    fun getTodoWithHighestID(): Todo
+}
