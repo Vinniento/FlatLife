@@ -1,10 +1,7 @@
 package fh.wfp2.flatlife.ui.views
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import fh.wfp2.flatlife.R
@@ -13,33 +10,22 @@ import fh.wfp2.flatlife.ui.viewmodels.LoginViewModel
 import timber.log.Timber
 
 
-class LoginFragment : Fragment() {
+class LoginFragment : Fragment(R.layout.login_fragment) {
 
     companion object {
         fun newInstance() = LoginFragment()
     }
 
     private lateinit var _viewModel: LoginViewModel
-    private lateinit var _binding: LoginFragmentBinding
+    private lateinit var binding: LoginFragmentBinding
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        Timber.i("onCreateView called")
-        _binding = DataBindingUtil.inflate(
-            inflater,
-            R.layout.login_fragment, container, false
-        )
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding = LoginFragmentBinding.bind(view)
+
         _viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
 
-        //onClickListener here
-
-        return _binding.root
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
     }
 
     override fun onResume() {

@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -28,7 +27,8 @@ class MainActivity : AppCompatActivity() /*, NavigationView.OnNavigationItemSele
         super.onCreate(savedInstanceState)
         Timber.i("onCreate Called")
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         _drawerLayout = binding.drawerLayout
 
         val navHostFragment =
@@ -69,13 +69,6 @@ class MainActivity : AppCompatActivity() /*, NavigationView.OnNavigationItemSele
         //set the fragments that should implement the drawer menu
 
 
-    }
-
-    override fun onBackPressed() {
-        /*if (_drawerLayout.isDrawerOpen(GravityCompat.START))
-            _drawerLayout.closeDrawer(GravityCompat.START)
-        else*/
-        super.onBackPressed()
     }
 
     override fun onSupportNavigateUp(): Boolean {

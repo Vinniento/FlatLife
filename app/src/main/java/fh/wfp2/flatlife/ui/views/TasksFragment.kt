@@ -3,11 +3,8 @@ package fh.wfp2.flatlife.ui.views
 import android.app.Dialog
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -23,29 +20,18 @@ import timber.log.Timber
 import kotlin.random.Random
 
 
-class TasksFragment : Fragment() {
+class TasksFragment : Fragment(R.layout.tasks_fragment) {
 
     private lateinit var viewModel: TasksViewModel
     private lateinit var viewModelFactory: TaskViewModelFactory
     private lateinit var binding: TasksFragmentBinding
 
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = DataBindingUtil.inflate(
-            inflater,
-            R.layout.tasks_fragment, container, false
-        )
-
-        return binding.root
-
-    }
-
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding = TasksFragmentBinding.bind(view)
+
+
         val application = requireNotNull(this.activity).application
         viewModelFactory = TaskViewModelFactory(application)
 

@@ -14,9 +14,4 @@
         android:id="@+id/tasksFragment"
         android:name="fh.wfp2.flatlife.ui.views.TasksFragment"
         android:label="TasksFragment" />
-    <fragment
-        android:id="@+id/todoFragment"
-        android:name="fh.wfp2.flatlife.ui.views.TodoFragment"
-        android:label="todo_fragment"
-        tools:layout="@layout/todo_fragment" />
 </navigation>
