@@ -1,12 +1,21 @@
 package fh.wfp2.flatlife.ui.views
 
 import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.Fragment
 import fh.wfp2.flatlife.R
+import fh.wfp2.flatlife.databinding.HomeFragmentBinding
 import timber.log.Timber
 
 
 class HomeFragment : Fragment(R.layout.home_fragment) {
+
+    private lateinit var binding: HomeFragmentBinding
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding = HomeFragmentBinding.bind(view)
+
+    }
 
     companion object {
         fun newInstance() = HomeFragment()

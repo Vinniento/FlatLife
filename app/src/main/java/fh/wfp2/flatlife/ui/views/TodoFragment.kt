@@ -10,70 +10,69 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import fh.wfp2.flatlife.R
-import fh.wfp2.flatlife.data.room.Task
-import fh.wfp2.flatlife.databinding.TasksFragmentBinding
-import fh.wfp2.flatlife.ui.adapters.TaskAdapter
-import fh.wfp2.flatlife.ui.viewmodels.TaskViewModelFactory
-import fh.wfp2.flatlife.ui.viewmodels.TasksViewModel
+import fh.wfp2.flatlife.data.room.Todo
+import fh.wfp2.flatlife.databinding.TodoFragmentBinding
+import fh.wfp2.flatlife.ui.adapters.TodoAdapter
+import fh.wfp2.flatlife.ui.viewmodels.TodoViewModel
+import fh.wfp2.flatlife.ui.viewmodels.TodoViewModelFactory
 import timber.log.Timber
+import java.time.LocalTime
 import kotlin.random.Random
 
 
-class TasksFragment : Fragment(R.layout.tasks_fragment) {
+class TodoFragment : Fragment(R.layout.todo_fragment) {
 
-    private lateinit var viewModel: TasksViewModel
-    private lateinit var viewModelFactory: TaskViewModelFactory
-    private lateinit var binding: TasksFragmentBinding
+    private lateinit var viewModel: TodoViewModel
+    private lateinit var viewModelFactory: TodoViewModelFactory
+    private lateinit var binding: TodoFragmentBinding
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = TasksFragmentBinding.bind(view)
+        binding = TodoFragmentBinding.bind(view)
 
 
         val application = requireNotNull(this.activity).application
-        viewModelFactory = TaskViewModelFactory(application)
+        viewModelFactory = TodoViewModelFactory(application)
 
-        viewModel = ViewModelProvider(this, viewModelFactory).get(TasksViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(TodoViewModel::class.java)
 
         //onClickListener here
 
 
         //Recyclerview
-        val adapter = TaskAdapter()
-        val recyclerView = binding.tasksListRecyclerview
+        val adapter = TodoAdapter()
+        val recyclerView = binding.todoListRecyclerview
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        viewModel.allTasks.observe(viewLifecycleOwner, Observer { task ->
-            task?.let {
-                adapter.taskList = task
+        viewModel.allTodos.observe(viewLifecycleOwner, Observer { todo ->
+            todo?.let {
+                adapter.todoList = todo
             }
         })
 
-        //binding.taskViewModel = viewModel
         Timber.i("ViewModel created and added to binding")
-        binding.tasksListRecyclerview.layoutManager = LinearLayoutManager(context)
+        binding.todoListRecyclerview.layoutManager = LinearLayoutManager(context)
 
-        viewModel.lastTask.observe(viewLifecycleOwner, Observer {
-            binding.tasksListRecyclerview.adapter = TaskAdapter()
+        viewModel.latestTodo.observe(viewLifecycleOwner, Observer {
+            binding.todoListRecyclerview.adapter = TodoAdapter()
         })
 
-        binding.addTask.setOnClickListener {
+        binding.addTodo.setOnClickListener {
             viewModel.insert(
-                Task(
+                Todo(
                     Random.nextLong(),
-                    name = binding.tvTaskName.text.toString(),
-                    createdAt = "today",
-                    dueBy = "tomorrow ",
-                    createdBy = "Blub"
+                    name = "New Todo: ${Random.nextInt().toString().take(4)}",
+                    createdAt = "${LocalTime.now()}",
+                    createdBy = "Blub",
+                    isComplete = Random.nextBoolean()
                 )
-
             )
-            // viewModel.getAllTasks()
         }
 
 
     }
+
 
     fun enterTaskPopup(taskDialog: Dialog) {
         taskDialog.layoutInflater.inflate(R.layout.add_task_popup, null)

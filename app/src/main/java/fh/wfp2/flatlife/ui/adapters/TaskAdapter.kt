@@ -43,8 +43,8 @@ class TaskAdapter :
 
     class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        val taskName: TextView = itemView.task_name_textview
-        val dueBy: TextView = itemView.task_dueBy_textview
+        val taskName: TextView = itemView.tv_todo_name
+        val dueBy: TextView = itemView.tv_task_dueBy
     }
 
 }

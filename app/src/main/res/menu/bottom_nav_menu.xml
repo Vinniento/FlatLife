@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/homeFragment"
+        android:icon="@drawable/house"
+        android:title="Home" />
+    <item
+        android:id="@+id/todoFragment"
+        android:icon="@drawable/todos"
+        android:title="Tasks" />
+    <item
+        android:id="@+id/mishopping"
+        android:icon="@drawable/shopping"
+        android:title="Shopping" />
+    <item
+        android:id="@+id/mifinance"
+        android:icon="@drawable/finance"
+        android:title="Finance" />
+    <item
+        android:id="@+id/tasksFragment"
+        android:icon="@drawable/tasks"
+        android:title="Chores" />
+</menu>

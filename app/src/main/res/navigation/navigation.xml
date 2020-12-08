@@ -13,5 +13,10 @@
     <fragment
         android:id="@+id/tasksFragment"
         android:name="fh.wfp2.flatlife.ui.views.TasksFragment"
-        android:label="TasksFragment" />
+        android:label="tasks_fragment"
+        tools:layout="@layout/tasks_fragment" />
+    <fragment
+        android:id="@+id/todoFragment"
+        android:name="fh.wfp2.flatlife.ui.views.TodoFragment"
+        android:label="TodoFragment" />
 </navigation>
