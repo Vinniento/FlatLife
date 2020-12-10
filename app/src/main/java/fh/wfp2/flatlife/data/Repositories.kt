@@ -1,10 +1,10 @@
 package fh.wfp2.flatlife.data
 
+import fh.wfp2.flatlife.data.preferences.SortOrder
 import fh.wfp2.flatlife.data.room.Task
 import fh.wfp2.flatlife.data.room.TaskDao
 import fh.wfp2.flatlife.data.room.Todo
 import fh.wfp2.flatlife.data.room.TodoDao
-import fh.wfp2.flatlife.ui.viewmodels.SortOrder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
