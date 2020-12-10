@@ -1,24 +1,10 @@
 <resources>
-
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
-
-    <style name="DefaultButton">
-        <item name="android:textColor">@color/black</item>
-    </style>
-
-    <style name="AppTheme.NoActionBar">
+    <style name="AppCompat.Base" parent="Theme.AppCompat">
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-    </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    </style>
 
 
     <style name="ShapeAppearance.Tasks.Card" parent="ShapeAppearance.MaterialComponents">

@@ -40,9 +40,10 @@ class MainActivity : AppCompatActivity() /*, NavigationView.OnNavigationItemSele
              R.id.todoFragment,
              R.id.tasksFragment
          )
-         appBarConfiguration = AppBarConfiguration.Builder(topLevelDestinations)
-             .build()
  */
+        appBarConfiguration = AppBarConfiguration.Builder()
+            .build()
+
 
     }
 

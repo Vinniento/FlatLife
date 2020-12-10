@@ -4,6 +4,13 @@ import fh.wfp2.flatlife.data.room.Task
 import fh.wfp2.flatlife.data.room.TaskDao
 import fh.wfp2.flatlife.data.room.Todo
 import fh.wfp2.flatlife.data.room.TodoDao
+import fh.wfp2.flatlife.ui.viewmodels.SortOrder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class TaskRepository(private val taskDao: TaskDao) {
     //object TaskRepository{
@@ -11,6 +18,8 @@ class TaskRepository(private val taskDao: TaskDao) {
 
     //val allTasks: Flow<List<Task>> = taskDao.getAllTasks() --> original so aber dann muss man im TasksViewModel .asLiveData() machen, was nicht geht
     //val allTasks: LiveData<List<Task>> = taskDao.getAllTasks()
+    val taskRepositoryJob = Job()
+    private val ioScope = CoroutineScope(taskRepositoryJob + Dispatchers.IO)
 
     suspend fun insert(task: Task) {
         taskDao.insert(task)
@@ -33,14 +42,34 @@ class TaskRepository(private val taskDao: TaskDao) {
 }
 
 class TodoRepository(private val todoDao: TodoDao) {
+    val todoRepositoryJob = Job()
+
+    private val ioScope = CoroutineScope(todoRepositoryJob + Dispatchers.IO)
 
     suspend fun insert(todo: Todo) {
-        todoDao.insert(todo)
+        ioScope.launch {
+            todoDao.insert(todo)
+        }
     }
 
-    suspend fun getAllTodos(): List<Todo> = todoDao.getAllTodos()
+    fun getTodos(
+        searchQuery: String,
+        hideCompleted: Boolean,
+        sortOrder: SortOrder
+    ): Flow<List<Todo>> {
+        Timber.i("getTodos called")
+
+        val todos = todoDao.getTodos(searchQuery, hideCompleted, sortOrder)
+
+        return todos
+    }
 
     fun getTodoWithHighestID(): Todo = todoDao.getTodoWithHighestID()
 
+    suspend fun update(todos: Todo) {
+        ioScope.launch {
+            todoDao.update(todos)
+        }
+    }
 }
 

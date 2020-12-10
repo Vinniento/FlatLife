@@ -1,65 +1,85 @@
 package fh.wfp2.flatlife.ui.viewmodels
 
 import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import fh.wfp2.flatlife.data.TodoRepository
 import fh.wfp2.flatlife.data.room.Todo
+import fh.wfp2.flatlife.data.room.TodoDao
 import fh.wfp2.flatlife.data.room.TodoRoomDatabase
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import timber.log.Timber
 
 
+@ExperimentalCoroutinesApi
 class TodoViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: TodoRepository
-    val latestTodo: LiveData<Todo?>
-        get() = lastTodoMutable
-    val allTodos: LiveData<List<Todo>>
-        get() = allTodosMutable
-
-    val lastTodoMutable = MutableLiveData<Todo?>()
-    private val allTodosMutable = MutableLiveData<List<Todo>>()
-
+    private var todoDao: TodoDao = TodoRoomDatabase.getInstance(application).todoDao()
     private val taskViewModelJob = Job()
-    private val uiScope = CoroutineScope(taskViewModelJob + Dispatchers.Main)
-    private val ioScope = CoroutineScope(taskViewModelJob + Dispatchers.IO)
 
+    private val uiScope = CoroutineScope(taskViewModelJob + Dispatchers.Main)
     private val errorHandler = CoroutineExceptionHandler { _, throwable ->
         Timber.e(throwable.message.toString())
     }
 
+    //MutableStateFlow: Sobald sich etwas ändert, wird die entsprechende DB query abgesetzt
+    val searchQuery = MutableStateFlow("")
+    val hideCompleted = MutableStateFlow(false)
+    val sortOrder = MutableStateFlow(SortOrder.BY_DATE)
+
+
     init {
-        val userDao = TodoRoomDatabase.getInstance(application).todoDao()
-        repository = TodoRepository(userDao)
+        repository = TodoRepository(todoDao)
         Timber.i("Repository created in viewModel")
-        uiScope.launch {
-            allTodosMutable.value = getAllTodos()
-        }
+
     }
+
+    private val todosFlow = combine(searchQuery, hideCompleted, sortOrder)
+    { query, hideCompleted, sortOrder ->
+        Triple(
+            query,
+            hideCompleted,
+            sortOrder
+        ) //angeblich CustomClass besser falls sich was ändert
+    }
+        .flatMapLatest { (query, hideCompleted, sortOrder) ->
+            repository.getTodos(query, hideCompleted, sortOrder)
+        }
+
+    val todos = todosFlow.asLiveData()
+
 
     fun insert(todo: Todo) {
         uiScope.launch(errorHandler) {
             repository.insert(todo)
             Timber.i("Task added ${todo.name}")
-            // allTasksMutable.value?.forEach { Log.i("viewModel", "${it.name}") }
+            // allTodosMutable?.let {  it -> it.value.forEach { Log.i("viewModel", "${it.name}") }} -> wieso brauch ich hier tdm ein ? bei der foreach obwohl ich ?.let mach?
         }
     }
 
-    private suspend fun getTodoWithHighestID(): Todo? {
-        return withContext(Dispatchers.IO) {
-            var todo = repository.getTodoWithHighestID()
-            todo
-        }
 
-    }
-
-    private suspend fun getAllTodos(): List<Todo> {
-        return withContext(Dispatchers.IO) {
-            var allTasks = repository.getAllTodos()
-            Timber.i("All tasks retrieved: ${allTodosMutable.value.toString()}")
-            allTasks
+    fun onCheckedPressed(todos: Todo) {
+        uiScope.launch(errorHandler) {
+            repository.update(todos)
+            Timber.i("todo updated")
         }
     }
+
+/* private suspend fun getTodos(): List<Todo> {
+     return withContext(Dispatchers.Main) {
+         val allTasks = repository.getTodos()
+         Timber.i("All todos retrieved: ${allTodosMutable.value.toString()}")
+         allTasks.sortedBy {
+             it.todoId
+         }
+     }
+ }*/
 
 
     override fun onCleared() {
@@ -69,6 +89,13 @@ class TodoViewModel(application: Application) : AndroidViewModel(application) {
 
 }
 
+data class customTriple(
+    val searchQuery: String,
+    val hideCompleted: Boolean,
+    val sortOrder: SortOrder
+)
+
+enum class SortOrder { BY_NAME, BY_DATE }
 class TodoViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(TodoViewModel::class.java)) {
