@@ -1,11 +1,10 @@
 package fh.wfp2.flatlife.ui.viewmodels
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.*
 import fh.wfp2.flatlife.data.TodoRepository
+import fh.wfp2.flatlife.data.preferences.PreferencesManager
+import fh.wfp2.flatlife.data.preferences.SortOrder
 import fh.wfp2.flatlife.data.room.Todo
 import fh.wfp2.flatlife.data.room.TodoDao
 import fh.wfp2.flatlife.data.room.TodoRoomDatabase
@@ -28,10 +27,13 @@ class TodoViewModel(application: Application) : AndroidViewModel(application) {
         Timber.e(throwable.message.toString())
     }
 
+    private val preferencesManager = PreferencesManager(application)
+
     //MutableStateFlow: Sobald sich etwas ändert, wird die entsprechende DB query abgesetzt
     val searchQuery = MutableStateFlow("")
-    val hideCompleted = MutableStateFlow(false)
-    val sortOrder = MutableStateFlow(SortOrder.BY_DATE)
+    val preferencesFlow = preferencesManager.preferencesFlow
+    //val hideCompleted = MutableStateFlow(false)
+    //val sortOrder = MutableStateFlow(SortOrder.BY_DATE)
 
 
     init {
@@ -40,17 +42,28 @@ class TodoViewModel(application: Application) : AndroidViewModel(application) {
 
     }
 
-    private val todosFlow = combine(searchQuery, hideCompleted, sortOrder)
-    { query, hideCompleted, sortOrder ->
-        Triple(
+    private val todosFlow = combine(searchQuery, preferencesFlow)
+    { query, preferencesFlow ->
+        Pair(
             query,
-            hideCompleted,
-            sortOrder
+            preferencesFlow
         ) //angeblich CustomClass besser falls sich was ändert
     }
-        .flatMapLatest { (query, hideCompleted, sortOrder) ->
-            repository.getTodos(query, hideCompleted, sortOrder)
+        .flatMapLatest { (query, filterPreferences) ->
+            repository.getTodos(query, filterPreferences.hideCompleted, filterPreferences.sortOrder)
         }
+
+    fun onSortOrderSelected(sortOrder: SortOrder) {
+        viewModelScope.launch {
+            preferencesManager.updateSortOrder(sortOrder)
+        }
+    }
+
+    fun onHideCompletedClick(hideCompleted: Boolean) {
+        viewModelScope.launch {
+            preferencesManager.updateHideCompleted(hideCompleted)
+        }
+    }
 
     val todos = todosFlow.asLiveData()
 
@@ -95,7 +108,6 @@ data class customTriple(
     val sortOrder: SortOrder
 )
 
-enum class SortOrder { BY_NAME, BY_DATE }
 class TodoViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(TodoViewModel::class.java)) {
