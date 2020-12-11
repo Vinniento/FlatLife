@@ -32,9 +32,6 @@ class TodoViewModel(application: Application) : AndroidViewModel(application) {
     //MutableStateFlow: Sobald sich etwas ändert, wird die entsprechende DB query abgesetzt
     val searchQuery = MutableStateFlow("")
     val preferencesFlow = preferencesManager.preferencesFlow
-    //val hideCompleted = MutableStateFlow(false)
-    //val sortOrder = MutableStateFlow(SortOrder.BY_DATE)
-
 
     init {
         repository = TodoRepository(todoDao)
@@ -53,6 +50,8 @@ class TodoViewModel(application: Application) : AndroidViewModel(application) {
             repository.getTodos(query, filterPreferences.hideCompleted, filterPreferences.sortOrder)
         }
 
+    val todos = todosFlow.asLiveData()
+
     fun onSortOrderSelected(sortOrder: SortOrder) {
         viewModelScope.launch {
             preferencesManager.updateSortOrder(sortOrder)
@@ -65,8 +64,6 @@ class TodoViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    val todos = todosFlow.asLiveData()
-
 
     fun insert(todo: Todo) {
         uiScope.launch(errorHandler) {
@@ -77,12 +74,15 @@ class TodoViewModel(application: Application) : AndroidViewModel(application) {
     }
 
 
-    fun onCheckedPressed(todos: Todo) {
-        uiScope.launch(errorHandler) {
-            repository.update(todos)
-            Timber.i("todo updated")
-        }
+    fun onTaskSelected(todo: Todo) {
+
     }
+
+    fun onTodoCheckChanged(todo: Todo, isChecked: Boolean) = uiScope.launch(errorHandler) {
+        repository.update(todo.copy(isComplete = isChecked))
+        Timber.i("CheckedState : $isChecked")
+    }
+
 
 /* private suspend fun getTodos(): List<Todo> {
      return withContext(Dispatchers.Main) {
@@ -93,7 +93,6 @@ class TodoViewModel(application: Application) : AndroidViewModel(application) {
          }
      }
  }*/
-
 
     override fun onCleared() {
         super.onCleared()

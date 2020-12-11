@@ -28,7 +28,7 @@ import timber.log.Timber
 import kotlin.random.Random
 
 
-class TodoFragment : Fragment(R.layout.todo_fragment) {
+class TodoFragment : Fragment(R.layout.todo_fragment), TodoAdapter.OnItemClickListener {
 
     private lateinit var viewModel: TodoViewModel
     private lateinit var viewModelFactory: TodoViewModelFactory
@@ -50,7 +50,8 @@ class TodoFragment : Fragment(R.layout.todo_fragment) {
 
 
         //Recyclerview
-        val todoAdapter = TodoAdapter()
+        //fragment implements interface mit den listeners, also kann man hier eifnach sich selbst passen
+        val todoAdapter = TodoAdapter(this)
 
         binding.apply {
             todoListRecyclerview.apply {
@@ -65,8 +66,8 @@ class TodoFragment : Fragment(R.layout.todo_fragment) {
                     Todo(
                         name = binding.etNewTodo.text.toString(),
                         createdBy = "Blub",
-                        important = Random.nextBoolean(),
-                        isComplete = true
+                        isImportant = Random.nextBoolean(),
+                        isComplete = Random.nextBoolean()
                     )
                 )
             }
@@ -84,6 +85,14 @@ class TodoFragment : Fragment(R.layout.todo_fragment) {
             Timber.i("ViewModel created")
             setHasOptionsMenu(true)
         }
+    }
+
+    override fun onItemClick(todo: Todo) {
+        viewModel.onTaskSelected(todo)
+    }
+
+    override fun onCheckBoxClick(todo: Todo, isChecked: Boolean) {
+        viewModel.onTodoCheckChanged(todo, isChecked)
     }
 
     @ExperimentalCoroutinesApi

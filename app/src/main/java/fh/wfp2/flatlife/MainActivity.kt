@@ -32,15 +32,6 @@ class MainActivity : AppCompatActivity() /*, NavigationView.OnNavigationItemSele
         binding.bottomNavigationView.setupWithNavController(navController)
         setupActionBarWithNavController(navController)
 
-//die domain namen werden vorgeschlagen, je nachdem wie sie im navigation.xml stehen
-
-        //toplevel destinations sind die destination wo kein up button da ist
-        /* val topLevelDestinations = setOf(
-             R.id.homeFragment,
-             R.id.todoFragment,
-             R.id.tasksFragment
-         )
- */
         appBarConfiguration = AppBarConfiguration.Builder()
             .build()
 

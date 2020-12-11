@@ -1,9 +1,6 @@
 package fh.wfp2.flatlife.data.room
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import fh.wfp2.flatlife.data.preferences.SortOrder
 import kotlinx.coroutines.flow.Flow
 
@@ -25,7 +22,7 @@ interface TaskDao {
 
 @Dao
 interface TodoDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(todo: Todo)
 
     @Update
@@ -42,10 +39,10 @@ interface TodoDao {
         }
 
 
-    @Query("SELECT * FROM todos  where (isComplete != :hideCompleted OR isComplete = 0) AND name like '%' || :searchQuery || '%' ORDER BY important, createdAt asc ")
+    @Query("SELECT * FROM todos  where (isComplete != :hideCompleted OR isComplete = 0) AND name like '%' || :searchQuery || '%' ORDER BY isImportant, createdAt")
     fun getTodosSortedByDateCreated(searchQuery: String, hideCompleted: Boolean): Flow<List<Todo>>
 
-    @Query("SELECT * FROM todos where (isComplete != :hideCompleted OR isComplete = 0) AND name like '%' || :searchQuery || '%' ORDER BY  important, name asc")
+    @Query("SELECT * FROM todos where (isComplete != :hideCompleted OR isComplete = 0) AND name like '%' || :searchQuery || '%' ORDER BY isImportant, name")
     fun getTodosSortedByName(searchQuery: String, hideCompleted: Boolean): Flow<List<Todo>>
 
     @Query("SELECT * from todos order by id desc limit 1")

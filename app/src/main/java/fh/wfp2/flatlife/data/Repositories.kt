@@ -66,9 +66,9 @@ class TodoRepository(private val todoDao: TodoDao) {
 
     fun getTodoWithHighestID(): Todo = todoDao.getTodoWithHighestID()
 
-    suspend fun update(todos: Todo) {
+    suspend fun update(todo: Todo) {
         ioScope.launch {
-            todoDao.update(todos)
+            todoDao.update(todo.copy(isComplete = todo.isComplete))
         }
     }
 }

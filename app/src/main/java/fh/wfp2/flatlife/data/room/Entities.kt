@@ -27,11 +27,11 @@ data class Todo(
     val isComplete: Boolean = false,
     val createdAt: Long = System.currentTimeMillis(),
     val createdBy: String,
-    val important: Boolean = false
+    val isImportant: Boolean = false
 ) : Parcelable {
     //isDone() usw auch hier hinein?
     override fun toString(): String {
-        return "\n Todo: $id \nName: $name \n isComplete: $isComplete \n createdAt: $createdAt  \n important: $important"
+        return "\n Todo: $id \nName: $name \n isComplete: $isComplete \n createdAt: $createdAt  \n important: $isImportant"
     }
 
     val createdDateFormatted: String
