@@ -134,6 +134,7 @@ class TodoFragment : Fragment(R.layout.todo_fragment), TodoAdapter.OnItemClickLi
                 true
             }
             R.id.action_delete_all_completed_tasks -> {
+                viewModel.deleteAllCompletedTodos()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -183,7 +184,7 @@ class TodoFragment : Fragment(R.layout.todo_fragment), TodoAdapter.OnItemClickLi
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             val position = viewHolder.adapterPosition
-            adapter.removeItem(position)
+            adapter.removeItemBySwipe(position)
             viewModel.onSwipedRight(adapter.todoList[position])
 
 

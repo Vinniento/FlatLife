@@ -50,4 +50,7 @@ interface TodoDao {
 
     @Query("SELECT * from todos order by id desc limit 1")
     fun getTodoWithHighestID(): Todo
+
+    @Query("DELETE FROM todos where isComplete = 1")
+    fun deleteAllCompletedTodos()
 }

@@ -106,6 +106,13 @@ class TodoViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun deleteAllCompletedTodos() {
+        uiScope.launch(errorHandler) {
+            repository.deleteAllCompletedTodos()
+
+        }
+    }
+
 }
 
 data class customTriple(
