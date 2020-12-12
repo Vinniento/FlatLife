@@ -99,6 +99,13 @@ class TodoViewModel(application: Application) : AndroidViewModel(application) {
         taskViewModelJob.cancel()
     }
 
+    fun onSwipedRight(todo: Todo) {
+        uiScope.launch(errorHandler) {
+
+            repository.delete(todo)
+        }
+    }
+
 }
 
 data class customTriple(

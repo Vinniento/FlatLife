@@ -8,15 +8,15 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="fh.wfp2.flatlife.ui.views.HomeFragment"
-        android:label="home_fragment"
+        android:label="Flatlife"
         tools:layout="@layout/home_fragment" />
     <fragment
         android:id="@+id/tasksFragment"
         android:name="fh.wfp2.flatlife.ui.views.TasksFragment"
-        android:label="tasks_fragment"
+        android:label="Chores"
         tools:layout="@layout/tasks_fragment" />
     <fragment
         android:id="@+id/todoFragment"
         android:name="fh.wfp2.flatlife.ui.views.TodoFragment"
-        android:label="TodoFragment" />
+        android:label="Todos" />
 </navigation>

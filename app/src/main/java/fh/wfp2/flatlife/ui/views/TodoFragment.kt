@@ -12,7 +12,9 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.data.preferences.SortOrder
 import fh.wfp2.flatlife.data.room.Todo
@@ -60,6 +62,7 @@ class TodoFragment : Fragment(R.layout.todo_fragment), TodoAdapter.OnItemClickLi
                 setHasFixedSize(true)
             }
 
+            ItemTouchHelper(SwipeToDelete(todoAdapter)).attachToRecyclerView(binding.todoListRecyclerview)
 
             addTodo.setOnClickListener {
                 viewModel.insert(
@@ -168,5 +171,23 @@ class TodoFragment : Fragment(R.layout.todo_fragment), TodoAdapter.OnItemClickLi
         Timber.i("onStopCalled")
     }
 
+    inner class SwipeToDelete(var adapter: TodoAdapter) :
+        ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+        override fun onMove(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
+        ): Boolean {
+            return true
+        }
 
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+            val position = viewHolder.adapterPosition
+            adapter.removeItem(position)
+            viewModel.onSwipedRight(adapter.todoList[position])
+
+
+        }
+    }
 }
+

@@ -1,6 +1,7 @@
 package fh.wfp2.flatlife
 
 import android.os.Bundle
+import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -28,8 +29,10 @@ class MainActivity : AppCompatActivity() /*, NavigationView.OnNavigationItemSele
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
 
+
         setSupportActionBar(binding.toolbar)
         binding.bottomNavigationView.setupWithNavController(navController)
+        //connecting action bar (=toolbar bei uns) zu navController
         setupActionBarWithNavController(navController)
 
         appBarConfiguration = AppBarConfiguration.Builder()
@@ -38,9 +41,12 @@ class MainActivity : AppCompatActivity() /*, NavigationView.OnNavigationItemSele
 
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main_activity, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
-
-
 }

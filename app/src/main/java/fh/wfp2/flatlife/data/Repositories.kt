@@ -71,5 +71,12 @@ class TodoRepository(private val todoDao: TodoDao) {
             todoDao.update(todo.copy(isComplete = todo.isComplete))
         }
     }
+
+    suspend fun delete(todo: Todo) {
+        ioScope.launch {
+
+            todoDao.delete(todo)
+        }
+    }
 }
 

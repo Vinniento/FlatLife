@@ -50,6 +50,13 @@ class TodoAdapter(private val listener: OnItemClickListener) :
 
     }
 
+    fun removeItem(position: Int) {
+
+        todoList.drop(position)
+        notifyItemRemoved(position)
+
+    }
+
     //only gets called when viewHolder gets first created (ViewHolder get reused!!)
     inner class TodoViewHolder(private val binding: TodoItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
