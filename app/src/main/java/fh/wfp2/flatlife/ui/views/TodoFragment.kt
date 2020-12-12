@@ -12,6 +12,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,7 +28,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import kotlin.random.Random
 
 
 class TodoFragment : Fragment(R.layout.todo_fragment), TodoAdapter.OnItemClickListener {
@@ -35,6 +35,7 @@ class TodoFragment : Fragment(R.layout.todo_fragment), TodoAdapter.OnItemClickLi
     private lateinit var viewModel: TodoViewModel
     private lateinit var viewModelFactory: TodoViewModelFactory
     private lateinit var binding: TodoFragmentBinding
+//    private val args: TodoFragmentArgs by navArgs()
 
     @ExperimentalCoroutinesApi
     @RequiresApi(Build.VERSION_CODES.O)
@@ -65,15 +66,17 @@ class TodoFragment : Fragment(R.layout.todo_fragment), TodoAdapter.OnItemClickLi
             ItemTouchHelper(SwipeToDelete(todoAdapter)).attachToRecyclerView(binding.todoListRecyclerview)
 
             addTodo.setOnClickListener {
-                viewModel.insert(
-                    Todo(
-                        name = binding.etNewTodo.text.toString(),
-                        createdBy = "Blub",
-                        isImportant = Random.nextBoolean(),
-                        isComplete = Random.nextBoolean()
+                findNavController().navigate(
+                    TodoFragmentDirections.actionTodoFragmentToAddTodoFragment(
+                        "",
+                        false
                     )
                 )
+
+
             }
+
+
         }
         viewModel.todos.observe(viewLifecycleOwner) {
             // todoAdapter.submitList(it)
@@ -88,10 +91,38 @@ class TodoFragment : Fragment(R.layout.todo_fragment), TodoAdapter.OnItemClickLi
             Timber.i("ViewModel created")
             setHasOptionsMenu(true)
         }
+
+        /*  args?.let { //debugger stops here and app crashes
+              if(args.taskName != null)
+                  viewModel.onAddTodoClick(Todo(name = args.taskName, isImportant = args.isImportant))
+          }*/
+        arguments?.let {
+            var taskName: String? = null
+            var isImportant: Boolean
+            arguments?.getString("taskName")?.let { taskname ->
+                taskName = taskname
+            }
+            arguments?.getBoolean("isImportant")?.let {
+                isImportant = it
+
+                if (taskName != null)
+                    viewModel.onAddTodoClick(taskName!!, isImportant)
+            }
+
+        }
+
+
     }
 
     override fun onItemClick(todo: Todo) {
-        viewModel.onTaskSelected(todo)
+        //viewModel.onTaskSelected(todo)
+        val taskName = todo.name
+        val isImportant = todo.isImportant
+        val action = TodoFragmentDirections.actionTodoFragmentToAddTodoFragment(
+            taskName,
+            isImportant
+        )
+        findNavController().navigate(action)
     }
 
     override fun onCheckBoxClick(todo: Todo, isChecked: Boolean) {

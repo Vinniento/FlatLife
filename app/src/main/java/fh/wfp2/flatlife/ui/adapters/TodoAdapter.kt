@@ -89,7 +89,7 @@ class TodoAdapter(private val listener: OnItemClickListener) :
                 cbTodoCompleted.isChecked = todo.isComplete
                 tvTodoName.text = todo.name
                 tvTodoName.paint.isStrikeThruText = todo.isComplete
-                ivImportant.isVisible = !todo.isImportant
+                ivImportant.isVisible = todo.isImportant
 
             }
 

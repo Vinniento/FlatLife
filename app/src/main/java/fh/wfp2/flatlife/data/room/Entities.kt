@@ -26,7 +26,7 @@ data class Todo(
     val name: String,
     val isComplete: Boolean = false,
     val createdAt: Long = System.currentTimeMillis(),
-    val createdBy: String,
+    val createdBy: String = "",
     val isImportant: Boolean = false
 ) : Parcelable {
     //isDone() usw auch hier hinein?

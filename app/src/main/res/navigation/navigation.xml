@@ -18,5 +18,38 @@
     <fragment
         android:id="@+id/todoFragment"
         android:name="fh.wfp2.flatlife.ui.views.TodoFragment"
-        android:label="Todos" />
+        android:label="Todos">
+        <action
+            android:id="@+id/action_todoFragment_to_addTodoFragment"
+            app:destination="@id/addTodoFragment" />
+        <argument
+            android:name="taskName"
+            app:argType="string" />
+        <argument
+            android:name="isImportant"
+            app:argType="boolean" />
+
+
+    </fragment>
+    <fragment
+        android:id="@+id/addTodoFragment"
+        android:name="fh.wfp2.flatlife.ui.views.AddTodoFragment"
+        android:label="AddTodoFragment">
+        <action
+            android:id="@+id/action_addTodoFragment_to_todoFragment"
+            app:destination="@id/todoFragment"
+            app:popUpTo="@id/todoFragment"
+            app:popUpToInclusive="true">
+
+        </action>
+        <argument
+            android:name="taskName"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="isImportant"
+            app:argType="boolean" />
+
+
+    </fragment>
 </navigation>
