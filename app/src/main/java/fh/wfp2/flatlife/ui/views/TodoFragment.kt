@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -35,7 +36,7 @@ class TodoFragment : Fragment(R.layout.todo_fragment), TodoAdapter.OnItemClickLi
     private lateinit var viewModel: TodoViewModel
     private lateinit var viewModelFactory: TodoViewModelFactory
     private lateinit var binding: TodoFragmentBinding
-//    private val args: TodoFragmentArgs by navArgs()
+    private val args: TodoFragmentArgs by navArgs<TodoFragmentArgs>()
 
     @ExperimentalCoroutinesApi
     @RequiresApi(Build.VERSION_CODES.O)
@@ -66,12 +67,11 @@ class TodoFragment : Fragment(R.layout.todo_fragment), TodoAdapter.OnItemClickLi
             ItemTouchHelper(SwipeToDelete(todoAdapter)).attachToRecyclerView(binding.todoListRecyclerview)
 
             addTodo.setOnClickListener {
-                findNavController().navigate(
+                val action =
                     TodoFragmentDirections.actionTodoFragmentToAddTodoFragment(
-                        "",
-                        false
+                        Todo(0, name = null), false
                     )
-                )
+                findNavController().navigate(action)
 
 
             }
@@ -96,19 +96,41 @@ class TodoFragment : Fragment(R.layout.todo_fragment), TodoAdapter.OnItemClickLi
               if(args.taskName != null)
                   viewModel.onAddTodoClick(Todo(name = args.taskName, isImportant = args.isImportant))
           }*/
+
+/*        val args = arguments?.let {
+            AddTodoFragmentArgs.fromBundle(it)
+        }
+        if(args != null){
+            Timber.i("Taskname: ${args.taskName}")
+            Timber.i("Is Important: ${args.isImportant}")
+        }**/
+
+        /* args.Todo.name?.let {
+
+             viewModel.onAddTodoClick(args.Todo.copy())
+
+         }*/
         arguments?.let {
             var taskName: String? = null
-            var isImportant: Boolean
-            arguments?.getString("taskName")?.let { taskname ->
-                taskName = taskname
-            }
-            arguments?.getBoolean("isImportant")?.let {
-                isImportant = it
+            var isImportant: Boolean = false
+            arguments?.getParcelable<Todo>("Todo")?.let { todo ->
 
-                if (taskName != null)
-                    viewModel.onAddTodoClick(taskName!!, isImportant)
-            }
+                taskName = todo.name
+                isImportant = todo.isImportant
+                if (arguments?.getBoolean("update")!!)
+                    viewModel.onTodoNameChanged(
+                        Todo(
+                            todo.id,
+                            name = taskName,
+                            isImportant = isImportant
+                        )
+                    )
+                else
+                    viewModel.onAddTodoClick(todo)
 
+
+                taskName = null
+            }
         }
 
 
@@ -116,11 +138,13 @@ class TodoFragment : Fragment(R.layout.todo_fragment), TodoAdapter.OnItemClickLi
 
     override fun onItemClick(todo: Todo) {
         //viewModel.onTaskSelected(todo)
-        val taskName = todo.name
-        val isImportant = todo.isImportant
         val action = TodoFragmentDirections.actionTodoFragmentToAddTodoFragment(
-            taskName,
-            isImportant
+            Todo(
+                id = todo.id,
+                name = todo.name,
+                isComplete = todo.isComplete,
+                isImportant = todo.isImportant
+            ), true
         )
         findNavController().navigate(action)
     }

@@ -65,10 +65,10 @@ class TodoViewModel(application: Application) : AndroidViewModel(application) {
     }
 
 
-    fun onAddTodoClick(taskName: String, isImportant: Boolean) {
+    fun onAddTodoClick(todo: Todo) {
         uiScope.launch(errorHandler) {
-            repository.insert(Todo(name = taskName, isImportant = isImportant))
-            Timber.i("Task added $taskName  : $isImportant")
+            repository.insert(Todo(name = todo.name, isImportant = todo.isImportant))
+            Timber.i("Task added ${todo.name}  : ${todo.isImportant}")
             // allTodosMutable?.let {  it -> it.value.forEach { Log.i("viewModel", "${it.name}") }} -> wieso brauch ich hier tdm ein ? bei der foreach obwohl ich ?.let mach?
         }
     }
@@ -81,6 +81,11 @@ class TodoViewModel(application: Application) : AndroidViewModel(application) {
     fun onTodoCheckChanged(todo: Todo, isChecked: Boolean) = uiScope.launch(errorHandler) {
         repository.update(todo.copy(isComplete = isChecked))
         Timber.i("CheckedState : $isChecked")
+    }
+
+    fun onTodoNameChanged(todo: Todo) = uiScope.launch(errorHandler) {
+        repository.update(todo)
+        Timber.i("New Todo : $todo")
     }
 
 

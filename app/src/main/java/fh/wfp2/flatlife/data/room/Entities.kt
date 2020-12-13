@@ -23,13 +23,12 @@ class User(
 @Parcelize //make it parcelable -> able to send the entire object to another fragmetn
 data class Todo(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val name: String,
+    val name: String?,
     val isComplete: Boolean = false,
     val createdAt: Long = System.currentTimeMillis(),
     val createdBy: String = "",
     val isImportant: Boolean = false
 ) : Parcelable {
-    //isDone() usw auch hier hinein?
     override fun toString(): String {
         return "\n Todo: $id \nName: $name \n isComplete: $isComplete \n createdAt: $createdAt  \n important: $isImportant"
     }

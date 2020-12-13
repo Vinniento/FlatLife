@@ -23,10 +23,10 @@
             android:id="@+id/action_todoFragment_to_addTodoFragment"
             app:destination="@id/addTodoFragment" />
         <argument
-            android:name="taskName"
-            app:argType="string" />
+            android:name="Todo"
+            app:argType="fh.wfp2.flatlife.data.room.Todo" />
         <argument
-            android:name="isImportant"
+            android:name="update"
             app:argType="boolean" />
 
 
@@ -43,11 +43,10 @@
 
         </action>
         <argument
-            android:name="taskName"
-            app:argType="string"
-            app:nullable="true" />
+            android:name="Todo"
+            app:argType="fh.wfp2.flatlife.data.room.Todo" />
         <argument
-            android:name="isImportant"
+            android:name="update"
             app:argType="boolean" />
 
 
