@@ -6,32 +6,10 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [Task::class], version = 2, exportSchema = false)
+@Database(entities = [Task::class], version = 1, exportSchema = false)
 abstract class TaskRoomDatabase : RoomDatabase() {
 
     abstract fun taskDao(): TaskDao //fürs testen
-
-    /*private class TaskDatabaseCallback(private val scope: CoroutineScope) :
-        RoomDatabase.Callback() {
-        override fun onCreate(db: SupportSQLiteDatabase) {
-            super.onCreate(db)
-            INSTANCE?.let { taskRoomDatabase ->
-                scope.launch {
-                    val taskDao = taskRoomDatabase.taskDao()
-
-                    val task = Task(
-                        id = 4,
-                        name = "Küche",
-                        dueBy = "23.12.2020",
-                        createdAt = "11.12.2020",
-                        createdBy = "Vince"
-                    )
-                    taskDao.insert(task)
-
-                }
-            }
-        }
-    }*/
 
 
     companion object {
@@ -49,10 +27,9 @@ abstract class TaskRoomDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     TaskRoomDatabase::class.java,
-                    "task_database"
+                    "todo_database"
                 )
-                    .fallbackToDestructiveMigration() //wenn DB schema sich ändert einfach löschen und neubauen -> daten weg
-                    //.addCallback(TaskDatabaseCallback(scope))
+                    .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
                 instance

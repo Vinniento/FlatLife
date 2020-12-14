@@ -12,19 +12,19 @@
         tools:layout="@layout/home_fragment" />
     <fragment
         android:id="@+id/tasksFragment"
-        android:name="fh.wfp2.flatlife.ui.views.TasksFragment"
+        android:name="fh.wfp2.flatlife.ui.views.ShoppingFragment"
         android:label="Chores"
-        tools:layout="@layout/tasks_fragment" />
+        tools:layout="@layout/shopping_fragment" />
     <fragment
-        android:id="@+id/todoFragment"
-        android:name="fh.wfp2.flatlife.ui.views.TodoFragment"
-        android:label="Todos">
+        android:id="@+id/taskFragment"
+        android:name="fh.wfp2.flatlife.ui.views.TaskFragment"
+        android:label="Tasks">
         <action
-            android:id="@+id/action_todoFragment_to_addTodoFragment"
-            app:destination="@id/addTodoFragment" />
+            android:id="@+id/action_taskFragment_to_addTaskFragment"
+            app:destination="@id/addTaskFragment" />
         <argument
-            android:name="Todo"
-            app:argType="fh.wfp2.flatlife.data.room.Todo" />
+            android:name="Task"
+            app:argType="fh.wfp2.flatlife.data.room.Task" />
         <argument
             android:name="update"
             app:argType="boolean" />
@@ -32,19 +32,19 @@
 
     </fragment>
     <fragment
-        android:id="@+id/addTodoFragment"
-        android:name="fh.wfp2.flatlife.ui.views.AddTodoFragment"
-        android:label="AddTodoFragment">
+        android:id="@+id/addTaskFragment"
+        android:name="fh.wfp2.flatlife.ui.views.AddTaskFragment"
+        android:label="Add a Todo">
         <action
-            android:id="@+id/action_addTodoFragment_to_todoFragment"
-            app:destination="@id/todoFragment"
-            app:popUpTo="@id/todoFragment"
+            android:id="@+id/action_addTaskFragment_to_taskFragment"
+            app:destination="@id/taskFragment"
+            app:popUpTo="@id/taskFragment"
             app:popUpToInclusive="true">
 
         </action>
         <argument
-            android:name="Todo"
-            app:argType="fh.wfp2.flatlife.data.room.Todo" />
+            android:name="Task"
+            app:argType="fh.wfp2.flatlife.data.room.Task" />
         <argument
             android:name="update"
             app:argType="boolean" />

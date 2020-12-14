@@ -17,80 +17,118 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.data.preferences.SortOrder
-import fh.wfp2.flatlife.data.room.Todo
-import fh.wfp2.flatlife.databinding.TodoFragmentBinding
-import fh.wfp2.flatlife.ui.adapters.TodoAdapter
-import fh.wfp2.flatlife.ui.viewmodels.TodoViewModel
-import fh.wfp2.flatlife.ui.viewmodels.TodoViewModelFactory
+import fh.wfp2.flatlife.data.room.Task
+import fh.wfp2.flatlife.databinding.TaskFragmentBinding
+import fh.wfp2.flatlife.ui.adapters.TaskAdapter
+import fh.wfp2.flatlife.ui.viewmodels.TaskViewModel
+import fh.wfp2.flatlife.ui.viewmodels.TaskViewModelFactory
 import fh.wfp2.flatlife.util.onQueryTextChanged
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
-class TodoFragment : Fragment(R.layout.todo_fragment), TodoAdapter.OnItemClickListener {
+class TaskFragment : Fragment(R.layout.task_fragment), TaskAdapter.OnItemClickListener {
 
-    private lateinit var viewModel: TodoViewModel
-    private lateinit var viewModelFactory: TodoViewModelFactory
-    private lateinit var binding: TodoFragmentBinding
-    private val args: TodoFragmentArgs by navArgs<TodoFragmentArgs>()
+    private lateinit var viewModel: TaskViewModel
+    private lateinit var viewModelFactory: TaskViewModelFactory
+    private lateinit var binding: TaskFragmentBinding
+    private val args: TaskFragmentArgs by navArgs<TaskFragmentArgs>()
 
+    @InternalCoroutinesApi
     @ExperimentalCoroutinesApi
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = TodoFragmentBinding.bind(view)
+        binding = TaskFragmentBinding.bind(view)
 
 
         val application = requireNotNull(this.activity).application
-        viewModelFactory = TodoViewModelFactory(application)
+        viewModelFactory = TaskViewModelFactory(application)
 
-        viewModel = ViewModelProvider(this, viewModelFactory).get(TodoViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(TaskViewModel::class.java)
+        Timber.i("ViewModel created")
 
-        //onClickListener here
+        arguments?.let {
+            var taskName: String?
+            var isImportant: Boolean
 
+            arguments?.getParcelable<Task>("Task")?.let { task ->
+
+                taskName = task.name
+                isImportant = task.isImportant
+                if (arguments?.getBoolean("update")!!) {
+                    viewModel.onTaskChanged(
+                        Task(
+                            task.id,
+                            name = taskName,
+                            isImportant = isImportant
+                        )
+                    )
+
+                } else
+                    viewModel.onAddTaskClick(task)
+
+
+                taskName = null
+            }
+        }
 
         //Recyclerview
         //fragment implements interface mit den listeners, also kann man hier eifnach sich selbst passen
-        val todoAdapter = TodoAdapter(this)
+        val todoAdapter = TaskAdapter(this)
 
         binding.apply {
-            todoListRecyclerview.apply {
+            taskListRecyclerview.apply {
                 adapter = todoAdapter
                 layoutManager = LinearLayoutManager(requireContext())
                 setHasFixedSize(true)
+
+                ItemTouchHelper(SwipeToDelete(todoAdapter)).attachToRecyclerView(
+                    taskListRecyclerview
+                )
+
+                addTask.setOnClickListener {
+                    val action =
+                        TaskFragmentDirections.actionTaskFragmentToAddTaskFragment(
+                            Task(0, name = null), false
+                        )
+                    findNavController().navigate(action)
+                }
+
             }
-
-            ItemTouchHelper(SwipeToDelete(todoAdapter)).attachToRecyclerView(binding.todoListRecyclerview)
-
-            addTodo.setOnClickListener {
-                val action =
-                    TodoFragmentDirections.actionTodoFragmentToAddTodoFragment(
-                        Todo(0, name = null), false
-                    )
-                findNavController().navigate(action)
-
-
-            }
-
-
         }
-        viewModel.todos.observe(viewLifecycleOwner) {
+        viewModel.tasks.observe(viewLifecycleOwner) {
             // todoAdapter.submitList(it)
             it?.let {
-                todoAdapter.todoList = it
+                todoAdapter.taskList = it
                 it.forEach { todo ->
                     Timber.i(todo.toString())
 
                 }
             }
-
-            Timber.i("ViewModel created")
-            setHasOptionsMenu(true)
         }
+
+        //coroutine will be canceled when onStop is called. Will only listen for events when fragment is displayed
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.tasksEvent.collect { event ->
+                when (event) {
+                    is TaskViewModel.TaskEvent.ShowUndoDeleteTaskMessage -> {
+                        Snackbar.make(requireView(), "Task deleted", Snackbar.LENGTH_LONG)
+                            .setAction("UNDO") {
+                                viewModel.onUndoDeleteClick(event.task)
+                            }.show()
+                    }
+                }
+            }
+        }
+        setHasOptionsMenu(true)
 
         /*  args?.let { //debugger stops here and app crashes
               if(args.taskName != null)
@@ -110,52 +148,30 @@ class TodoFragment : Fragment(R.layout.todo_fragment), TodoAdapter.OnItemClickLi
              viewModel.onAddTodoClick(args.Todo.copy())
 
          }*/
-        arguments?.let {
-            var taskName: String? = null
-            var isImportant: Boolean = false
-            arguments?.getParcelable<Todo>("Todo")?.let { todo ->
-
-                taskName = todo.name
-                isImportant = todo.isImportant
-                if (arguments?.getBoolean("update")!!)
-                    viewModel.onTodoNameChanged(
-                        Todo(
-                            todo.id,
-                            name = taskName,
-                            isImportant = isImportant
-                        )
-                    )
-                else
-                    viewModel.onAddTodoClick(todo)
-
-
-                taskName = null
-            }
-        }
 
 
     }
 
-    override fun onItemClick(todo: Todo) {
+    override fun onItemClick(task: Task) {
         //viewModel.onTaskSelected(todo)
-        val action = TodoFragmentDirections.actionTodoFragmentToAddTodoFragment(
-            Todo(
-                id = todo.id,
-                name = todo.name,
-                isComplete = todo.isComplete,
-                isImportant = todo.isImportant
+        val action = TaskFragmentDirections.actionTaskFragmentToAddTaskFragment(
+            Task(
+                id = task.id,
+                name = task.name,
+                isComplete = task.isComplete,
+                isImportant = task.isImportant
             ), true
         )
         findNavController().navigate(action)
     }
 
-    override fun onCheckBoxClick(todo: Todo, isChecked: Boolean) {
-        viewModel.onTodoCheckChanged(todo, isChecked)
+    override fun onCheckBoxClick(task: Task, isChecked: Boolean) {
+        viewModel.onTaskCheckChanged(task, isChecked)
     }
 
     @ExperimentalCoroutinesApi
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_fragment_todo, menu)
+        inflater.inflate(R.menu.menu_fragment_task, menu)
         val searchItem = menu.findItem(R.id.action_search)
         val searchView = searchItem.actionView as SearchView
         searchView.onQueryTextChanged {
@@ -189,7 +205,7 @@ class TodoFragment : Fragment(R.layout.todo_fragment), TodoAdapter.OnItemClickLi
                 true
             }
             R.id.action_delete_all_completed_tasks -> {
-                viewModel.deleteAllCompletedTodos()
+                viewModel.deleteAllCompletedTasks()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -227,7 +243,7 @@ class TodoFragment : Fragment(R.layout.todo_fragment), TodoAdapter.OnItemClickLi
         Timber.i("onStopCalled")
     }
 
-    inner class SwipeToDelete(var adapter: TodoAdapter) :
+    inner class SwipeToDelete(var adapter: TaskAdapter) :
         ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
         override fun onMove(
             recyclerView: RecyclerView,
@@ -239,8 +255,7 @@ class TodoFragment : Fragment(R.layout.todo_fragment), TodoAdapter.OnItemClickLi
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             val position = viewHolder.adapterPosition
-            adapter.removeItemBySwipe(position)
-            viewModel.onSwipedRight(adapter.todoList[position])
+            viewModel.onSwipedRight(adapter.taskList[position])
 
 
         }

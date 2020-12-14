@@ -8,10 +8,10 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.views.TasksFragment">
+    tools:context=".ui.views.TaskFragment">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addTodo"
+        android:id="@+id/addTask"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
@@ -24,7 +24,7 @@
         app:srcCompat="@android:drawable/ic_input_add" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/todo_list_recyclerview"
+        android:id="@+id/task_list_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="16dp"
@@ -34,33 +34,21 @@
         android:textAllCaps="false"
 
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@id/addTodo"
+        app:layout_constraintBottom_toTopOf="@id/addTask"
         app:layout_constraintStart_toStartOf="parent"
-        tools:listitem="@layout/todo_item" />
+        tools:listitem="@layout/task_item_card" />
 
     <TextView
-        android:id="@+id/tv_todo_title"
+        android:id="@+id/tv_task_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Todos"
-        app:layout_constraintBottom_toTopOf="@+id/todo_list_recyclerview"
+        app:layout_constraintBottom_toTopOf="@+id/task_list_recyclerview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.155"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.516" />
-
-    <EditText
-        android:id="@+id/et_new_todo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Todo"
-        app:layout_constraintBottom_toTopOf="@+id/todo_list_recyclerview"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tv_todo_title"
-        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

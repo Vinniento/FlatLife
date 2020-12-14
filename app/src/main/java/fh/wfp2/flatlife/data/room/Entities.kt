@@ -19,9 +19,9 @@ class User(
     override fun toString(): String = name
 }
 
-@Entity(tableName = "todos")
+@Entity(tableName = "task")
 @Parcelize //make it parcelable -> able to send the entire object to another fragmetn
-data class Todo(
+data class Task(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val name: String?,
     val isComplete: Boolean = false,
@@ -30,23 +30,29 @@ data class Todo(
     val isImportant: Boolean = false
 ) : Parcelable {
     override fun toString(): String {
-        return "\n Todo: $id \nName: $name \n isComplete: $isComplete \n createdAt: $createdAt  \n important: $isImportant"
+        return "\n Task: $id \nName: $name \n isComplete: $isComplete \n createdAt: $createdAt  \n important: $isImportant"
+    }
+
+    val createdDateFormatted: String
+        get() = DateFormat.getDateTimeInstance().format(createdAt)
+
+}
+
+@Entity(tableName = "shopping_items")
+@Parcelize //make it parcelable -> able to send the entire object to another fragmetn
+data class ShoppingItems(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val name: String?,
+    val isBought: Boolean = false,
+    val createdAt: Long = System.currentTimeMillis()
+) : Parcelable {
+    override fun toString(): String {
+        return "\n Shopping Item: $id \nName: $name \n isBought: $isBought \n createdAt: $createdDateFormatted  \n "
     }
 
     val createdDateFormatted: String
         get() = DateFormat.getDateTimeInstance().format(createdAt)
 }
 
-@Entity(tableName = "tasks")
-class Task(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val name: String,
-    val createdAt: String,
-    val dueBy: String,
-    val createdBy: String
-) {
-    //isDone() usw auch hier hinein?
-    override fun toString(): String = name
-}
 
 

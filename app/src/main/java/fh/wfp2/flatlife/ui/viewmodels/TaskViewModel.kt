@@ -2,27 +2,33 @@ package fh.wfp2.flatlife.ui.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.*
-import fh.wfp2.flatlife.data.TodoRepository
+import fh.wfp2.flatlife.data.TaskRepository
 import fh.wfp2.flatlife.data.preferences.PreferencesManager
 import fh.wfp2.flatlife.data.preferences.SortOrder
-import fh.wfp2.flatlife.data.room.Todo
-import fh.wfp2.flatlife.data.room.TodoDao
-import fh.wfp2.flatlife.data.room.TodoRoomDatabase
+import fh.wfp2.flatlife.data.room.Task
+import fh.wfp2.flatlife.data.room.TaskDao
+import fh.wfp2.flatlife.data.room.TaskRoomDatabase
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.receiveAsFlow
 import timber.log.Timber
 
 
 @ExperimentalCoroutinesApi
-class TodoViewModel(application: Application) : AndroidViewModel(application) {
+class TaskViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository: TodoRepository
-    private var todoDao: TodoDao = TodoRoomDatabase.getInstance(application).todoDao()
+    private val repository: TaskRepository
+    private var taskDao: TaskDao = TaskRoomDatabase.getInstance(application).taskDao()
     private val taskViewModelJob = Job()
 
     private val uiScope = CoroutineScope(taskViewModelJob + Dispatchers.Main)
+
+    private val tasksEventChannel = Channel<TaskEvent>()
+    val tasksEvent = tasksEventChannel.receiveAsFlow()
+
     private val errorHandler = CoroutineExceptionHandler { _, throwable ->
         Timber.e(throwable.message.toString())
     }
@@ -34,12 +40,12 @@ class TodoViewModel(application: Application) : AndroidViewModel(application) {
     val preferencesFlow = preferencesManager.preferencesFlow
 
     init {
-        repository = TodoRepository(todoDao)
+        repository = TaskRepository(taskDao)
         Timber.i("Repository created in viewModel")
 
     }
 
-    private val todosFlow = combine(searchQuery, preferencesFlow)
+    private val tasksFlow = combine(searchQuery, preferencesFlow)
     { query, preferencesFlow ->
         Pair(
             query,
@@ -47,10 +53,10 @@ class TodoViewModel(application: Application) : AndroidViewModel(application) {
         ) //angeblich CustomClass besser falls sich was ändert
     }
         .flatMapLatest { (query, filterPreferences) ->
-            repository.getTodos(query, filterPreferences.hideCompleted, filterPreferences.sortOrder)
+            repository.getTasks(query, filterPreferences.hideCompleted, filterPreferences.sortOrder)
         }
 
-    val todos = todosFlow.asLiveData()
+    val tasks = tasksFlow.asLiveData()
 
     fun onSortOrderSelected(sortOrder: SortOrder) {
         viewModelScope.launch {
@@ -65,27 +71,26 @@ class TodoViewModel(application: Application) : AndroidViewModel(application) {
     }
 
 
-    fun onAddTodoClick(todo: Todo) {
+    fun onAddTaskClick(task: Task) {
         uiScope.launch(errorHandler) {
-            repository.insert(Todo(name = todo.name, isImportant = todo.isImportant))
-            Timber.i("Task added ${todo.name}  : ${todo.isImportant}")
-            // allTodosMutable?.let {  it -> it.value.forEach { Log.i("viewModel", "${it.name}") }} -> wieso brauch ich hier tdm ein ? bei der foreach obwohl ich ?.let mach?
+            repository.insert(Task(name = task.name, isImportant = task.isImportant))
+            Timber.i("Task added ${task.name}  : ${task.isImportant}")
         }
     }
 
 
-    fun onTaskSelected(todo: Todo) {
+    fun onTaskSelected(task: Task) {
 
     }
 
-    fun onTodoCheckChanged(todo: Todo, isChecked: Boolean) = uiScope.launch(errorHandler) {
-        repository.update(todo.copy(isComplete = isChecked))
+    fun onTaskCheckChanged(task: Task, isChecked: Boolean) = uiScope.launch(errorHandler) {
+        repository.update(task.copy(isComplete = isChecked))
         Timber.i("CheckedState : $isChecked")
     }
 
-    fun onTodoNameChanged(todo: Todo) = uiScope.launch(errorHandler) {
-        repository.update(todo)
-        Timber.i("New Todo : $todo")
+    fun onTaskChanged(task: Task) = uiScope.launch(errorHandler) {
+        repository.update(task)
+        Timber.i("New Todo : $task")
     }
 
 
@@ -104,18 +109,32 @@ class TodoViewModel(application: Application) : AndroidViewModel(application) {
         taskViewModelJob.cancel()
     }
 
-    fun onSwipedRight(todo: Todo) {
+    fun onSwipedRight(task: Task) {
         uiScope.launch(errorHandler) {
 
-            repository.delete(todo)
+            repository.deleteTask(task)
+            tasksEventChannel.send(
+                TaskEvent.ShowUndoDeleteTaskMessage(task)
+            )
         }
     }
 
-    fun deleteAllCompletedTodos() {
+    fun deleteAllCompletedTasks() {
         uiScope.launch(errorHandler) {
-            repository.deleteAllCompletedTodos()
+            repository.deleteAllCompletedTasks()
 
         }
+    }
+
+    fun onUndoDeleteClick(task: Task) {
+        viewModelScope.launch(errorHandler) {
+            repository.insert(task)
+        }
+    }
+
+    //benefit of sealed class -> when checking with when (){} the compiler knows if the list checked is exhaustive or not
+    sealed class TaskEvent {
+        data class ShowUndoDeleteTaskMessage(val task: Task) : TaskEvent()
     }
 
 }
@@ -126,14 +145,16 @@ data class customTriple(
     val sortOrder: SortOrder
 )
 
-class TodoViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
+class TaskViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(TodoViewModel::class.java)) {
+        if (modelClass.isAssignableFrom(TaskViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
             Timber.i("Creating viewModel")
-            return TodoViewModel(application) as T
+            return TaskViewModel(application) as T
         }
         throw IllegalArgumentException("Unknown ViewModel Class")
     }
+
+
 }
 

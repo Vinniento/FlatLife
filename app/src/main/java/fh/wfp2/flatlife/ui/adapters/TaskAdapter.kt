@@ -2,17 +2,17 @@ package fh.wfp2.flatlife.ui.adapters
 
 import android.os.Build
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.data.room.Task
-import kotlinx.android.synthetic.main.task_item.view.*
+import fh.wfp2.flatlife.databinding.TaskItemCardBinding
 import timber.log.Timber
 
-class TaskAdapter :
+
+class TaskAdapter(private val listener: OnItemClickListener) :
     RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
     var taskList = listOf<Task>()
@@ -21,30 +21,83 @@ class TaskAdapter :
             notifyDataSetChanged()
         }
 
+
     override fun getItemCount(): Int = taskList.size
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
+        // val binding = TodoItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         val itemView =
-            LayoutInflater.from(parent.context).inflate(R.layout.task_item, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.task_item_card, parent, false)
         Timber.i("viewHolder created")
-        return TaskViewHolder(itemView)
+        val binding =
+            TaskItemCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return TaskViewHolder(binding)
     }
 
-
+    //gets called each time a view comes into view
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         val currentItem = taskList[position]
-        holder.taskName.text = currentItem.name
-        holder.dueBy.text = currentItem.dueBy
+
+        holder.bind(currentItem)
+        /* holder.apply {
+                cbTodo.isChecked = currentItem.isComplete
+                tvTodo.text = currentItem.name
+                tvTodo.paint.isStrikeThruText = currentItem.isComplete
+                ivImportant.isVisible = !currentItem.isImportant
+            }*/
+
 
     }
 
 
-    class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    //only gets called when viewHolder gets first created (ViewHolder get reused!!)
+    inner class TaskViewHolder(private val binding: TaskItemCardBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-        val taskName: TextView = itemView.tv_todo_name
-        val dueBy: TextView = itemView.tv_task_dueBy
+        init {
+            binding.apply {
+                //wenn die todo view selbst gedrückt wird
+                root.setOnClickListener {
+                    val position = adapterPosition
+                    if (position != RecyclerView.NO_POSITION) {
+                        val task = taskList[position]
+                        listener.onItemClick(task)
+                    }
+                }
+                cbTodoCompleted.setOnClickListener {
+                    val position = adapterPosition
+                    if (position != RecyclerView.NO_POSITION) //-1 -> Wenn die view gerade ausm Sichtfeld kommt
+                    {
+                        val task = taskList[position]
+                        listener.onCheckBoxClick(task, !task.isComplete)
+                    }
+                }
+
+            }
+        }
+
+        fun bind(task: Task) {
+            binding.apply {
+                cbTodoCompleted.isChecked = task.isComplete
+                tvTodoName.text = task.name
+                tvTodoName.paint.isStrikeThruText = task.isComplete
+                ivImportant.isVisible = task.isImportant
+
+            }
+
+        }
+/*
+        val cbTodo: CheckBox = itemView.cb_todo_completed
+        val tvTodo: TextView = itemView.tv_todo_name
+        val ivImportant: ImageView = itemView.iv_important
+*/
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(task: Task)
+        fun onCheckBoxClick(task: Task, isChecked: Boolean)
     }
 
 }

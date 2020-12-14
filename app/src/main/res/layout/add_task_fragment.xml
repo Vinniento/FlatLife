@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/b_addTodo"
+        android:id="@+id/b_addTask"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="64dp"
@@ -17,7 +17,7 @@
         app:layout_constraintTop_toBottomOf="@+id/cb_important" />
 
     <EditText
-        android:id="@+id/et_addTodo"
+        android:id="@+id/et_addTask"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
@@ -36,6 +36,6 @@
         android:layout_marginTop="20dp"
         android:text="Important Task"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_addTodo" />
+        app:layout_constraintTop_toBottomOf="@+id/et_addTask" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
