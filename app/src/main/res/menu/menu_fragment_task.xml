@@ -27,7 +27,7 @@
         android:title="Hide Completed"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_delete_all_completed_tasks"
+        android:id="@+id/action_delete_all_bought_items"
         android:title="Detele all completed"
         app:showAsAction="never" />
 </menu>

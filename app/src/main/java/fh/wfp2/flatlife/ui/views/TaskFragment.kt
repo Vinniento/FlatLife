@@ -1,6 +1,5 @@
 package fh.wfp2.flatlife.ui.views
 
-import android.app.Dialog
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
@@ -204,7 +203,7 @@ class TaskFragment : Fragment(R.layout.task_fragment), TaskAdapter.OnItemClickLi
                 viewModel.onHideCompletedClick(item.isChecked)
                 true
             }
-            R.id.action_delete_all_completed_tasks -> {
+            R.id.action_delete_all_bought_items -> {
                 viewModel.deleteAllCompletedTasks()
                 true
             }
@@ -213,10 +212,6 @@ class TaskFragment : Fragment(R.layout.task_fragment), TaskAdapter.OnItemClickLi
         }
     }
 
-    fun enterTaskPopup(taskDialog: Dialog) {
-        taskDialog.layoutInflater.inflate(R.layout.add_task_popup, null)
-        taskDialog.show()
-    }
 
     override fun onResume() {
         super.onResume()

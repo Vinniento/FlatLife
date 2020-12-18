@@ -29,9 +29,7 @@ class TaskRepository(private val taskDao: TaskDao) {
     ): Flow<List<Task>> {
         Timber.i("getTodos called")
 
-        val tasks = taskDao.getTasks(searchQuery, hideCompleted, sortOrder)
-
-        return tasks
+        return taskDao.getTasks(searchQuery, hideCompleted, sortOrder)
     }
 
 

@@ -10,7 +10,7 @@
         android:icon="@drawable/todos"
         android:title="Tasks" />
     <item
-        android:id="@+id/mishopping"
+        android:id="@+id/shoppingFragment"
         android:icon="@drawable/shopping"
         android:title="Shopping" />
     <item

@@ -5,6 +5,8 @@ import fh.wfp2.flatlife.data.preferences.SortOrder
 import kotlinx.coroutines.flow.Flow
 
 
+//TODO ein abstraktes dao erstellen welches die grundfunktionen hat und die anderen implementieren das dann
+
 @Dao
 interface TaskDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -36,3 +38,4 @@ interface TaskDao {
     @Query("DELETE FROM task where isComplete = 1")
     fun deleteAllCompletedTasks()
 }
+

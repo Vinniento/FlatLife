@@ -5,54 +5,54 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
 
-    android:id="@+id/constraintLayout"
+    android:id="@+id/constraintLayout_shopping"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.views.ShoppingFragment">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/add_shopping_item"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="24dp"
-        android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_input_add" />
-
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/tasks_list_recyclerview"
+        android:id="@+id/shopping_list_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginTop="50dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="90dp"
         android:background="@color/light_gray"
         android:textAllCaps="false"
 
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@id/add_shopping_item"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_task_name"
+        app:layout_constraintTop_toBottomOf="@id/et_shopping_item_input"
         tools:listitem="@layout/shopping_item_card" />
 
+
     <EditText
-        android:id="@+id/tv_task_name"
+        android:id="@+id/et_shopping_item_input"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="50dp"
-        android:autofillHints="Name"
         android:ems="10"
-        android:hint=" "
         android:inputType="textPersonName"
-        android:text="Name"
+        android:layout_marginStart="20dp"
+        android:autofillHints=""
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="49dp" />
+        android:hint="x"
+        android:text="Add Item..."
+
+
+        app:layout_constraintBottom_toTopOf="@id/shopping_list_recyclerview" />
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:contentDescription="AdButton"
+        android:src="@drawable/ic_add"
+        app:layout_constraintBottom_toBottomOf="@+id/et_shopping_item_input"
+        app:layout_constraintStart_toEndOf="@+id/et_shopping_item_input"
+        app:layout_constraintTop_toTopOf="@+id/et_shopping_item_input"
+        app:layout_constraintVertical_bias="0.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

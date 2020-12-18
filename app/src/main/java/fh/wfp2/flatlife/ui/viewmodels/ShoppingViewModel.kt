@@ -1,45 +1,55 @@
 package fh.wfp2.flatlife.ui.viewmodels
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import fh.wfp2.flatlife.data.TaskRepository
-import fh.wfp2.flatlife.data.room.Task
-import fh.wfp2.flatlife.data.room.TaskRoomDatabase
+import androidx.lifecycle.*
+import fh.wfp2.flatlife.data.ShoppingRepository
+import fh.wfp2.flatlife.data.room.FlatLifeRoomDatabase
+import fh.wfp2.flatlife.data.room.ShoppingItem
 import kotlinx.coroutines.*
 import timber.log.Timber
 
 
 class ShoppingViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository: TaskRepository
+    private val repository: ShoppingRepository
 
-    private val taskViewModelJob = Job()
-    private val uiScope = CoroutineScope(taskViewModelJob + Dispatchers.Main)
-    private val ioScope = CoroutineScope(taskViewModelJob + Dispatchers.IO)
+    private val shoppingViewModelJob = Job()
+    private val uiScope = CoroutineScope(shoppingViewModelJob + Dispatchers.Main)
+
+    private val _allItems = MutableLiveData<List<ShoppingItem>>()
+    val allItems: LiveData<List<ShoppingItem>> = _allItems
 
     private val errorHandler = CoroutineExceptionHandler { _, throwable ->
         Timber.e(throwable.message.toString())
     }
 
     init {
-        val userDao = TaskRoomDatabase.getInstance(application).taskDao()
-        repository = TaskRepository(userDao)
+        val shoppingDao = FlatLifeRoomDatabase.getInstance(application).shoppingDao()
+        repository = ShoppingRepository(shoppingDao)
+        viewModelScope.launch {
+            repository.apply {
+                insert(ShoppingItem(0, "Apples"))
+                insert(ShoppingItem(0, "Bananaas"))
+                insert(ShoppingItem(0, "Kitchen stuff"))
+            }
+        }
         Timber.i("Repository created in viewModel")
-
+        viewModelScope.launch(errorHandler) {
+            _allItems.postValue(repository.getAllItems().value)
+        }
     }
 
-    fun insert(task: Task) {
+
+    fun insert(item: ShoppingItem) {
         uiScope.launch(errorHandler) {
 
-        Timber.i("Task added ${task.name}")
+            Timber.i("Item added ${item.name}")
         }
     }
 
     override fun onCleared() {
         super.onCleared()
-        taskViewModelJob.cancel()
+        shoppingViewModelJob.cancel()
     }
 
 }

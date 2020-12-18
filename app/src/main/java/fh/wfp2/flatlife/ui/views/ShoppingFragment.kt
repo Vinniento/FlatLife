@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import fh.wfp2.flatlife.R
@@ -37,17 +38,22 @@ class ShoppingFragment : Fragment(R.layout.shopping_fragment) {
 
         //Recyclerview
         val adapter = ShoppingAdapter()
-        val recyclerView = binding.tasksListRecyclerview
+        val recyclerView = binding.shoppingListRecyclerview
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
+        setHasOptionsMenu(true)
 
         //binding.taskViewModel = viewModel
         Timber.i("ViewModel created and added to binding")
         binding.apply {
-            tasksListRecyclerview.layoutManager = LinearLayoutManager(context)
+            shoppingListRecyclerview.layoutManager = LinearLayoutManager(context)
         }
 
+        //observers
+        viewModel.allItems.observe(viewLifecycleOwner, Observer {
+
+            adapter.shoppingList = viewModel.allItems.value!!
+        })
 
     }
 

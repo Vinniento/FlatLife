@@ -5,9 +5,9 @@ import androidx.lifecycle.*
 import fh.wfp2.flatlife.data.TaskRepository
 import fh.wfp2.flatlife.data.preferences.PreferencesManager
 import fh.wfp2.flatlife.data.preferences.SortOrder
+import fh.wfp2.flatlife.data.room.FlatLifeRoomDatabase
 import fh.wfp2.flatlife.data.room.Task
 import fh.wfp2.flatlife.data.room.TaskDao
-import fh.wfp2.flatlife.data.room.TaskRoomDatabase
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +21,7 @@ import timber.log.Timber
 class TaskViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: TaskRepository
-    private var taskDao: TaskDao = TaskRoomDatabase.getInstance(application).taskDao()
+    private var taskDao: TaskDao = FlatLifeRoomDatabase.getInstance(application).taskDao()
     private val taskViewModelJob = Job()
 
     private val uiScope = CoroutineScope(taskViewModelJob + Dispatchers.Main)

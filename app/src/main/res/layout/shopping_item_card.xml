@@ -4,9 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="30dp"
     android:layout_marginStart="@dimen/card_side_margin"
-    android:layout_marginTop="@dimen/card_top_margin"
+    android:layout_marginTop="5dp"
     android:layout_marginEnd="@dimen/card_side_margin"
-    android:layout_marginBottom="@dimen/card_bottom_margin"
     app:shapeAppearanceOverlay="@style/ShapeAppearance.Tasks.Card">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,26 +15,23 @@
         android:layout_marginBottom="5dp"
         android:background="@color/light_gray">
 
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/cb_item_bought"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="@id/tv_item_name"
+            app:layout_constraintTop_toTopOf="@id/tv_item_name" />
+
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_todo_name"
+            android:id="@+id/tv_item_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:text="TaskName"
+            android:text="ItemName"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_task_dueBy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:text="DueBy"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tv_todo_name"
-            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

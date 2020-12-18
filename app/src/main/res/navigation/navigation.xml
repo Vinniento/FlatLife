@@ -11,11 +11,6 @@
         android:label="Flatlife"
         tools:layout="@layout/home_fragment" />
     <fragment
-        android:id="@+id/tasksFragment"
-        android:name="fh.wfp2.flatlife.ui.views.ShoppingFragment"
-        android:label="Chores"
-        tools:layout="@layout/shopping_fragment" />
-    <fragment
         android:id="@+id/taskFragment"
         android:name="fh.wfp2.flatlife.ui.views.TaskFragment"
         android:label="Tasks">
@@ -48,6 +43,15 @@
         <argument
             android:name="update"
             app:argType="boolean" />
+
+
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/shoppingFragment"
+        android:name="fh.wfp2.flatlife.ui.views.ShoppingFragment"
+        android:label="Add a shopping item">
 
 
     </fragment>
