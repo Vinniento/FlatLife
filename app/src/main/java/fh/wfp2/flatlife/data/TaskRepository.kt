@@ -32,6 +32,9 @@ class TaskRepository(private val taskDao: TaskDao) {
         return taskDao.getTasks(searchQuery, hideCompleted, sortOrder)
     }
 
+    fun getTaskById(taskId: Long): Flow<Task> {
+        return taskDao.getTaskById(taskId)
+    }
 
     suspend fun update(task: Task) {
         ioScope.launch {

@@ -17,12 +17,6 @@
         <action
             android:id="@+id/action_taskFragment_to_addTaskFragment"
             app:destination="@id/addTaskFragment" />
-        <argument
-            android:name="Task"
-            app:argType="fh.wfp2.flatlife.data.room.Task" />
-        <argument
-            android:name="update"
-            app:argType="boolean" />
 
 
     </fragment>
@@ -38,11 +32,9 @@
 
         </action>
         <argument
-            android:name="Task"
-            app:argType="fh.wfp2.flatlife.data.room.Task" />
-        <argument
-            android:name="update"
-            app:argType="boolean" />
+            android:name="taskId"
+            app:argType="long"
+            android:defaultValue="-1L" />
 
 
     </fragment>

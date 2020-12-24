@@ -23,7 +23,7 @@ class User(
 @Parcelize //make it parcelable -> able to send the entire object to another fragmetn
 data class Task(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val name: String?,
+    val name: String,
     val isComplete: Boolean = false,
     val createdAt: Long = System.currentTimeMillis(),
     val isImportant: Boolean = false

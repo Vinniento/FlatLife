@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import fh.wfp2.flatlife.R
@@ -49,10 +48,16 @@ class ShoppingFragment : Fragment(R.layout.shopping_fragment) {
             shoppingListRecyclerview.layoutManager = LinearLayoutManager(context)
         }
 
-        //observers
-        viewModel.allItems.observe(viewLifecycleOwner, Observer {
+        //observers\
+        viewModel.allItems.observe(viewLifecycleOwner, {
+            it?.let {
 
-            adapter.shoppingList = viewModel.allItems.value!!
+                adapter.shoppingList = it
+                it.forEach { item ->
+                    Timber.i("\nItem: ${item.name}")
+                }
+
+            }
         })
 
     }

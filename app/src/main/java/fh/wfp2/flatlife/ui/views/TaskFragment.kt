@@ -33,12 +33,12 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
+@ExperimentalCoroutinesApi
 class TaskFragment : Fragment(R.layout.task_fragment), TaskAdapter.OnItemClickListener {
 
     private lateinit var viewModel: TaskViewModel
     private lateinit var viewModelFactory: TaskViewModelFactory
     private lateinit var binding: TaskFragmentBinding
-    private val args: TaskFragmentArgs by navArgs<TaskFragmentArgs>()
 
     @InternalCoroutinesApi
     @ExperimentalCoroutinesApi
@@ -54,31 +54,6 @@ class TaskFragment : Fragment(R.layout.task_fragment), TaskAdapter.OnItemClickLi
         viewModel = ViewModelProvider(this, viewModelFactory).get(TaskViewModel::class.java)
         Timber.i("ViewModel created")
 
-        arguments?.let {
-            var taskName: String?
-            var isImportant: Boolean
-
-            arguments?.getParcelable<Task>("Task")?.let { task ->
-
-                taskName = task.name
-                isImportant = task.isImportant
-                if (arguments?.getBoolean("update")!!) {
-                    viewModel.onTaskChanged(
-                        Task(
-                            task.id,
-                            name = taskName,
-                            isImportant = isImportant
-                        )
-                    )
-
-                } else
-                    viewModel.onAddTaskClick(task)
-
-
-                taskName = null
-            }
-        }
-
         //Recyclerview
         //fragment implements interface mit den listeners, also kann man hier eifnach sich selbst passen
         val todoAdapter = TaskAdapter(this)
@@ -92,13 +67,8 @@ class TaskFragment : Fragment(R.layout.task_fragment), TaskAdapter.OnItemClickLi
                 ItemTouchHelper(SwipeToDelete(todoAdapter)).attachToRecyclerView(
                     taskListRecyclerview
                 )
-
                 addTask.setOnClickListener {
-                    val action =
-                        TaskFragmentDirections.actionTaskFragmentToAddTaskFragment(
-                            Task(0, name = null), false
-                        )
-                    findNavController().navigate(action)
+                    viewModel.onAddNewTaskClick()
                 }
 
             }
@@ -124,44 +94,24 @@ class TaskFragment : Fragment(R.layout.task_fragment), TaskAdapter.OnItemClickLi
                                 viewModel.onUndoDeleteClick(event.task)
                             }.show()
                     }
+                    is TaskViewModel.TaskEvent.NavigateToAddTaskScreen -> {
+                        val action = TaskFragmentDirections.actionTaskFragmentToAddTaskFragment()
+                        findNavController().navigate(action)
+                    }
+                    is TaskViewModel.TaskEvent.NavigateToEditTaskScreen -> {
+                        val action =
+                            TaskFragmentDirections.actionTaskFragmentToAddTaskFragment(event.taskId)
+                        findNavController().navigate(action)
+                    }
                 }
             }
         }
         setHasOptionsMenu(true)
 
-        /*  args?.let { //debugger stops here and app crashes
-              if(args.taskName != null)
-                  viewModel.onAddTodoClick(Todo(name = args.taskName, isImportant = args.isImportant))
-          }*/
-
-/*        val args = arguments?.let {
-            AddTodoFragmentArgs.fromBundle(it)
-        }
-        if(args != null){
-            Timber.i("Taskname: ${args.taskName}")
-            Timber.i("Is Important: ${args.isImportant}")
-        }**/
-
-        /* args.Todo.name?.let {
-
-             viewModel.onAddTodoClick(args.Todo.copy())
-
-         }*/
-
-
     }
 
     override fun onItemClick(task: Task) {
-        //viewModel.onTaskSelected(todo)
-        val action = TaskFragmentDirections.actionTaskFragmentToAddTaskFragment(
-            Task(
-                id = task.id,
-                name = task.name,
-                isComplete = task.isComplete,
-                isImportant = task.isImportant
-            ), true
-        )
-        findNavController().navigate(action)
+        viewModel.onTaskSelected(task.id)
     }
 
     override fun onCheckBoxClick(task: Task, isChecked: Boolean) {

@@ -1,7 +1,6 @@
 package fh.wfp2.flatlife.data.room
 
 
-import ShoppingDao
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room

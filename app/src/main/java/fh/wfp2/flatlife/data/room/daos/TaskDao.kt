@@ -1,5 +1,6 @@
 package fh.wfp2.flatlife.data.room
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import fh.wfp2.flatlife.data.preferences.SortOrder
 import kotlinx.coroutines.flow.Flow
@@ -37,5 +38,8 @@ interface TaskDao {
 
     @Query("DELETE FROM task where isComplete = 1")
     fun deleteAllCompletedTasks()
+
+    @Query("SELECT * FROM task where id == :taskId")
+    fun getTaskById(taskId: Long): Flow<Task>
 }
 

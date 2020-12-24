@@ -10,12 +10,10 @@ import fh.wfp2.flatlife.data.room.Task
 import fh.wfp2.flatlife.data.room.TaskDao
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import timber.log.Timber
-
 
 @ExperimentalCoroutinesApi
 class TaskViewModel(application: Application) : AndroidViewModel(application) {
@@ -23,6 +21,8 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: TaskRepository
     private var taskDao: TaskDao = FlatLifeRoomDatabase.getInstance(application).taskDao()
     private val taskViewModelJob = Job()
+    private val state = SavedStateHandle()
+
 
     private val uiScope = CoroutineScope(taskViewModelJob + Dispatchers.Main)
 
@@ -36,7 +36,7 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
     private val preferencesManager = PreferencesManager(application)
 
     //MutableStateFlow: Sobald sich etwas ändert, wird die entsprechende DB query abgesetzt
-    val searchQuery = MutableStateFlow("")
+    val searchQuery = state.getLiveData("searchQuery", "")
     val preferencesFlow = preferencesManager.preferencesFlow
 
     init {
@@ -45,7 +45,7 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
 
     }
 
-    private val tasksFlow = combine(searchQuery, preferencesFlow)
+    private val tasksFlow = combine(searchQuery.asFlow(), preferencesFlow)
     { query, preferencesFlow ->
         Pair(
             query,
@@ -70,39 +70,10 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-
-    fun onAddTaskClick(task: Task) {
-        uiScope.launch(errorHandler) {
-            repository.insert(Task(name = task.name, isImportant = task.isImportant))
-            Timber.i("Task added ${task.name}  : ${task.isImportant}")
-        }
-    }
-
-
-    fun onTaskSelected(task: Task) {
-
-    }
-
     fun onTaskCheckChanged(task: Task, isChecked: Boolean) = uiScope.launch(errorHandler) {
         repository.update(task.copy(isComplete = isChecked))
         Timber.i("CheckedState : $isChecked")
     }
-
-    fun onTaskChanged(task: Task) = uiScope.launch(errorHandler) {
-        repository.update(task)
-        Timber.i("New Todo : $task")
-    }
-
-
-/* private suspend fun getTodos(): List<Todo> {
-     return withContext(Dispatchers.Main) {
-         val allTasks = repository.getTodos()
-         Timber.i("All todos retrieved: ${allTodosMutable.value.toString()}")
-         allTasks.sortedBy {
-             it.todoId
-         }
-     }
- }*/
 
     override fun onCleared() {
         super.onCleared()
@@ -132,18 +103,30 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun onAddNewTaskClick() = viewModelScope.launch {
+        tasksEventChannel.send(TaskEvent.NavigateToAddTaskScreen)
+    }
+
+    fun onTaskSelected(taskId : Long) = viewModelScope.launch {
+        tasksEventChannel.send(TaskEvent.NavigateToEditTaskScreen(taskId))
+    }
+
+
     //benefit of sealed class -> when checking with when (){} the compiler knows if the list checked is exhaustive or not
     sealed class TaskEvent {
         data class ShowUndoDeleteTaskMessage(val task: Task) : TaskEvent()
+        data class NavigateToEditTaskScreen(val taskId :  Long) : TaskEvent()
+
+        //only one instance is created
+        object NavigateToAddTaskScreen : TaskEvent()
     }
 
+    data class customTriple(
+        val searchQuery: String,
+        val hideCompleted: Boolean,
+        val sortOrder: SortOrder
+    )
 }
-
-data class customTriple(
-    val searchQuery: String,
-    val hideCompleted: Boolean,
-    val sortOrder: SortOrder
-)
 
 class TaskViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
@@ -157,4 +140,3 @@ class TaskViewModelFactory(private val application: Application) : ViewModelProv
 
 
 }
-
