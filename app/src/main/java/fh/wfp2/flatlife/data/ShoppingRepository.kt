@@ -7,6 +7,9 @@ import fh.wfp2.flatlife.data.room.ShoppingItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -19,12 +22,12 @@ class ShoppingRepository(private val shoppingDao: ShoppingDao) {
     suspend fun insert(shoppingItem: ShoppingItem) {
         ioScope.launch {
             shoppingDao.insert(shoppingItem)
-            Timber.i("Items added")
+            Timber.i("${shoppingItem.name} added")
         }
     }
 
-    suspend fun getAllItems(): LiveData<List<ShoppingItem>> {
-        Timber.i("All Items Retrieved")
+    fun getAllItems(): Flow<List<ShoppingItem>> {
+        Timber.i("All items retrieved")
         return shoppingDao.getItemsSortedByIsBought()
     }
 

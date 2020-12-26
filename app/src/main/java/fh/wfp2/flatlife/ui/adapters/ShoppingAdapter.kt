@@ -4,13 +4,15 @@ import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import fh.wfp2.flatlife.data.room.ShoppingItem
 import fh.wfp2.flatlife.databinding.ShoppingItemCardBinding
 import timber.log.Timber
 
 class ShoppingAdapter :
-    RecyclerView.Adapter<ShoppingAdapter.ShoppingItemViewHolder>() {
+    ListAdapter<ShoppingItem, RecyclerView.ViewHolder>(ShoppingDiffCallback()) {
 
     var shoppingList = listOf<ShoppingItem>()
         set(value) {
@@ -19,7 +21,6 @@ class ShoppingAdapter :
         }
 
     override fun getItemCount(): Int = shoppingList.size
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShoppingItemViewHolder {
 
@@ -31,9 +32,9 @@ class ShoppingAdapter :
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun onBindViewHolder(holder: ShoppingItemViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val currentItem = shoppingList[position]
-        holder.bind(currentItem)
+        (holder as ShoppingItemViewHolder).bind(currentItem)
     }
 
 
@@ -51,4 +52,17 @@ class ShoppingAdapter :
         }
 
     }
+
 }
+
+private class ShoppingDiffCallback : DiffUtil.ItemCallback<ShoppingItem>() {
+    override fun areItemsTheSame(oldItem: ShoppingItem, newItem: ShoppingItem): Boolean {
+        return oldItem.id == newItem.id
+    }
+
+    override fun areContentsTheSame(oldItem: ShoppingItem, newItem: ShoppingItem): Boolean {
+        return oldItem == newItem
+    }
+
+}
+

@@ -6,12 +6,15 @@ import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.databinding.ShoppingFragmentBinding
 import fh.wfp2.flatlife.ui.adapters.ShoppingAdapter
 import fh.wfp2.flatlife.ui.viewmodels.ShoppingViewModel
 import fh.wfp2.flatlife.ui.viewmodels.ShoppingViewModelFactory
+import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
 
@@ -26,39 +29,63 @@ class ShoppingFragment : Fragment(R.layout.shopping_fragment) {
         super.onViewCreated(view, savedInstanceState)
         binding = ShoppingFragmentBinding.bind(view)
 
-
         val application = requireNotNull(this.activity).application
         viewModelFactory = ShoppingViewModelFactory(application)
 
         viewModel = ViewModelProvider(this, viewModelFactory).get(ShoppingViewModel::class.java)
 
-        //onClickListener here
-
-
         //Recyclerview
-        val adapter = ShoppingAdapter()
-        val recyclerView = binding.shoppingListRecyclerview
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        setHasOptionsMenu(true)
+        val shoppingAdapter = ShoppingAdapter()
 
         //binding.taskViewModel = viewModel
-        Timber.i("ViewModel created and added to binding")
+        Timber.i("ViewModel created and recyclerview added to binding")
         binding.apply {
+            shoppingListRecyclerview.apply {
+
+                adapter = shoppingAdapter
+                layoutManager = LinearLayoutManager(requireContext())
+                setHasFixedSize(true)
+
+            }
             shoppingListRecyclerview.layoutManager = LinearLayoutManager(context)
+
+            //onclickLIsteners
+            addShoppingItem.setOnClickListener {
+                viewModel.onAddItemClick(binding.etShoppingItemInput.text.toString())
+            }
         }
+
 
         //observers\
         viewModel.allItems.observe(viewLifecycleOwner, {
             it?.let {
-
-                adapter.shoppingList = it
+                //shoppingAdapter.submitList(it)
+                shoppingAdapter.shoppingList = it
                 it.forEach { item ->
                     Timber.i("\nItem: ${item.name}")
                 }
-
             }
         })
+
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.addShoppingItemEvents.collect { event ->
+                when (event) {
+                    is ShoppingViewModel.ShoppingEvents.ShowIncompleteItemMessage -> {
+                        Snackbar.make(requireView(), "Item name is empty :(", Snackbar.LENGTH_SHORT)
+                            .show()
+                    }
+                    is ShoppingViewModel.ShoppingEvents.ShowItemAddedMessage -> {
+                        Snackbar.make(requireView(), "${event.item} added", Snackbar.LENGTH_SHORT)
+                            .show()
+
+                    }
+
+
+                }
+            }
+        }
+        setHasOptionsMenu(true)
 
     }
 

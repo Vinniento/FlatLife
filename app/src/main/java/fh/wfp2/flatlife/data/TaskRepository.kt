@@ -33,11 +33,6 @@ class TaskRepository(private val taskDao: TaskDao) {
         return taskDao.getTasks(searchQuery, hideCompleted, sortOrder)
     }
 
-    fun getTaskById(taskId: Long): LiveData<Task> {
-        val task = taskDao.getTaskById(taskId)
-        return task
-    }
-
     suspend fun update(task: Task) {
         ioScope.launch {
             taskDao.update(

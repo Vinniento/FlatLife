@@ -29,7 +29,6 @@ interface TaskDao {
             SortOrder.BY_NAME -> getTasksSortedByName(searchQuery, hideCompleted)
         }
 
-
     @Query("SELECT * FROM task  where (isComplete != :hideCompleted OR isComplete = 0) AND name like '%' || :searchQuery || '%' ORDER BY isImportant, createdAt")
     fun getTasksSortedByDateCreated(searchQuery: String, hideCompleted: Boolean): Flow<List<Task>>
 
@@ -39,7 +38,5 @@ interface TaskDao {
     @Query("DELETE FROM task where isComplete = 1")
     fun deleteAllCompletedTasks()
 
-    @Query("SELECT * FROM task where id == :taskId")
-    fun getTaskById(taskId: Long): LiveData<Task>
-}
 
+}

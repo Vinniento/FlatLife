@@ -42,7 +42,6 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
     init {
         repository = TaskRepository(taskDao)
         Timber.i("Repository created in viewModel")
-
     }
 
     private val tasksFlow = combine(searchQuery.asFlow(), preferencesFlow)

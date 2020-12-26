@@ -3,6 +3,7 @@ package fh.wfp2.flatlife.data.room
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import fh.wfp2.flatlife.data.room.ShoppingItem
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ShoppingDao {
@@ -16,7 +17,7 @@ interface ShoppingDao {
     suspend fun update(shoppingItem: ShoppingItem)
 
     @Query("SELECT * FROM shopping_items ORDER BY isBought, createdAt")
-    fun getItemsSortedByIsBought(): LiveData<List<ShoppingItem>>
+    fun getItemsSortedByIsBought(): Flow<List<ShoppingItem>>
 
     @Query("DELETE FROM shopping_items where isBought = 1")
     fun deleteAllBoughtItems()

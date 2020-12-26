@@ -6,6 +6,8 @@ import fh.wfp2.flatlife.data.ShoppingRepository
 import fh.wfp2.flatlife.data.room.FlatLifeRoomDatabase
 import fh.wfp2.flatlife.data.room.ShoppingItem
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import timber.log.Timber
 
 
@@ -16,42 +18,54 @@ class ShoppingViewModel(application: Application) : AndroidViewModel(application
     private val shoppingViewModelJob = Job()
     private val uiScope = CoroutineScope(shoppingViewModelJob + Dispatchers.Main)
 
-    private val _allItems = MutableLiveData<List<ShoppingItem>>()
-    val allItems: LiveData<List<ShoppingItem>> = _allItems
+
+    private val addShoppingItemChannel = Channel<ShoppingEvents>()
+    val addShoppingItemEvents = addShoppingItemChannel.receiveAsFlow()
 
     private val errorHandler = CoroutineExceptionHandler { _, throwable ->
         Timber.e(throwable.message.toString())
     }
 
+    //TODO ultra hässlich, wie macht man das schöner? mit switchMap oder so?
+    private val _allItems: MutableLiveData<List<ShoppingItem>>
+        get() = repository.getAllItems().asLiveData() as MutableLiveData<List<ShoppingItem>>
+
+
     init {
         val shoppingDao = FlatLifeRoomDatabase.getInstance(application).shoppingDao()
         repository = ShoppingRepository(shoppingDao)
         viewModelScope.launch {
-            repository.apply {
-                insert(ShoppingItem(0, "Apples"))
-                insert(ShoppingItem(0, "Bananaas"))
-                insert(ShoppingItem(0, "Kitchen stuff"))
-            }
+
         }
         Timber.i("Repository created in viewModel")
-        viewModelScope.launch(errorHandler) {
-            _allItems.postValue(repository.getAllItems().value)
-        }
+
     }
 
+    val allItems: LiveData<List<ShoppingItem>> = _allItems
 
-    fun insert(item: ShoppingItem) {
-        uiScope.launch(errorHandler) {
-
-            Timber.i("Item added ${item.name}")
-        }
+    fun onAddItemClick(itemName: String) {
+        if (itemName.isEmpty())
+            viewModelScope.launch {
+                addShoppingItemChannel.send(ShoppingEvents.ShowIncompleteItemMessage)
+            }
+        else
+            viewModelScope.launch {
+                repository.insert(ShoppingItem(name = itemName))
+                addShoppingItemChannel.send(ShoppingEvents.ShowItemAddedMessage(itemName))
+            }
     }
+
 
     override fun onCleared() {
         super.onCleared()
         shoppingViewModelJob.cancel()
     }
 
+
+    sealed class ShoppingEvents {
+        object ShowIncompleteItemMessage : ShoppingEvents()
+        data class ShowItemAddedMessage(val item: String) : ShoppingEvents()
+    }
 }
 
 class ShoppingViewModelFactory(private val application: Application) : ViewModelProvider.Factory {

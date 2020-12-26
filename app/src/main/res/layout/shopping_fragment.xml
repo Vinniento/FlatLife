@@ -18,9 +18,7 @@
         android:layout_marginTop="50dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="90dp"
-        android:background="@color/light_gray"
         android:textAllCaps="false"
-
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/et_shopping_item_input"
@@ -31,28 +29,24 @@
         android:id="@+id/et_shopping_item_input"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
         android:layout_marginStart="20dp"
         android:autofillHints=""
-        app:layout_constraintStart_toStartOf="parent"
-        android:hint="x"
-        android:text="Add Item..."
-
-
-        app:layout_constraintBottom_toTopOf="@id/shopping_list_recyclerview" />
+        android:ems="10"
+        android:hint="Bananas..."
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@id/shopping_list_recyclerview"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/addShoppingItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:contentDescription="AdButton"
+        android:contentDescription="AddButton"
         android:src="@drawable/ic_add"
         app:layout_constraintBottom_toBottomOf="@+id/et_shopping_item_input"
         app:layout_constraintStart_toEndOf="@+id/et_shopping_item_input"
         app:layout_constraintTop_toTopOf="@+id/et_shopping_item_input"
         app:layout_constraintVertical_bias="0.0" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,15 +5,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.data.room.Task
 import fh.wfp2.flatlife.databinding.TaskItemCardBinding
 import timber.log.Timber
 
 
 class TaskAdapter(private val listener: OnItemClickListener) :
-    RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
+    ListAdapter<Task, RecyclerView.ViewHolder>(TaskDiffCallback()) {
 
     var taskList = listOf<Task>()
         set(value) {
@@ -26,9 +27,6 @@ class TaskAdapter(private val listener: OnItemClickListener) :
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
-        // val binding = TodoItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        val itemView =
-            LayoutInflater.from(parent.context).inflate(R.layout.task_item_card, parent, false)
         Timber.i("viewHolder created")
         val binding =
             TaskItemCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -37,20 +35,10 @@ class TaskAdapter(private val listener: OnItemClickListener) :
 
     //gets called each time a view comes into view
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val currentItem = taskList[position]
-
-        holder.bind(currentItem)
-        /* holder.apply {
-                cbTodo.isChecked = currentItem.isComplete
-                tvTodo.text = currentItem.name
-                tvTodo.paint.isStrikeThruText = currentItem.isComplete
-                ivImportant.isVisible = !currentItem.isImportant
-            }*/
-
-
+        (holder as TaskViewHolder).bind(currentItem)
     }
-
 
     //only gets called when viewHolder gets first created (ViewHolder get reused!!)
     inner class TaskViewHolder(private val binding: TaskItemCardBinding) :
@@ -98,6 +86,17 @@ class TaskAdapter(private val listener: OnItemClickListener) :
     interface OnItemClickListener {
         fun onItemClick(task: Task)
         fun onCheckBoxClick(task: Task, isChecked: Boolean)
+    }
+
+}
+
+private class TaskDiffCallback : DiffUtil.ItemCallback<Task>() {
+    override fun areItemsTheSame(oldItem: Task, newItem: Task): Boolean {
+        return oldItem.id == newItem.id
+    }
+
+    override fun areContentsTheSame(oldItem: Task, newItem: Task): Boolean {
+        return oldItem == newItem
     }
 
 }
