@@ -40,6 +40,6 @@ interface TaskDao {
     fun deleteAllCompletedTasks()
 
     @Query("SELECT * FROM task where id == :taskId")
-    fun getTaskById(taskId: Long): Flow<Task>
+    fun getTaskById(taskId: Long): LiveData<Task>
 }
 

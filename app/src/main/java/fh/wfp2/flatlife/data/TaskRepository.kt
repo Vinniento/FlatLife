@@ -1,5 +1,6 @@
 package fh.wfp2.flatlife.data
 
+import androidx.lifecycle.LiveData
 import fh.wfp2.flatlife.data.preferences.SortOrder
 import fh.wfp2.flatlife.data.room.Task
 import fh.wfp2.flatlife.data.room.TaskDao
@@ -32,13 +33,16 @@ class TaskRepository(private val taskDao: TaskDao) {
         return taskDao.getTasks(searchQuery, hideCompleted, sortOrder)
     }
 
-    fun getTaskById(taskId: Long): Flow<Task> {
-        return taskDao.getTaskById(taskId)
+    fun getTaskById(taskId: Long): LiveData<Task> {
+        val task = taskDao.getTaskById(taskId)
+        return task
     }
 
     suspend fun update(task: Task) {
         ioScope.launch {
-            taskDao.update(task.copy(isComplete = task.isComplete))
+            taskDao.update(
+                task
+            )
         }
     }
 

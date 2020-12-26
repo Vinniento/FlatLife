@@ -107,15 +107,15 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         tasksEventChannel.send(TaskEvent.NavigateToAddTaskScreen)
     }
 
-    fun onTaskSelected(taskId : Long) = viewModelScope.launch {
-        tasksEventChannel.send(TaskEvent.NavigateToEditTaskScreen(taskId))
+    fun onTaskSelected(task: Task) = viewModelScope.launch {
+        tasksEventChannel.send(TaskEvent.NavigateToEditTaskScreen(task))
     }
 
 
     //benefit of sealed class -> when checking with when (){} the compiler knows if the list checked is exhaustive or not
     sealed class TaskEvent {
         data class ShowUndoDeleteTaskMessage(val task: Task) : TaskEvent()
-        data class NavigateToEditTaskScreen(val taskId :  Long) : TaskEvent()
+        data class NavigateToEditTaskScreen(val task: Task) : TaskEvent()
 
         //only one instance is created
         object NavigateToAddTaskScreen : TaskEvent()

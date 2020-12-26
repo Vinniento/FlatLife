@@ -21,25 +21,26 @@ class AddTaskFragment : Fragment(R.layout.add_task_fragment) {
     private val args: AddTaskFragmentArgs by navArgs()
     private val viewModel: AddTaskFragmentViewModel by viewModels()
 
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = AddTaskFragmentBinding.bind(view)
 
-        viewModel.onArgumentsPassed(args.taskId)
+        args.task?.let {
+            viewModel.onArgumentsPassed(it)
+        }
 
         viewModel.task.observe(viewLifecycleOwner, {
-
             binding.apply {
-                etAddTask.setText(viewModel.task.value?.name)
-                cbImportant.isChecked = viewModel.task.value?.isImportant ?: false
-                // cbImportant.jumpDrawablesToCurrentState() =
+                it?.let {
+                    etAddTask.setText(viewModel.task.value?.name)
+                    cbImportant.isChecked = viewModel.task.value?.isImportant ?: false
+                    // cbImportant.jumpDrawablesToCurrentState() =
+                }
             }
         })
 
-
         binding.bAddTask.setOnClickListener {
+
             viewModel.onAddTaskClick(
                 binding.etAddTask.text.toString(),
                 binding.cbImportant.isChecked

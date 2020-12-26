@@ -8,7 +8,6 @@ import fh.wfp2.flatlife.data.room.Task
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class AddTaskFragmentViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -18,47 +17,38 @@ class AddTaskFragmentViewModel(application: Application) : AndroidViewModel(appl
     private val state = SavedStateHandle()
     private val repository: TaskRepository
 
-    private var _task = MutableLiveData<Task>()
+    var _task = MutableLiveData<Task>()
 
-    val task: LiveData<Task> = _task
+    val task: LiveData<Task>
+        get() = _task
 
     init {
         val taskDao = FlatLifeRoomDatabase.getInstance(application).taskDao()
         repository = TaskRepository(taskDao)
-
-
     };
 
-    fun onArgumentsPassed(taskId: Long) {
-        if (taskId.toInt() != -1) {
-            viewModelScope.launch {
-                _task.value = repository.getTaskById(taskId).asLiveData().value
-
-                _task.value?.let {
-
-                    Timber.i("Id:${it.id}, taskName : ${it.name}")
-                }
-
-            }
-
-        }
-
+    fun onArgumentsPassed(task: Task) {
+        _task.value = task
     }
 
     fun onAddTaskClick(taskName: String, isImportant: Boolean) {
-
-        if (taskName.isNotEmpty())
-            viewModelScope.launch {
+        when {
+            taskName.isEmpty() -> viewModelScope.launch {
+                addTasksEventChannel.send(AddTaskEvent.ShowIncompleteTaskMessage)
+            }
+            _task.value == null && taskName.isNotEmpty() -> viewModelScope.launch {
                 repository.insert(Task(name = taskName, isImportant = isImportant))
                 addTasksEventChannel.send(AddTaskEvent.NavigateToTaskFragmentScreen)
             }
-        else {
-            viewModelScope.launch {
-                addTasksEventChannel.send(AddTaskEvent.ShowIncompleteTaskMessage)
+            else -> _task.value?.let {
+                viewModelScope.launch {
+                    repository.update(it.copy(name = taskName, isImportant = isImportant))
+                    addTasksEventChannel.send(AddTaskEvent.NavigateToTaskFragmentScreen)
+                }
+
             }
         }
     }
-
 
 /* private val state = SavedStateHandle()
      val task = state.get<Task>("task")

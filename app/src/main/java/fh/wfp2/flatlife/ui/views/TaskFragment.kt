@@ -100,7 +100,7 @@ class TaskFragment : Fragment(R.layout.task_fragment), TaskAdapter.OnItemClickLi
                     }
                     is TaskViewModel.TaskEvent.NavigateToEditTaskScreen -> {
                         val action =
-                            TaskFragmentDirections.actionTaskFragmentToAddTaskFragment(event.taskId)
+                            TaskFragmentDirections.actionTaskFragmentToAddTaskFragment(event.task)
                         findNavController().navigate(action)
                     }
                 }
@@ -111,7 +111,7 @@ class TaskFragment : Fragment(R.layout.task_fragment), TaskAdapter.OnItemClickLi
     }
 
     override fun onItemClick(task: Task) {
-        viewModel.onTaskSelected(task.id)
+        viewModel.onTaskSelected(task)
     }
 
     override fun onCheckBoxClick(task: Task, isChecked: Boolean) {
