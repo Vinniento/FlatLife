@@ -19,11 +19,11 @@
             android:id="@+id/cb_item_bought"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="@id/tv_item_name"
-            app:layout_constraintTop_toTopOf="@id/tv_item_name" />
+            app:layout_constraintBottom_toBottomOf="@id/et_item_name"
+            app:layout_constraintTop_toTopOf="@id/et_item_name" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_item_name"
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_item_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"

@@ -18,8 +18,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.data.preferences.SortOrder
-import fh.wfp2.flatlife.data.room.Task
+import fh.wfp2.flatlife.data.room.entities.Task
 import fh.wfp2.flatlife.databinding.TaskFragmentBinding
+import fh.wfp2.flatlife.ui.adapters.OnItemClickListener
 import fh.wfp2.flatlife.ui.adapters.TaskAdapter
 import fh.wfp2.flatlife.ui.viewmodels.TaskViewModel
 import fh.wfp2.flatlife.ui.viewmodels.TaskViewModelFactory
@@ -33,7 +34,7 @@ import timber.log.Timber
 
 
 @ExperimentalCoroutinesApi
-class TaskFragment : Fragment(R.layout.task_fragment), TaskAdapter.OnItemClickListener {
+class TaskFragment : Fragment(R.layout.task_fragment), OnItemClickListener<Task> {
 
     private lateinit var viewModel: TaskViewModel
     private lateinit var viewModelFactory: TaskViewModelFactory

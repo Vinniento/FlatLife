@@ -14,7 +14,7 @@ import fh.wfp2.flatlife.ui.viewmodels.AddTaskFragmentViewModel
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
-class AddTaskFragment : Fragment(R.layout.add_task_fragment) {
+class EditShoppingItem : Fragment(R.layout.add_task_fragment) {
 
     private lateinit var binding: AddTaskFragmentBinding
 

@@ -2,15 +2,22 @@ package fh.wfp2.flatlife.ui.views
 
 import android.os.Build
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import fh.wfp2.flatlife.R
+import fh.wfp2.flatlife.data.room.entities.ShoppingItem
 import fh.wfp2.flatlife.databinding.ShoppingFragmentBinding
+import fh.wfp2.flatlife.ui.adapters.OnItemClickListener
 import fh.wfp2.flatlife.ui.adapters.ShoppingAdapter
 import fh.wfp2.flatlife.ui.viewmodels.ShoppingViewModel
 import fh.wfp2.flatlife.ui.viewmodels.ShoppingViewModelFactory
@@ -18,7 +25,7 @@ import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
 
-class ShoppingFragment : Fragment(R.layout.shopping_fragment) {
+class ShoppingFragment : Fragment(R.layout.shopping_fragment), OnItemClickListener<ShoppingItem> {
 
     private lateinit var viewModel: ShoppingViewModel
     private lateinit var viewModelFactory: ShoppingViewModelFactory
@@ -35,7 +42,7 @@ class ShoppingFragment : Fragment(R.layout.shopping_fragment) {
         viewModel = ViewModelProvider(this, viewModelFactory).get(ShoppingViewModel::class.java)
 
         //Recyclerview
-        val shoppingAdapter = ShoppingAdapter()
+        val shoppingAdapter = ShoppingAdapter(this)
 
         //binding.taskViewModel = viewModel
         Timber.i("ViewModel created and recyclerview added to binding")
@@ -45,7 +52,9 @@ class ShoppingFragment : Fragment(R.layout.shopping_fragment) {
                 adapter = shoppingAdapter
                 layoutManager = LinearLayoutManager(requireContext())
                 setHasFixedSize(true)
-
+                ItemTouchHelper(SwipeToDelete(shoppingAdapter)).attachToRecyclerView(
+                    shoppingListRecyclerview
+                )
             }
             shoppingListRecyclerview.layoutManager = LinearLayoutManager(context)
 
@@ -78,7 +87,17 @@ class ShoppingFragment : Fragment(R.layout.shopping_fragment) {
                     is ShoppingViewModel.ShoppingEvents.ShowItemAddedMessage -> {
                         Snackbar.make(requireView(), "${event.item} added", Snackbar.LENGTH_SHORT)
                             .show()
-
+                    }
+                    is ShoppingViewModel.ShoppingEvents.ShowUndoDeleteTaskMessage -> {
+                        Snackbar.make(
+                            requireView(),
+                            "${event.item.name} deleted",
+                            Snackbar.LENGTH_SHORT
+                        )
+                            .setAction("Undo deleting ${event.item.name}") {
+                                viewModel.undoDeleteClick(event.item)
+                            }
+                            .show()
                     }
 
 
@@ -89,6 +108,31 @@ class ShoppingFragment : Fragment(R.layout.shopping_fragment) {
 
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_fragment_shopping, menu)
+        //super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_delete_all_bought_items -> {
+                viewModel.deleteAllBoughtItems()
+                true
+            }
+
+            else -> super.onOptionsItemSelected(item)
+        }
+
+
+    }
+
+    override fun onItemClick(instance: ShoppingItem) {
+        viewModel.onShoppingItemSelected(instance)
+    }
+
+    override fun onCheckBoxClick(instance: ShoppingItem, isChecked: Boolean) {
+        viewModel.onShoppingItemCheckedChanged(instance, isChecked)
+    }
 
     override fun onResume() {
         super.onResume()
@@ -115,5 +159,21 @@ class ShoppingFragment : Fragment(R.layout.shopping_fragment) {
         Timber.i("onStopCalled")
     }
 
+    inner class SwipeToDelete(var adapter: ShoppingAdapter) :
+        ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+        override fun onMove(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
+        ): Boolean {
+            return true
+        }
 
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+            val position = viewHolder.adapterPosition
+            viewModel.onSwipedRight(adapter.shoppingList[position])
+
+
+        }
+    }
 }

@@ -13,8 +13,8 @@ import fh.wfp2.flatlife.databinding.TaskItemCardBinding
 import timber.log.Timber
 
 
-class TaskAdapter(private val listener: OnItemClickListener<Task>) :
-    ListAdapter<Task, RecyclerView.ViewHolder>(TaskDiffCallback()) {
+class FinanceActivityAdapter(private val listener: OnItemClickListener<Task>) :
+    ListAdapter<Task, RecyclerView.ViewHolder>(FinanceActivityDiffCallback()) {
 
     var taskList = listOf<Task>()
         set(value) {
@@ -87,7 +87,7 @@ class TaskAdapter(private val listener: OnItemClickListener<Task>) :
 
 }
 
-private class TaskDiffCallback : DiffUtil.ItemCallback<Task>() {
+private class FinanceActivityDiffCallback : DiffUtil.ItemCallback<Task>() {
     override fun areItemsTheSame(oldItem: Task, newItem: Task): Boolean {
         return oldItem.id == newItem.id
     }

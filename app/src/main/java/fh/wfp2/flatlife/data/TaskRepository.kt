@@ -1,8 +1,7 @@
 package fh.wfp2.flatlife.data
 
-import androidx.lifecycle.LiveData
 import fh.wfp2.flatlife.data.preferences.SortOrder
-import fh.wfp2.flatlife.data.room.Task
+import fh.wfp2.flatlife.data.room.entities.Task
 import fh.wfp2.flatlife.data.room.TaskDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

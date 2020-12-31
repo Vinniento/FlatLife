@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.*
 import fh.wfp2.flatlife.data.ShoppingRepository
 import fh.wfp2.flatlife.data.room.FlatLifeRoomDatabase
-import fh.wfp2.flatlife.data.room.ShoppingItem
+import fh.wfp2.flatlife.data.room.entities.ShoppingItem
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -61,10 +61,48 @@ class ShoppingViewModel(application: Application) : AndroidViewModel(application
         shoppingViewModelJob.cancel()
     }
 
+    fun onShoppingItemSelected(item: ShoppingItem) {
+        viewModelScope.launch {
+
+        }
+
+    }
+
+    fun deleteAllBoughtItems() {
+        viewModelScope.launch {
+            repository.deleteAllBoughtItems()
+        }
+    }
+
+    fun undoDeleteClick(item: ShoppingItem) {
+        viewModelScope.launch {
+            repository.insert(item)
+        }
+    }
+
+    fun onShoppingItemCheckedChanged(item: ShoppingItem, isChecked: Boolean) {
+        viewModelScope.launch {
+            repository.update(item.copy(isBought = isChecked))
+            Timber.i("Item checked updated: isChecked = $isChecked")
+        }
+    }
+
+    fun onSwipedRight(item: ShoppingItem) {
+        uiScope.launch(errorHandler) {
+
+            repository.deleteItem(item)
+            addShoppingItemChannel.send(
+                ShoppingEvents.ShowUndoDeleteTaskMessage(item)
+            )
+        }
+    }
+
 
     sealed class ShoppingEvents {
         object ShowIncompleteItemMessage : ShoppingEvents()
         data class ShowItemAddedMessage(val item: String) : ShoppingEvents()
+        data class ShowUndoDeleteTaskMessage(val item: ShoppingItem) : ShoppingEvents()
+
     }
 }
 

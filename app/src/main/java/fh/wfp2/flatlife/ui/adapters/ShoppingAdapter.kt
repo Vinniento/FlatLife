@@ -7,11 +7,11 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import fh.wfp2.flatlife.data.room.ShoppingItem
+import fh.wfp2.flatlife.data.room.entities.ShoppingItem
 import fh.wfp2.flatlife.databinding.ShoppingItemCardBinding
 import timber.log.Timber
 
-class ShoppingAdapter :
+class ShoppingAdapter (private val listener: OnItemClickListener<ShoppingItem>):
     ListAdapter<ShoppingItem, RecyclerView.ViewHolder>(ShoppingDiffCallback()) {
 
     var shoppingList = listOf<ShoppingItem>()
@@ -42,17 +42,34 @@ class ShoppingAdapter :
         RecyclerView.ViewHolder(binding.root) {
         init {
             //onClickListeners
+            binding.apply {
+                //wenn die todo view selbst gedrückt wird
+                root.setOnClickListener {
+                    val position = adapterPosition
+                    if (position != RecyclerView.NO_POSITION) {
+                        val shoppingItem = shoppingList[position]
+                        listener.onItemClick(shoppingItem)
+                    }
+                }
+                cbItemBought.setOnClickListener {
+                    val position = adapterPosition
+                    if (position != RecyclerView.NO_POSITION) //-1 -> Wenn die view gerade ausm Sichtfeld kommt
+                    {
+                        val shoppingItem = shoppingList[position]
+                        listener.onCheckBoxClick(shoppingItem, !shoppingItem.isBought)
+                    }
+                }
+            }
         }
 
         fun bind(shoppingItem: ShoppingItem) {
             binding.apply {
-                tvItemName.text = shoppingItem.name
+                etItemName.setText(shoppingItem.name)
                 cbItemBought.isChecked = shoppingItem.isBought
             }
         }
 
     }
-
 }
 
 private class ShoppingDiffCallback : DiffUtil.ItemCallback<ShoppingItem>() {

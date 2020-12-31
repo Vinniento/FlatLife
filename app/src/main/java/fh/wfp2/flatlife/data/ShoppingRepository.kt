@@ -1,15 +1,12 @@
 package fh.wfp2.flatlife.data
 
 
-import androidx.lifecycle.LiveData
 import fh.wfp2.flatlife.data.room.ShoppingDao
-import fh.wfp2.flatlife.data.room.ShoppingItem
+import fh.wfp2.flatlife.data.room.entities.ShoppingItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -33,7 +30,7 @@ class ShoppingRepository(private val shoppingDao: ShoppingDao) {
 
     suspend fun update(shoppingItem: ShoppingItem) {
         ioScope.launch {
-            shoppingDao.update(shoppingItem.copy(isBought = shoppingItem.isBought))
+            shoppingDao.update(shoppingItem)
         }
     }
 

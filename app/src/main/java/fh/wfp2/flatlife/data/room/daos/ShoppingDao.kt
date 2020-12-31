@@ -1,8 +1,7 @@
 package fh.wfp2.flatlife.data.room
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
-import fh.wfp2.flatlife.data.room.ShoppingItem
+import fh.wfp2.flatlife.data.room.entities.ShoppingItem
 import kotlinx.coroutines.flow.Flow
 
 @Dao

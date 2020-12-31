@@ -22,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/addTaskFragment"
-        android:name="fh.wfp2.flatlife.ui.views.AddTaskFragment"
+        android:name="fh.wfp2.flatlife.ui.views.AddEditTaskFragment"
         android:label="Add a Todo">
         <action
             android:id="@+id/action_addTaskFragment_to_taskFragment"
