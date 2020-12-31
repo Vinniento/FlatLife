@@ -47,5 +47,21 @@
         android:label="Add a shopping item">
 
 
+        <action
+            android:id="@+id/action_shoppingFragment_to_editShoppingItem"
+            app:destination="@id/editShoppingItem" />
+    </fragment>
+    <fragment
+        android:id="@+id/editShoppingItem"
+        android:name="fh.wfp2.flatlife.ui.views.EditShoppingItem"
+        android:label="EditShoppingItem" >
+        <action
+            android:id="@+id/action_editShoppingItem_to_shoppingFragment"
+            app:destination="@id/shoppingFragment" />
+        <argument
+            android:name="shoppingItem"
+            app:argType="fh.wfp2.flatlife.data.room.entities.ShoppingItem"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
 </navigation>

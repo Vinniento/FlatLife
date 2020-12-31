@@ -8,7 +8,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import fh.wfp2.flatlife.data.room.entities.Task
+import fh.wfp2.flatlife.data.room.Task
 import fh.wfp2.flatlife.databinding.TaskItemCardBinding
 import timber.log.Timber
 

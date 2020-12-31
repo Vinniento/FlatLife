@@ -11,7 +11,7 @@ import fh.wfp2.flatlife.data.room.entities.ShoppingItem
 import fh.wfp2.flatlife.databinding.ShoppingItemCardBinding
 import timber.log.Timber
 
-class ShoppingAdapter (private val listener: OnItemClickListener<ShoppingItem>):
+class ShoppingAdapter(private val listener: OnItemClickListener<ShoppingItem>) :
     ListAdapter<ShoppingItem, RecyclerView.ViewHolder>(ShoppingDiffCallback()) {
 
     var shoppingList = listOf<ShoppingItem>()
@@ -64,7 +64,7 @@ class ShoppingAdapter (private val listener: OnItemClickListener<ShoppingItem>):
 
         fun bind(shoppingItem: ShoppingItem) {
             binding.apply {
-                etItemName.setText(shoppingItem.name)
+                tvItemName.text = shoppingItem.name
                 cbItemBought.isChecked = shoppingItem.isBought
             }
         }

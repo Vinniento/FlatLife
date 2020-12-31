@@ -18,7 +18,7 @@ class AddEditTaskFragment : Fragment(R.layout.add_task_fragment) {
 
     private lateinit var binding: AddTaskFragmentBinding
 
-    private val args: AddTaskFragmentArgs by navArgs()
+    private val args: AddEditTaskFragmentArgs by navArgs()
     private val viewModel: AddTaskFragmentViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -32,8 +32,8 @@ class AddEditTaskFragment : Fragment(R.layout.add_task_fragment) {
         viewModel.task.observe(viewLifecycleOwner, {
             binding.apply {
                 it?.let {
-                    etAddTask.setText(viewModel.task.value?.name)
-                    cbImportant.isChecked = viewModel.task.value?.isImportant ?: false
+                    etTaskName.setText(viewModel.task.value?.name)
+                    cbIsImportant.isChecked = viewModel.task.value?.isImportant ?: false
                     // cbImportant.jumpDrawablesToCurrentState() =
                 }
             }
@@ -42,8 +42,8 @@ class AddEditTaskFragment : Fragment(R.layout.add_task_fragment) {
         binding.bAddTask.setOnClickListener {
 
             viewModel.onAddTaskClick(
-                binding.etAddTask.text.toString(),
-                binding.cbImportant.isChecked
+                binding.etTaskName.text.toString(),
+                binding.cbIsImportant.isChecked
             )
         }
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
@@ -59,7 +59,7 @@ class AddEditTaskFragment : Fragment(R.layout.add_task_fragment) {
                     }
                     is AddTaskFragmentViewModel.AddTaskEvent.NavigateToTaskFragmentScreen -> {
                         val action =
-                            AddTaskFragmentDirections.actionAddTaskFragmentToTaskFragment()
+                            AddEditTaskFragmentDirections.actionAddTaskFragmentToTaskFragment()
                         findNavController().navigate(action)
                     }
                 }

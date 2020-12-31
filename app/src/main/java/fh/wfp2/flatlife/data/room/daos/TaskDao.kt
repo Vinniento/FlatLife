@@ -2,7 +2,6 @@ package fh.wfp2.flatlife.data.room
 
 import androidx.room.*
 import fh.wfp2.flatlife.data.preferences.SortOrder
-import fh.wfp2.flatlife.data.room.entities.Task
 import kotlinx.coroutines.flow.Flow
 
 

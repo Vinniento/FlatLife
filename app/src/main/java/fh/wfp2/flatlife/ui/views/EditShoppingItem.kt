@@ -9,47 +9,48 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import fh.wfp2.flatlife.R
-import fh.wfp2.flatlife.databinding.AddTaskFragmentBinding
+import fh.wfp2.flatlife.databinding.EditShoppingItemFragmentBinding
 import fh.wfp2.flatlife.ui.viewmodels.AddTaskFragmentViewModel
+import fh.wfp2.flatlife.ui.viewmodels.EditShoppingItemFragmentViewModel
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
-class EditShoppingItem : Fragment(R.layout.add_task_fragment) {
+class EditShoppingItem : Fragment(R.layout.edit_shopping_item_fragment) {
 
-    private lateinit var binding: AddTaskFragmentBinding
+    private lateinit var binding: EditShoppingItemFragmentBinding
 
-    private val args: AddTaskFragmentArgs by navArgs()
-    private val viewModel: AddTaskFragmentViewModel by viewModels()
+    private val args: EditShoppingItemArgs by navArgs()
+    private val viewModel: EditShoppingItemFragmentViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = AddTaskFragmentBinding.bind(view)
+        binding = EditShoppingItemFragmentBinding.bind(view)
 
-        args.task?.let {
+        args.shoppingItem?.let {
             viewModel.onArgumentsPassed(it)
         }
 
-        viewModel.task.observe(viewLifecycleOwner, {
+        viewModel.item.observe(viewLifecycleOwner, {
             binding.apply {
                 it?.let {
-                    etAddTask.setText(viewModel.task.value?.name)
-                    cbImportant.isChecked = viewModel.task.value?.isImportant ?: false
+                    etShoppingItem.setText(viewModel.item.value?.name)
+                    cbIsBought.isChecked = viewModel.item.value?.isBought ?: false
                     // cbImportant.jumpDrawablesToCurrentState() =
                 }
             }
         })
 
-        binding.bAddTask.setOnClickListener {
+        binding.bUpdateItem.setOnClickListener {
 
-            viewModel.onAddTaskClick(
-                binding.etAddTask.text.toString(),
-                binding.cbImportant.isChecked
+            viewModel.onUpdateItemClick(
+                binding.etShoppingItem.text.toString(),
+                binding.cbIsBought.isChecked
             )
         }
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.addTasksEvent.collect { event ->
+            viewModel.editShoppingItemEvent.collect { event ->
                 when (event) {
-                    is AddTaskFragmentViewModel.AddTaskEvent.ShowIncompleteTaskMessage -> {
+                    is EditShoppingItemFragmentViewModel.EditShoppingItemEvent.ShowIncompleteShoppingItemMessage -> {
                         Snackbar.make(
                             requireView(),
                             "The task field can't be empty",
@@ -57,9 +58,9 @@ class EditShoppingItem : Fragment(R.layout.add_task_fragment) {
                         ).show()
                         Timber.i("Snackbar shown")
                     }
-                    is AddTaskFragmentViewModel.AddTaskEvent.NavigateToTaskFragmentScreen -> {
+                    is EditShoppingItemFragmentViewModel.EditShoppingItemEvent.NavigateToShoppingFragmentScreen -> {
                         val action =
-                            AddTaskFragmentDirections.actionAddTaskFragmentToTaskFragment()
+                            EditShoppingItemDirections.actionEditShoppingItemToShoppingFragment()
                         findNavController().navigate(action)
                     }
                 }

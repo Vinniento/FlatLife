@@ -14,10 +14,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.51"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cb_isbought" />
+        app:layout_constraintTop_toBottomOf="@+id/cb_isBought" />
 
     <EditText
-        android:id="@+id/et_item"
+        android:id="@+id/et_shoppingItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
@@ -29,13 +29,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <CheckBox
-        android:id="@+id/cb_isbought"
+        android:id="@+id/cb_isBought"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:text="Bought?"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_item" />
+        app:layout_constraintTop_toBottomOf="@+id/et_shoppingItem" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

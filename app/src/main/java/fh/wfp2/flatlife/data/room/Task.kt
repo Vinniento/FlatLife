@@ -1,4 +1,4 @@
-package fh.wfp2.flatlife.data.room.entities
+package fh.wfp2.flatlife.data.room
 
 import android.os.Parcelable
 import androidx.room.Entity
