@@ -5,14 +5,19 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import fh.wfp2.flatlife.data.room.daos.ExpenseCategoryDao
+import fh.wfp2.flatlife.data.room.daos.FinanceDao
+import fh.wfp2.flatlife.data.room.entities.ExpenseCategory
+import fh.wfp2.flatlife.data.room.entities.FinanceActivity
 import fh.wfp2.flatlife.data.room.entities.ShoppingItem
 
-@Database(entities = [Task::class, ShoppingItem::class], version = 1, exportSchema = false)
+@Database(entities = [Task::class, ShoppingItem::class, ExpenseCategory::class, FinanceActivity::class], version = 1, exportSchema = false)
 abstract class FlatLifeRoomDatabase : RoomDatabase() {
 
     abstract fun shoppingDao(): ShoppingDao
     abstract fun taskDao(): TaskDao
-
+    abstract fun expenseCategoryDao(): ExpenseCategoryDao
+    abstract fun financeDao(): FinanceDao
 
     companion object {
         @Volatile

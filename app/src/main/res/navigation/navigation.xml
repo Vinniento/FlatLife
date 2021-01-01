@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="fh.wfp2.flatlife.ui.views.HomeFragment"
+        android:name="fh.wfp2.flatlife.ui.fragments.HomeFragment"
         android:label="Flatlife"
         tools:layout="@layout/home_fragment" />
     <fragment
         android:id="@+id/taskFragment"
-        android:name="fh.wfp2.flatlife.ui.views.TaskFragment"
+        android:name="fh.wfp2.flatlife.ui.fragments.tasks.TaskFragment"
         android:label="Tasks">
         <action
             android:id="@+id/action_taskFragment_to_addTaskFragment"
@@ -22,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/addTaskFragment"
-        android:name="fh.wfp2.flatlife.ui.views.AddEditTaskFragment"
+        android:name="fh.wfp2.flatlife.ui.fragments.tasks.AddEditTaskFragment"
         android:label="Add a Todo">
         <action
             android:id="@+id/action_addTaskFragment_to_taskFragment"
@@ -43,7 +43,7 @@
 
     <fragment
         android:id="@+id/shoppingFragment"
-        android:name="fh.wfp2.flatlife.ui.views.ShoppingFragment"
+        android:name="fh.wfp2.flatlife.ui.fragments.shopping.ShoppingFragment"
         android:label="Add a shopping item">
 
 
@@ -53,7 +53,7 @@
     </fragment>
     <fragment
         android:id="@+id/editShoppingItem"
-        android:name="fh.wfp2.flatlife.ui.views.EditShoppingItem"
+        android:name="fh.wfp2.flatlife.ui.fragments.shopping.EditShoppingItem"
         android:label="EditShoppingItem" >
         <action
             android:id="@+id/action_editShoppingItem_to_shoppingFragment"
@@ -64,4 +64,17 @@
             app:nullable="true"
             android:defaultValue="@null" />
     </fragment>
+    <fragment
+        android:id="@+id/financeActivityFragment2"
+        android:name="fh.wfp2.flatlife.ui.fragments.finance.FinanceActivityFragment"
+        android:label="Finances"
+        tools:layout="@layout/finance_activity_fragment" >
+        <action
+            android:id="@+id/action_financeActivityFragment2_to_financeCategoryFragment"
+            app:destination="@id/financeCategoryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/financeCategoryFragment"
+        android:name="fh.wfp2.flatlife.ui.fragments.finance.FinanceCategoryFragment"
+        android:label="FinanceCategoryFragment" />
 </navigation>

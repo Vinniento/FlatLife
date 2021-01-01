@@ -1,8 +1,8 @@
-package fh.wfp2.flatlife.ui.viewmodels
+package fh.wfp2.flatlife.ui.viewmodels.tasks
 
 import android.app.Application
 import androidx.lifecycle.*
-import fh.wfp2.flatlife.data.TaskRepository
+import fh.wfp2.flatlife.data.room.repositories.TaskRepository
 import fh.wfp2.flatlife.data.room.FlatLifeRoomDatabase
 import fh.wfp2.flatlife.data.room.Task
 import kotlinx.coroutines.channels.Channel
@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 class AddTaskFragmentViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val addTasksEventChannel = Channel<AddTaskFragmentViewModel.AddTaskEvent>()
+    private val addTasksEventChannel = Channel<AddTaskEvent>()
     val addTasksEvent = addTasksEventChannel.receiveAsFlow()
 
     private val state = SavedStateHandle()

@@ -8,7 +8,7 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.views.TaskFragment">
+    tools:context=".ui.fragments.tasks.TaskFragment">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addTask"

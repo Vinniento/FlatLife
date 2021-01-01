@@ -1,4 +1,4 @@
-package fh.wfp2.flatlife.ui.views
+package fh.wfp2.flatlife.ui.fragments.shopping
 
 import android.os.Build
 import android.os.Bundle

@@ -1,4 +1,4 @@
-package fh.wfp2.flatlife.data
+package fh.wfp2.flatlife.data.room.repositories
 
 import fh.wfp2.flatlife.data.preferences.SortOrder
 import fh.wfp2.flatlife.data.room.Task
@@ -11,16 +11,10 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
-class TaskRepository(private val taskDao: TaskDao) {
+class TaskRepository(private val taskDao: TaskDao) : AbstractRepository<Task>(taskDao) {
     val todoRepositoryJob = Job()
 
     private val ioScope = CoroutineScope(todoRepositoryJob + Dispatchers.IO)
-
-    suspend fun insert(task: Task) {
-        ioScope.launch {
-            taskDao.insert(task)
-        }
-    }
 
     fun getTasks(
         searchQuery: String,
@@ -30,21 +24,6 @@ class TaskRepository(private val taskDao: TaskDao) {
         Timber.i("getTodos called")
 
         return taskDao.getTasks(searchQuery, hideCompleted, sortOrder)
-    }
-
-    suspend fun update(task: Task) {
-        ioScope.launch {
-            taskDao.update(
-                task
-            )
-        }
-    }
-
-    suspend fun deleteTask(task: Task) {
-        ioScope.launch {
-
-            taskDao.delete(task)
-        }
     }
 
     suspend fun deleteAllCompletedTasks() {

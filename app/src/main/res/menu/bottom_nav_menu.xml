@@ -14,7 +14,7 @@
         android:icon="@drawable/shopping"
         android:title="Shopping" />
     <item
-        android:id="@+id/mifinance"
+        android:id="@+id/financeActivityFragment2"
         android:icon="@drawable/finance"
         android:title="Finance" />
     <item

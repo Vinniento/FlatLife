@@ -1,19 +1,13 @@
 package fh.wfp2.flatlife.data.room
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Query
+import fh.wfp2.flatlife.data.room.daos.AbstractDao
 import fh.wfp2.flatlife.data.room.entities.ShoppingItem
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface ShoppingDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(shoppingItem: ShoppingItem)
-
-    @Delete
-    suspend fun delete(shoppingItem: ShoppingItem)
-
-    @Update
-    suspend fun update(shoppingItem: ShoppingItem)
+interface ShoppingDao : AbstractDao<ShoppingItem> {
 
     @Query("SELECT * FROM shopping_items ORDER BY isBought, createdAt")
     fun getItemsSortedByIsBought(): Flow<List<ShoppingItem>>

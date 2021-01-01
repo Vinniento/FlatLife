@@ -1,4 +1,4 @@
-package fh.wfp2.flatlife.ui.views
+package fh.wfp2.flatlife.ui.fragments.shopping
 
 import android.os.Bundle
 import android.view.View
@@ -10,8 +10,7 @@ import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.databinding.EditShoppingItemFragmentBinding
-import fh.wfp2.flatlife.ui.viewmodels.AddTaskFragmentViewModel
-import fh.wfp2.flatlife.ui.viewmodels.EditShoppingItemFragmentViewModel
+import fh.wfp2.flatlife.ui.viewmodels.shopping.EditShoppingItemFragmentViewModel
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 

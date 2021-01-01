@@ -1,23 +1,16 @@
 package fh.wfp2.flatlife.data.room
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Query
 import fh.wfp2.flatlife.data.preferences.SortOrder
+import fh.wfp2.flatlife.data.room.daos.AbstractDao
 import kotlinx.coroutines.flow.Flow
 
 
 //TODO ein abstraktes dao erstellen welches die grundfunktionen hat und die anderen implementieren das dann
 
 @Dao
-interface TaskDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(task: Task)
-
-    @Delete
-    suspend fun delete(task: Task)
-
-    @Update
-    suspend fun update(task: Task)
-
+interface TaskDao : AbstractDao<Task> {
     fun getTasks(
         searchQuery: String,
         hideCompleted: Boolean,

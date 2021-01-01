@@ -5,7 +5,7 @@
     android:id="@+id/constrainsLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.views.HomeFragment">
+    tools:context=".ui.fragments.HomeFragment">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvflatlife"

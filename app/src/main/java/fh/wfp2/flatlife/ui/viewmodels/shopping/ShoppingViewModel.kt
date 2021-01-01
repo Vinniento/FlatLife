@@ -2,7 +2,7 @@ package fh.wfp2.flatlife.ui.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.*
-import fh.wfp2.flatlife.data.ShoppingRepository
+import fh.wfp2.flatlife.data.room.repositories.ShoppingRepository
 import fh.wfp2.flatlife.data.room.FlatLifeRoomDatabase
 import fh.wfp2.flatlife.data.room.entities.ShoppingItem
 import kotlinx.coroutines.*
@@ -17,8 +17,7 @@ class ShoppingViewModel(application: Application) : AndroidViewModel(application
 
     private val shoppingViewModelJob = Job()
     private val uiScope = CoroutineScope(shoppingViewModelJob + Dispatchers.Main)
-
-
+    
     private val addShoppingItemChannel = Channel<ShoppingEvents>()
     val addShoppingItemEvents = addShoppingItemChannel.receiveAsFlow()
 
@@ -34,9 +33,7 @@ class ShoppingViewModel(application: Application) : AndroidViewModel(application
     init {
         val shoppingDao = FlatLifeRoomDatabase.getInstance(application).shoppingDao()
         repository = ShoppingRepository(shoppingDao)
-        viewModelScope.launch {
 
-        }
         Timber.i("Repository created in viewModel")
 
     }
@@ -90,7 +87,7 @@ class ShoppingViewModel(application: Application) : AndroidViewModel(application
     fun onSwipedRight(item: ShoppingItem) {
         uiScope.launch(errorHandler) {
 
-            repository.deleteItem(item)
+            repository.delete(item)
             addShoppingItemChannel.send(
                 ShoppingEvents.ShowUndoDeleteTaskMessage(item)
             )

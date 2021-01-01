@@ -1,7 +1,7 @@
 package fh.wfp2.flatlife
 
 import android.app.Application
-import fh.wfp2.flatlife.data.TaskRepository
+import fh.wfp2.flatlife.data.room.repositories.TaskRepository
 import fh.wfp2.flatlife.data.room.FlatLifeRoomDatabase
 import timber.log.Timber
 

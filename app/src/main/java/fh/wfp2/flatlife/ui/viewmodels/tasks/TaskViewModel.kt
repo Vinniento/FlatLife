@@ -2,7 +2,7 @@ package fh.wfp2.flatlife.ui.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.*
-import fh.wfp2.flatlife.data.TaskRepository
+import fh.wfp2.flatlife.data.room.repositories.TaskRepository
 import fh.wfp2.flatlife.data.preferences.PreferencesManager
 import fh.wfp2.flatlife.data.preferences.SortOrder
 import fh.wfp2.flatlife.data.room.FlatLifeRoomDatabase
@@ -82,7 +82,7 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
     fun onSwipedRight(task: Task) {
         uiScope.launch(errorHandler) {
 
-            repository.deleteTask(task)
+            repository.delete(task)
             tasksEventChannel.send(
                 TaskEvent.ShowUndoDeleteTaskMessage(task)
             )
