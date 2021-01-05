@@ -76,5 +76,21 @@
     <fragment
         android:id="@+id/financeCategoryFragment"
         android:name="fh.wfp2.flatlife.ui.fragments.finance.FinanceCategoryFragment"
-        android:label="FinanceCategoryFragment" />
+        android:label="FinanceCategoryFragment" >
+        <action
+            android:id="@+id/action_financeCategoryFragment_to_addExpenseFragment"
+            app:destination="@id/addExpenseFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addExpenseFragment"
+        android:name="fh.wfp2.flatlife.ui.fragments.finance.AddExpenseFragment"
+        android:label="add_expense_fragment"
+        tools:layout="@layout/add_expense_fragment" >
+        <action
+            android:id="@+id/action_addExpenseFragment_to_financeActivityFragment2"
+            app:destination="@id/financeActivityFragment2" />
+        <argument
+            android:name="expenseCategory"
+            app:argType="fh.wfp2.flatlife.data.room.entities.ExpenseCategory" />
+    </fragment>
 </navigation>

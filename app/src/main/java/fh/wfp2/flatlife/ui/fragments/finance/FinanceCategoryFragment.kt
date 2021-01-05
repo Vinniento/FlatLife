@@ -6,6 +6,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.data.room.entities.ExpenseCategory
@@ -73,15 +74,14 @@ class FinanceCategoryFragment : Fragment(R.layout.finance_category_fragment) {
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-
             viewModel.financeCategoryEvents.collect { event ->
                 when (event) {
-                    is FinanceCategoryViewModel.FinanceCategoryEvents -> {
-                        Snackbar.make(
-                            requireView(),
-                            "category: ${event.toString()}",
-                            Snackbar.LENGTH_SHORT
-                        ).show()
+                    is FinanceCategoryViewModel.FinanceCategoryEvents.NavigateToAddExpenseActivityScreen -> {
+                        val action =
+                            FinanceCategoryFragmentDirections.actionFinanceCategoryFragmentToAddExpenseFragment(
+                                event.expenseCategory
+                            )
+                        findNavController().navigate(action)
                     }
                 }
             }
@@ -101,7 +101,7 @@ class FinanceCategoryFragment : Fragment(R.layout.finance_category_fragment) {
                 //shoppingAdapter.submitList(it)
                 adapter.categoriesList = it
                 it.forEach { item ->
-                    Timber.i("\nItem: ${item.name}")
+                    Timber.i("\nItem: ${item.categoryName}")
                 }
             }
         })

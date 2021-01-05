@@ -4,96 +4,59 @@ import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import fh.wfp2.flatlife.data.room.Task
-import fh.wfp2.flatlife.databinding.TaskItemCardBinding
+import fh.wfp2.flatlife.data.room.entities.FinanceActivity
+import fh.wfp2.flatlife.data.room.entities.mapping.ExpenseCategoryWithFinanceActivity
+import fh.wfp2.flatlife.databinding.FinanceActivityCardBinding
 import timber.log.Timber
 
+class FinanceActivityAdapter(val clickListener: (FinanceActivity) -> Unit) :
+    ListAdapter<FinanceActivity, RecyclerView.ViewHolder>(FinanceActivityDiffCallback()) {
 
-class FinanceActivityAdapter(private val listener: OnItemClickListener<Task>) :
-    ListAdapter<Task, RecyclerView.ViewHolder>(FinanceActivityDiffCallback()) {
-
-    var taskList = listOf<Task>()
+    var activityList = listOf<FinanceActivity>()
         set(value) {
             field = value
             notifyDataSetChanged()
         }
 
+    override fun getItemCount(): Int = activityList.size
 
-    override fun getItemCount(): Int = taskList.size
-
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FinanceActivityViewHolder {
         Timber.i("viewHolder created")
         val binding =
-            TaskItemCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return TaskViewHolder(binding)
+            FinanceActivityCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return FinanceActivityViewHolder(binding)
     }
 
     //gets called each time a view comes into view
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val currentItem = taskList[position]
-        (holder as TaskViewHolder).bind(currentItem)
+        val currentItem = activityList[position]
+        (holder as FinanceActivityViewHolder).bind(currentItem, clickListener)
     }
 
-    //only gets called when viewHolder gets first created (ViewHolder get reused!!)
-    inner class TaskViewHolder(private val binding: TaskItemCardBinding) :
+    inner class FinanceActivityViewHolder(private val binding: FinanceActivityCardBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        init {
+        fun bind(financeActivity: FinanceActivity, clickListener: (FinanceActivity) -> Unit) {
             binding.apply {
-                //wenn die todo view selbst gedrückt wird
-                root.setOnClickListener {
-                    val position = adapterPosition
-                    if (position != RecyclerView.NO_POSITION) {
-                        val task = taskList[position]
-                        listener.onItemClick(task)
-                    }
-                }
-                cbTodoCompleted.setOnClickListener {
-                    val position = adapterPosition
-                    if (position != RecyclerView.NO_POSITION) //-1 -> Wenn die view gerade ausm Sichtfeld kommt
-                    {
-                        val task = taskList[position]
-                        listener.onCheckBoxClick(task, !task.isComplete)
-                    }
-                }
-
+                tvAmount.text = financeActivity.price.toString()
+                tvDescription.text = financeActivity.description
+                tvDate.text = financeActivity.createdDateFormatted
+                root.setOnClickListener { clickListener(financeActivity) }
             }
         }
-
-        fun bind(task: Task) {
-            binding.apply {
-                cbTodoCompleted.isChecked = task.isComplete
-                tvTodoName.text = task.name
-                tvTodoName.paint.isStrikeThruText = task.isComplete
-                ivImportant.isVisible = task.isImportant
-
-            }
-
-        }
-/*
-        val cbTodo: CheckBox = itemView.cb_todo_completed
-        val tvTodo: TextView = itemView.tv_todo_name
-        val ivImportant: ImageView = itemView.iv_important
-*/
     }
-
-
-
 }
 
-private class FinanceActivityDiffCallback : DiffUtil.ItemCallback<Task>() {
-    override fun areItemsTheSame(oldItem: Task, newItem: Task): Boolean {
-        return oldItem.id == newItem.id
+private class FinanceActivityDiffCallback : DiffUtil.ItemCallback<FinanceActivity>() {
+    override fun areItemsTheSame(oldItem: FinanceActivity, newItem: FinanceActivity): Boolean {
+        return oldItem.activityId == newItem.activityId
     }
 
-    override fun areContentsTheSame(oldItem: Task, newItem: Task): Boolean {
+    override fun areContentsTheSame(oldItem: FinanceActivity, newItem: FinanceActivity): Boolean {
         return oldItem == newItem
     }
-
 }

@@ -46,8 +46,8 @@ class ExpenseCategoryAdapter(val clickListener: (ExpenseCategory) -> Unit) :
 
         fun bind(category: ExpenseCategory, clickListener: (ExpenseCategory) -> Unit) {
             binding.apply {
-                tvCategory.text = category.name
-                tvCategory.setOnClickListener { clickListener(category) }
+                tvCategory.text = category.categoryName
+                root.setOnClickListener { clickListener(category) }
             }
         }
 
@@ -56,7 +56,7 @@ class ExpenseCategoryAdapter(val clickListener: (ExpenseCategory) -> Unit) :
 
 private class ExpenseCategoryDiffCallback : DiffUtil.ItemCallback<ExpenseCategory>() {
     override fun areItemsTheSame(oldItem: ExpenseCategory, newItem: ExpenseCategory): Boolean {
-        return oldItem.id == newItem.id
+        return oldItem.categoryId == newItem.categoryId
     }
 
     override fun areContentsTheSame(oldItem: ExpenseCategory, newItem: ExpenseCategory): Boolean {

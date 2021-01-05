@@ -7,15 +7,23 @@ import kotlinx.android.parcel.Parcelize
 import java.text.DateFormat
 
 
-@Entity(tableName = "financeActivity")
 @Parcelize //make it parcelable -> able to send the entire object to another fragmetn
+@Entity
 data class FinanceActivity(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val name: String,
-
+    @PrimaryKey(autoGenerate = true)
+    val activityId: Long = 0,
+    val description: String,
+    val categoryName: String,
+    val price: String,
+    val createdAt: Long = System.currentTimeMillis(),
 ) : Parcelable {
     override fun toString(): String {
-        return "\n Task: $id \nName: $name \n"
+        return "\n Task: $activityId \nName: $description \n category: ${categoryName}"
     }
 
+    val createdDateFormatted: String
+        get() = when (createdAt) {
+            //TODO einbauen wenn es derselbe tag ist, nur uhrzeit usw
+            else -> DateFormat.getDateTimeInstance().format(createdAt)
+        }
 }
