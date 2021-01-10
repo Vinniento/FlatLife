@@ -45,17 +45,24 @@ class FinanceActivityFragment : Fragment(R.layout.finance_activity_fragment) {
 
         subscribeUI(financeActivityAdapter)
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.financeCategoryEvents.collect { event ->
+            viewModel.financeActivityEvents.collect { event ->
                 when (event) {
-                    is FinanceActivityViewModel.FinanceActivityEvents.NavigateToAddExpenseActivityScreen -> {
+                    is FinanceActivityViewModel.FinanceActivityEvents.NavigateToAddExpenseCategoryScreen -> {
                         val action =
                             FinanceActivityFragmentDirections.actionFinanceActivityFragment2ToFinanceCategoryFragment()
+                        findNavController().navigate(action)
+                    }
+                    is FinanceActivityViewModel.FinanceActivityEvents.NavigateToAddExpenseActivityScreen -> {
+                        val action =
+                            FinanceActivityFragmentDirections.actionFinanceActivityFragment2ToAddExpenseFragment(
+                                financeActivity =
+                                event.financeActivity
+                            )
                         findNavController().navigate(action)
                     }
                 }
             }
         }
-
     }
 
     private fun activityClicked(financeActivity: FinanceActivity) {

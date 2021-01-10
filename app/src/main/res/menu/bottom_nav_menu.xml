@@ -18,7 +18,7 @@
         android:icon="@drawable/finance"
         android:title="Finance" />
     <item
-        android:id="@+id/tasksFragment"
+        android:id="@+id/choreFragment"
         android:icon="@drawable/tasks"
         android:title="Chores" />
 </menu>

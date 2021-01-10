@@ -22,9 +22,7 @@ class TaskAdapter(private val listener: OnItemClickListener<Task>) :
             notifyDataSetChanged()
         }
 
-
     override fun getItemCount(): Int = taskList.size
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         Timber.i("viewHolder created")
@@ -62,7 +60,6 @@ class TaskAdapter(private val listener: OnItemClickListener<Task>) :
                         listener.onCheckBoxClick(task, !task.isComplete)
                     }
                 }
-
             }
         }
 
@@ -72,9 +69,7 @@ class TaskAdapter(private val listener: OnItemClickListener<Task>) :
                 tvTodoName.text = task.name
                 tvTodoName.paint.isStrikeThruText = task.isComplete
                 ivImportant.isVisible = task.isImportant
-
             }
-
         }
 /*
         val cbTodo: CheckBox = itemView.cb_todo_completed
@@ -82,9 +77,6 @@ class TaskAdapter(private val listener: OnItemClickListener<Task>) :
         val ivImportant: ImageView = itemView.iv_important
 */
     }
-
-
-
 }
 
 private class TaskDiffCallback : DiffUtil.ItemCallback<Task>() {
@@ -95,5 +87,4 @@ private class TaskDiffCallback : DiffUtil.ItemCallback<Task>() {
     override fun areContentsTheSame(oldItem: Task, newItem: Task): Boolean {
         return oldItem == newItem
     }
-
 }

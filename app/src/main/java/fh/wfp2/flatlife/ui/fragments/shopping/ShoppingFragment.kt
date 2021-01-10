@@ -10,6 +10,7 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,8 +20,8 @@ import fh.wfp2.flatlife.data.room.entities.ShoppingItem
 import fh.wfp2.flatlife.databinding.ShoppingFragmentBinding
 import fh.wfp2.flatlife.ui.adapters.OnItemClickListener
 import fh.wfp2.flatlife.ui.adapters.ShoppingAdapter
-import fh.wfp2.flatlife.ui.viewmodels.ShoppingViewModel
-import fh.wfp2.flatlife.ui.viewmodels.ShoppingViewModelFactory
+import fh.wfp2.flatlife.ui.viewmodels.shopping.ShoppingViewModel
+import fh.wfp2.flatlife.ui.viewmodels.shopping.ShoppingViewModelFactory
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
@@ -56,8 +57,6 @@ class ShoppingFragment : Fragment(R.layout.shopping_fragment), OnItemClickListen
                     shoppingListRecyclerview
                 )
             }
-            shoppingListRecyclerview.layoutManager = LinearLayoutManager(context)
-
             //onclickLIsteners
             addShoppingItem.setOnClickListener {
                 viewModel.onAddItemClick(binding.etShoppingItemInput.text.toString())
@@ -98,6 +97,10 @@ class ShoppingFragment : Fragment(R.layout.shopping_fragment), OnItemClickListen
                                 viewModel.undoDeleteClick(event.item)
                             }
                             .show()
+                    }
+                    is ShoppingViewModel.ShoppingEvents.NavigateToEditShoppingItemFragment -> {
+                        val action = ShoppingFragmentDirections.actionShoppingFragmentToEditShoppingItem(event.item)
+                        findNavController().navigate(action)
                     }
 
 

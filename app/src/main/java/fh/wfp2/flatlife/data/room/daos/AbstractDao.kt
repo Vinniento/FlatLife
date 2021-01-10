@@ -4,7 +4,6 @@ import androidx.room.*
 
 @Dao
 interface AbstractDao<T> {
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(objectInstance: T)
 
@@ -13,5 +12,4 @@ interface AbstractDao<T> {
 
     @Update
     suspend fun update(objectInstance: T)
-
 }

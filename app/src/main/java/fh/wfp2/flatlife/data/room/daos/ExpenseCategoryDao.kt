@@ -9,4 +9,6 @@ import kotlinx.coroutines.flow.Flow
 interface ExpenseCategoryDao : AbstractDao<ExpenseCategory> {
     @Query("SELECT * FROM expenseCategory")
     fun getAllItems(): Flow<List<ExpenseCategory>>
+    @Query("SELECT categoryName FROM expenseCategory")
+    fun getAllItemNames(): Flow<List<String>>
 }

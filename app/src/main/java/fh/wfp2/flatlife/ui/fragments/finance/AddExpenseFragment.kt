@@ -2,6 +2,8 @@ package fh.wfp2.flatlife.ui.fragments.finance
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -19,31 +21,68 @@ class AddExpenseFragment : Fragment(R.layout.add_expense_fragment) {
     private lateinit var viewModel: AddExpenseViewModel
     private lateinit var binding: AddExpenseFragmentBinding
     private val args: AddExpenseFragmentArgs by navArgs()
-
+    private lateinit var spinnerOptions: Spinner
+    private lateinit var spinnerArray: List<String>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = AddExpenseFragmentBinding.bind(view)
         viewModel = ViewModelProvider(this).get(AddExpenseViewModel::class.java)
 
-        val category = args.expenseCategory
-        binding.apply {
+        val categoryArg = args.expenseCategory
+        val financeActivityArg = args.financeActivity
 
-            tvCategory.text = category.categoryName
+        viewModel.allCategories.observe(viewLifecycleOwner, {
 
-            bSaveExpense.setOnClickListener {
-                viewModel.onSaveExpenseClick(
-                    FinanceActivity(
-                        0,
-                        etDescription.text.toString(),
-                        category.categoryName,
-                        etAmount.text.toString()//Todo schöner machen
-                    )
+            it?.let {
+                spinnerArray = it
+                spinnerOptions = binding.spCategories
+                spinnerOptions.adapter = ArrayAdapter(
+                    requireContext(), android.R.layout.simple_dropdown_item_1line,
+                    spinnerArray
                 )
-                hideKeyboard()
+
+                binding.apply {
+                    financeActivityArg?.let { activity ->
+                        spinnerOptions.setSelection(
+                            getPositionOfCategory(
+                                spinnerArray,
+                                activity.categoryName
+                            )
+                        )
+                        etAmount.setText(activity.price)
+                        etDescription.setText(activity.description)
+
+                        bSaveExpense.setOnClickListener {
+                            viewModel.onUpdateExpenseClick(
+                                FinanceActivity(
+                                    activity.activityId,
+                                    etDescription.text.toString(),
+                                    activity.categoryName,
+                                    etAmount.text.toString()//Todo schöner machen
+                                )
+                            )
+                            hideKeyboard()
+                        }
+                    }
+
+                    if (args.financeActivity == null) {
+                        categoryArg?.let {
+                            bSaveExpense.setOnClickListener {
+                                viewModel.onSaveExpenseClick(
+                                    FinanceActivity(
+                                        0,
+                                        etDescription.text.toString(),
+                                        categoryArg.categoryName,
+                                        etAmount.text.toString()//Todo schöner machen
+                                    )
+                                )
+                                hideKeyboard()
+                            }
+                        }
+                    }
+                }
             }
-
-        }
-
+        })
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.addExpenseEvents.collect { event ->
                 when (event) {
@@ -53,10 +92,15 @@ class AddExpenseFragment : Fragment(R.layout.add_expense_fragment) {
                         findNavController().navigate(action)
                     }
                 }
-
             }
         }
     }
 
-
+    fun getPositionOfCategory(list: List<String>, categoryName: String): Int {
+        list.forEachIndexed { index, it ->
+            if (it == categoryName)
+                return index
+        }
+        return 0
+    }
 }

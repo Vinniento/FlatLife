@@ -72,6 +72,9 @@
         <action
             android:id="@+id/action_financeActivityFragment2_to_financeCategoryFragment"
             app:destination="@id/financeCategoryFragment" />
+        <action
+            android:id="@+id/action_financeActivityFragment2_to_addExpenseFragment"
+            app:destination="@id/addExpenseFragment" />
     </fragment>
     <fragment
         android:id="@+id/financeCategoryFragment"
@@ -91,6 +94,18 @@
             app:destination="@id/financeActivityFragment2" />
         <argument
             android:name="expenseCategory"
-            app:argType="fh.wfp2.flatlife.data.room.entities.ExpenseCategory" />
+            app:argType="fh.wfp2.flatlife.data.room.entities.ExpenseCategory"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <argument
+            android:name="financeActivity"
+            app:argType="fh.wfp2.flatlife.data.room.entities.FinanceActivity"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
+    <fragment
+        android:id="@+id/choreFragment"
+        android:name="fh.wfp2.flatlife.ui.fragments.chores.ChoreFragment"
+        android:label="chore_fragment"
+        tools:layout="@layout/chore_fragment" />
 </navigation>

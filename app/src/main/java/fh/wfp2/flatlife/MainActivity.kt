@@ -12,7 +12,7 @@ import androidx.navigation.ui.setupWithNavController
 import fh.wfp2.flatlife.databinding.ActivityMainBinding
 import timber.log.Timber
 
-class MainActivity : AppCompatActivity() /*, NavigationView.OnNavigationItemSelectedListener*/ {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration

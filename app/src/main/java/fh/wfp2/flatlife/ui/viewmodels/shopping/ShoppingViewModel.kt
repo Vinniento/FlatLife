@@ -1,10 +1,10 @@
-package fh.wfp2.flatlife.ui.viewmodels
+package fh.wfp2.flatlife.ui.viewmodels.shopping
 
 import android.app.Application
 import androidx.lifecycle.*
-import fh.wfp2.flatlife.data.room.repositories.ShoppingRepository
 import fh.wfp2.flatlife.data.room.FlatLifeRoomDatabase
 import fh.wfp2.flatlife.data.room.entities.ShoppingItem
+import fh.wfp2.flatlife.data.room.repositories.ShoppingRepository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -13,11 +13,12 @@ import timber.log.Timber
 
 class ShoppingViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository: ShoppingRepository
+    private val shoppingDao = FlatLifeRoomDatabase.getInstance(application).shoppingDao()
+    private val repository: ShoppingRepository = ShoppingRepository(shoppingDao)
 
     private val shoppingViewModelJob = Job()
     private val uiScope = CoroutineScope(shoppingViewModelJob + Dispatchers.Main)
-    
+
     private val addShoppingItemChannel = Channel<ShoppingEvents>()
     val addShoppingItemEvents = addShoppingItemChannel.receiveAsFlow()
 
@@ -28,15 +29,6 @@ class ShoppingViewModel(application: Application) : AndroidViewModel(application
     //TODO ultra hässlich, wie macht man das schöner? mit switchMap oder so?
     private val _allItems: MutableLiveData<List<ShoppingItem>>
         get() = repository.getAllItems().asLiveData() as MutableLiveData<List<ShoppingItem>>
-
-
-    init {
-        val shoppingDao = FlatLifeRoomDatabase.getInstance(application).shoppingDao()
-        repository = ShoppingRepository(shoppingDao)
-
-        Timber.i("Repository created in viewModel")
-
-    }
 
     val allItems: LiveData<List<ShoppingItem>> = _allItems
 
@@ -60,7 +52,7 @@ class ShoppingViewModel(application: Application) : AndroidViewModel(application
 
     fun onShoppingItemSelected(item: ShoppingItem) {
         viewModelScope.launch {
-
+            addShoppingItemChannel.send(ShoppingEvents.NavigateToEditShoppingItemFragment(item))
         }
 
     }
@@ -99,7 +91,7 @@ class ShoppingViewModel(application: Application) : AndroidViewModel(application
         object ShowIncompleteItemMessage : ShoppingEvents()
         data class ShowItemAddedMessage(val item: String) : ShoppingEvents()
         data class ShowUndoDeleteTaskMessage(val item: ShoppingItem) : ShoppingEvents()
-
+        data class NavigateToEditShoppingItemFragment(val item: ShoppingItem) : ShoppingEvents()
     }
 }
 

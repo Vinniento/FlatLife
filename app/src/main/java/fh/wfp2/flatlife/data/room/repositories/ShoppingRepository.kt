@@ -8,7 +8,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 
 class ShoppingRepository(private val shoppingDao: ShoppingDao) :
@@ -17,10 +16,8 @@ class ShoppingRepository(private val shoppingDao: ShoppingDao) :
 
     private val ioScope = CoroutineScope(shoppingRepositoryJob + Dispatchers.IO)
 
-    fun getAllItems(): Flow<List<ShoppingItem>> {
-        Timber.i("All items retrieved")
-        return shoppingDao.getItemsSortedByIsBought()
-    }
+    fun getAllItems(): Flow<List<ShoppingItem>> = shoppingDao.getItemsSortedByIsBought()
+
 
     suspend fun deleteAllBoughtItems() {
         ioScope.launch {

@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface FinanceActivityDao : AbstractDao<FinanceActivity> {
 
-    @Transaction
     @Query("SELECT * from financeactivity")
      fun getAllActivities(): Flow<List<FinanceActivity>>
 }

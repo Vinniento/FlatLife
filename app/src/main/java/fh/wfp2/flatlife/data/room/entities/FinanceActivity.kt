@@ -10,8 +10,7 @@ import java.text.DateFormat
 @Parcelize //make it parcelable -> able to send the entire object to another fragmetn
 @Entity
 data class FinanceActivity(
-    @PrimaryKey(autoGenerate = true)
-    val activityId: Long = 0,
+    @PrimaryKey(autoGenerate = true) val activityId: Long = 0,
     val description: String,
     val categoryName: String,
     val price: String,

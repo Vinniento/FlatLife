@@ -30,20 +30,17 @@ class ShoppingAdapter(private val listener: OnItemClickListener<ShoppingItem>) :
         return ShoppingItemViewHolder(binding)
     }
 
-
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val currentItem = shoppingList[position]
         (holder as ShoppingItemViewHolder).bind(currentItem)
     }
 
-
     inner class ShoppingItemViewHolder(private val binding: ShoppingItemCardBinding) :
         RecyclerView.ViewHolder(binding.root) {
         init {
             //onClickListeners
             binding.apply {
-                //wenn die todo view selbst gedrückt wird
                 root.setOnClickListener {
                     val position = adapterPosition
                     if (position != RecyclerView.NO_POSITION) {
@@ -68,7 +65,6 @@ class ShoppingAdapter(private val listener: OnItemClickListener<ShoppingItem>) :
                 cbItemBought.isChecked = shoppingItem.isBought
             }
         }
-
     }
 }
 
@@ -80,6 +76,4 @@ private class ShoppingDiffCallback : DiffUtil.ItemCallback<ShoppingItem>() {
     override fun areContentsTheSame(oldItem: ShoppingItem, newItem: ShoppingItem): Boolean {
         return oldItem == newItem
     }
-
 }
-

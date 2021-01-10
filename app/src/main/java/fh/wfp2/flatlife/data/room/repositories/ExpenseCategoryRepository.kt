@@ -8,5 +8,7 @@ class ExpenseCategoryRepository(private val expenseCategoryDao: ExpenseCategoryD
     AbstractRepository<ExpenseCategory>(expenseCategoryDao) {
     fun getAllItems(): Flow<List<ExpenseCategory>> {
         return expenseCategoryDao.getAllItems()
+    }fun getAllItemNames(): Flow<List<String>> {
+        return expenseCategoryDao.getAllItemNames()
     }
 }
