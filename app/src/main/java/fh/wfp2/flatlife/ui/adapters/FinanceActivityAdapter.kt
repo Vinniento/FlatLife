@@ -42,7 +42,7 @@ class FinanceActivityAdapter(val clickListener: (FinanceActivity) -> Unit) :
 
         fun bind(financeActivity: FinanceActivity, clickListener: (FinanceActivity) -> Unit) {
             binding.apply {
-                tvAmount.text = financeActivity.price.toString()
+                tvAmount.text = financeActivity.price + " €"
                 tvDescription.text = financeActivity.description
                 tvDate.text = financeActivity.createdDateFormatted
                 root.setOnClickListener { clickListener(financeActivity) }

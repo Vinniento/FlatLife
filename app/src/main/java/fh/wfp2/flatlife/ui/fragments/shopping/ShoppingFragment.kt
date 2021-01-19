@@ -22,6 +22,7 @@ import fh.wfp2.flatlife.ui.adapters.OnItemClickListener
 import fh.wfp2.flatlife.ui.adapters.ShoppingAdapter
 import fh.wfp2.flatlife.ui.viewmodels.shopping.ShoppingViewModel
 import fh.wfp2.flatlife.ui.viewmodels.shopping.ShoppingViewModelFactory
+import fh.wfp2.flatlife.util.hideKeyboard
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
@@ -35,6 +36,7 @@ class ShoppingFragment : Fragment(R.layout.shopping_fragment), OnItemClickListen
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        hideKeyboard()
         binding = ShoppingFragmentBinding.bind(view)
 
         val application = requireNotNull(this.activity).application
@@ -60,6 +62,7 @@ class ShoppingFragment : Fragment(R.layout.shopping_fragment), OnItemClickListen
             //onclickLIsteners
             addShoppingItem.setOnClickListener {
                 viewModel.onAddItemClick(binding.etShoppingItemInput.text.toString())
+                etShoppingItemInput.setText("")
             }
         }
 
@@ -99,7 +102,10 @@ class ShoppingFragment : Fragment(R.layout.shopping_fragment), OnItemClickListen
                             .show()
                     }
                     is ShoppingViewModel.ShoppingEvents.NavigateToEditShoppingItemFragment -> {
-                        val action = ShoppingFragmentDirections.actionShoppingFragmentToEditShoppingItem(event.item)
+                        val action =
+                            ShoppingFragmentDirections.actionShoppingFragmentToEditShoppingItem(
+                                event.item
+                            )
                         findNavController().navigate(action)
                     }
 

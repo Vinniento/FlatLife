@@ -24,7 +24,20 @@ fun Fragment.hideKeyboard() {
     view?.let { activity?.hideKeyboard(it) }
 }
 
+
 fun Context.hideKeyboard(view: View) {
     val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
 }
+
+fun <T>List<T>.getItemPositionByName(item: T): Int {
+    this.forEachIndexed { index, it ->
+        if (it == item)
+            return index
+    }
+    return 0
+}
+
+fun <T> List<T>.getItemPositionByNameWithIndexVersion(item: T) = withIndex()
+    .first { (_, value) -> item == value }
+    .index

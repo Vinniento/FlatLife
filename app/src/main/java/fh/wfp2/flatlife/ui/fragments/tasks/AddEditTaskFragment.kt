@@ -11,6 +11,7 @@ import com.google.android.material.snackbar.Snackbar
 import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.databinding.AddTaskFragmentBinding
 import fh.wfp2.flatlife.ui.viewmodels.tasks.AddTaskFragmentViewModel
+import fh.wfp2.flatlife.util.hideKeyboard
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
@@ -47,7 +48,9 @@ class AddEditTaskFragment : Fragment(R.layout.add_task_fragment) {
             )
         }
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+
             viewModel.addTasksEvent.collect { event ->
+                hideKeyboard()
                 when (event) {
                     is AddTaskFragmentViewModel.AddTaskEvent.ShowIncompleteTaskMessage -> {
                         Snackbar.make(
@@ -57,7 +60,9 @@ class AddEditTaskFragment : Fragment(R.layout.add_task_fragment) {
                         ).show()
                         Timber.i("Snackbar shown")
                     }
+
                     is AddTaskFragmentViewModel.AddTaskEvent.NavigateToTaskFragmentScreen -> {
+
                         val action =
                             AddEditTaskFragmentDirections.actionAddTaskFragmentToTaskFragment()
                         findNavController().navigate(action)

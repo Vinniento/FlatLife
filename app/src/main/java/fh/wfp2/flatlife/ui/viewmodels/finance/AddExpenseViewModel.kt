@@ -3,7 +3,6 @@ package fh.wfp2.flatlife.ui.viewmodels.finance
 import android.app.Application
 import androidx.lifecycle.*
 import fh.wfp2.flatlife.data.room.FlatLifeRoomDatabase
-import fh.wfp2.flatlife.data.room.entities.ExpenseCategory
 import fh.wfp2.flatlife.data.room.entities.FinanceActivity
 import fh.wfp2.flatlife.data.room.repositories.AddExpenseRepository
 import fh.wfp2.flatlife.data.room.repositories.ExpenseCategoryRepository
@@ -42,7 +41,13 @@ class AddExpenseViewModel(application: Application) : AndroidViewModel(applicati
 
     fun onUpdateExpenseClick(activity: FinanceActivity) {
         viewModelScope.launch {
-            repository.update(activity.copy(description = activity.description, categoryName = activity.categoryName, price = activity.price))
+            repository.update(
+                activity.copy(
+                    description = activity.description,
+                    categoryName = activity.categoryName,
+                    price = activity.price
+                )
+            )
             addExpenseEventsChannel.send(AddExpenseEvents.NavigateToFinanceScreen)
 
         }

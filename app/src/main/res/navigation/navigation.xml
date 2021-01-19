@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="fh.wfp2.flatlife.ui.fragments.HomeFragment"
+        android:name="fh.wfp2.flatlife.ui.home.HomeFragment"
         android:label="Flatlife"
         tools:layout="@layout/home_fragment" />
     <fragment
@@ -75,6 +75,9 @@
         <action
             android:id="@+id/action_financeActivityFragment2_to_addExpenseFragment"
             app:destination="@id/addExpenseFragment" />
+        <action
+            android:id="@+id/action_financeActivityFragment2_to_financeBalanceFragment"
+            app:destination="@id/financeBalanceFragment" />
     </fragment>
     <fragment
         android:id="@+id/financeCategoryFragment"
@@ -107,5 +110,31 @@
         android:id="@+id/choreFragment"
         android:name="fh.wfp2.flatlife.ui.fragments.chores.ChoreFragment"
         android:label="chore_fragment"
-        tools:layout="@layout/chore_fragment" />
+        tools:layout="@layout/chore_fragment" >
+        <action
+            android:id="@+id/action_choreFragment_to_choreStatisticsFragment"
+            app:destination="@id/choreStatisticsFragment"
+            app:popUpTo="@id/choreFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/financeBalanceFragment"
+        android:name="fh.wfp2.flatlife.ui.fragments.finance.FinanceBalanceFragment"
+        android:label="finance_balance_fragment"
+        tools:layout="@layout/finance_balance_fragment" >
+        <action
+            android:id="@+id/action_financeBalanceFragment_to_financeActivityFragment2"
+            app:destination="@id/financeActivityFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/choreStatisticsFragment"
+        android:name="fh.wfp2.flatlife.ui.fragments.chores.ChoreStatisticsFragment"
+        android:label="chore_statistics_fragment"
+        tools:layout="@layout/chore_statistics_fragment" >
+        <action
+            android:id="@+id/action_choreStatisticsFragment_to_choreFragment"
+            app:destination="@id/choreFragment"
+            app:popUpTo="@id/choreFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

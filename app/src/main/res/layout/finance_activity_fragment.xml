@@ -9,19 +9,14 @@
 
     <Button
         android:id="@+id/b_activity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="16dp"
+        style="@style/ClickableMenuButton"
         android:text="Activity"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/b_balance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        style="@style/ClickableMenuButton"
         android:text="Balance"
         app:layout_constraintBottom_toBottomOf="@+id/b_activity"
         app:layout_constraintEnd_toEndOf="parent"
@@ -46,15 +41,12 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addActivity"
+        style="@style/AddButton"
         android:layout_width="wrap_content"
+
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="24dp"
-        android:clickable="true"
         android:contentDescription=""
-        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/task_list_recyclerview"
         app:srcCompat="@android:drawable/ic_input_add" />
 </androidx.constraintlayout.widget.ConstraintLayout>

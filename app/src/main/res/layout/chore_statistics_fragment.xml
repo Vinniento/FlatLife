@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.fragments.chores.ChoreStatisticsFragment">
+
+    <Button
+        android:id="@+id/b_chores"
+        style="@style/ClickableMenuButton"
+        android:text="Chores"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/b_statistics"
+        style="@style/ClickableMenuButton"
+        android:text="Statistics"
+        app:layout_constraintBottom_toBottomOf="@+id/b_chores"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/b_chores"
+        app:layout_constraintTop_toTopOf="@+id/b_chores"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_statistics"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="148dp"
+        android:layout_marginBottom="90dp"
+        android:background="@android:color/transparent"
+        android:textAllCaps="false"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sp_chores"
+        tools:listitem="@layout/chore_statistics_card_item" />
+
+    <Spinner
+        android:id="@+id/sp_chores"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spinner_top_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/b_chores" />
+</androidx.constraintlayout.widget.ConstraintLayout>

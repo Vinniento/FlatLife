@@ -2,6 +2,7 @@ package fh.wfp2.flatlife.ui.fragments.finance
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -23,6 +24,7 @@ class FinanceActivityFragment : Fragment(R.layout.finance_activity_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FinanceActivityFragmentBinding.bind(view)
+
         val application = requireNotNull(this.activity).application
         viewModelFactory = FinanceActivityViewModelFactory(application)
         viewModel =
@@ -30,9 +32,8 @@ class FinanceActivityFragment : Fragment(R.layout.finance_activity_fragment) {
         val financeActivityAdapter =
             FinanceActivityAdapter { activity -> activityClicked(activity) }
 
-
         binding.apply {
-
+            bActivity.isActivated = true
             financeActivityRecyclerview.apply {
                 adapter = financeActivityAdapter
                 setHasFixedSize(true)
@@ -40,6 +41,10 @@ class FinanceActivityFragment : Fragment(R.layout.finance_activity_fragment) {
 
             addActivity.setOnClickListener {
                 viewModel.onAddActivityClick()
+            }
+
+            bBalance.setOnClickListener {
+                viewModel.onBalanceButtonClick()
             }
         }
 
@@ -60,9 +65,19 @@ class FinanceActivityFragment : Fragment(R.layout.finance_activity_fragment) {
                             )
                         findNavController().navigate(action)
                     }
+                    is FinanceActivityViewModel.FinanceActivityEvents.NavigateToBalanceScreen -> {
+                        val action =
+                            FinanceActivityFragmentDirections.actionFinanceActivityFragment2ToFinanceBalanceFragment()
+                        findNavController().navigate(action)
+                    }
                 }
             }
         }
+    }
+
+    private fun onButtonClicked(binding: FinanceActivityFragmentBinding, it: View) {
+        it.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.dark_blue))
+
     }
 
     private fun activityClicked(financeActivity: FinanceActivity) {

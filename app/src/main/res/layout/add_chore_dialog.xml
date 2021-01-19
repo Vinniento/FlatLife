@@ -9,28 +9,25 @@
         android:id="@+id/et_chore_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:ems="10"
         android:hint="Clean Kitchen.."
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="@+id/tv_task_type_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/tv_task_type_text"
-        app:layout_constraintTop_toTopOf="@+id/tv_task_type_text" />
+        app:layout_constraintStart_toStartOf="@+id/sp_assign_to"
+        app:layout_constraintTop_toTopOf="@+id/tv_task_type_text"
+        app:layout_constraintVertical_bias="0.307" />
 
     <TextView
         android:id="@+id/tv_due_by"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="72dp"
         android:clickable="true"
         android:inputType="date"
         android:text="23.12.2021"
         app:layout_constraintBottom_toBottomOf="@id/tv_due_by_text"
-        app:layout_constraintStart_toEndOf="@id/tv_due_by_text"
+        app:layout_constraintStart_toStartOf="@+id/et_chore_name"
         app:layout_constraintTop_toTopOf="@id/tv_due_by_text"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/tv_due_by_text"
@@ -63,21 +60,20 @@
 
         app:layout_constraintBottom_toBottomOf="@+id/tv_assign_to_text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.165"
+        app:layout_constraintHorizontal_bias="0.028"
         app:layout_constraintStart_toEndOf="@+id/tv_assign_to_text"
-        app:layout_constraintTop_toTopOf="@id/tv_assign_to_text" />
+        app:layout_constraintTop_toTopOf="@id/tv_assign_to_text"
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/b_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
-        android:layout_marginTop="48dp"
         android:text="Cancel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_due_by_text"
-        app:layout_constraintVertical_bias="0.068" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_chroe_credit" />
 
     <Button
         android:id="@+id/b_addChore"
@@ -87,10 +83,8 @@
         android:text="Add"
         app:layout_constraintBottom_toBottomOf="@+id/b_cancel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/b_cancel"
-        app:layout_constraintTop_toTopOf="@+id/b_cancel"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="@+id/b_cancel"/>
 
     <TextView
         android:id="@+id/tv_assign_to_text"
@@ -101,4 +95,24 @@
         android:text="Assign Chore to"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_chroe_credit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:text="Effort"
+        android:inputType="numberDecimal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_due_by_text" />
+
+    <Spinner
+        android:id="@+id/sp_effort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_chroe_credit"
+        app:layout_constraintStart_toStartOf="@+id/tv_due_by"
+        app:layout_constraintTop_toTopOf="@+id/tv_chroe_credit" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

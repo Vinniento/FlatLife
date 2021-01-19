@@ -24,6 +24,7 @@ import fh.wfp2.flatlife.ui.adapters.OnItemClickListener
 import fh.wfp2.flatlife.ui.adapters.TaskAdapter
 import fh.wfp2.flatlife.ui.viewmodels.TaskViewModel
 import fh.wfp2.flatlife.ui.viewmodels.TaskViewModelFactory
+import fh.wfp2.flatlife.util.hideKeyboard
 import fh.wfp2.flatlife.util.onQueryTextChanged
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -45,8 +46,8 @@ class TaskFragment : Fragment(R.layout.task_fragment), OnItemClickListener<Task>
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        hideKeyboard()
         binding = TaskFragmentBinding.bind(view)
-
 
         val application = requireNotNull(this.activity).application
         viewModelFactory = TaskViewModelFactory(application)
@@ -76,12 +77,9 @@ class TaskFragment : Fragment(R.layout.task_fragment), OnItemClickListener<Task>
             // todoAdapter.submitList(it)
             it?.let {
                 todoAdapter.taskList = it
-                it.forEach { todo ->
-                    Timber.i(todo.toString())
-
                 }
             }
-        }
+
 
         //coroutine will be canceled when onStop is called. Will only listen for events when fragment is displayed
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {

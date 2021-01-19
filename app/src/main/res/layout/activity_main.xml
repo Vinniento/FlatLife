@@ -9,22 +9,15 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <!-- <com.google.android.material.appbar.AppBarLayout
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:theme="@style/AppTheme.AppBarOverlay" />-->
-
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:titleTextColor="@color/black" />
 
     <fragment
@@ -33,14 +26,15 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:defaultNavHost="true"
+
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
         app:navGraph="@navigation/navigation" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        style="@style/Widget.Design.BottomNavigationView"
+        app:itemIconTint="@drawable/bottom_navigation_selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

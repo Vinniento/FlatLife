@@ -7,7 +7,7 @@ import fh.wfp2.flatlife.data.preferences.PreferencesManager
 import fh.wfp2.flatlife.data.preferences.SortOrder
 import fh.wfp2.flatlife.data.room.FlatLifeRoomDatabase
 import fh.wfp2.flatlife.data.room.Task
-import fh.wfp2.flatlife.data.room.TaskDao
+import fh.wfp2.flatlife.data.room.daos.TaskDao
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.combine
@@ -109,7 +109,6 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
     fun onTaskSelected(task: Task) = viewModelScope.launch {
         tasksEventChannel.send(TaskEvent.NavigateToEditTaskScreen(task))
     }
-
 
     //benefit of sealed class -> when checking with when (){} the compiler knows if the list checked is exhaustive or not
     sealed class TaskEvent {

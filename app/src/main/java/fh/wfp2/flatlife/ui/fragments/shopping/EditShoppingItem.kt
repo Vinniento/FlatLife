@@ -11,6 +11,7 @@ import com.google.android.material.snackbar.Snackbar
 import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.databinding.EditShoppingItemFragmentBinding
 import fh.wfp2.flatlife.ui.viewmodels.shopping.EditShoppingItemFragmentViewModel
+import fh.wfp2.flatlife.util.hideKeyboard
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
@@ -48,6 +49,7 @@ class EditShoppingItem : Fragment(R.layout.edit_shopping_item_fragment) {
         }
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.editShoppingItemEvent.collect { event ->
+
                 when (event) {
                     is EditShoppingItemFragmentViewModel.EditShoppingItemEvent.ShowIncompleteShoppingItemMessage -> {
                         Snackbar.make(

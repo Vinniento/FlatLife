@@ -12,7 +12,7 @@ import fh.wfp2.flatlife.databinding.ChoreItemCardBinding
 import timber.log.Timber
 
 
-class ChoreAdapter() :
+class ChoreAdapter(private val listener: OnItemClickListener<Chore>) :
     ListAdapter<Chore, RecyclerView.ViewHolder>(ChoreDiffCallback()) {
 
     var choreList = listOf<Chore>()
@@ -42,6 +42,24 @@ class ChoreAdapter() :
     //only gets called when viewHolder gets first created (ViewHolder get reused!!)
     inner class ChoreViewHolder(private val binding: ChoreItemCardBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        init {
+            binding.apply {
+                root.setOnClickListener {
+                    val position = adapterPosition
+                    if (position != RecyclerView.NO_POSITION) {
+                        listener.onItemClick(choreList[position])
+                    }
+                }
+                cbChoreCompleted.setOnClickListener {
+                    val position = adapterPosition
+                    if (position != RecyclerView.NO_POSITION) {
+                        val chore = choreList[position]
+                        listener.onCheckBoxClick(chore, !chore.isComplete)
+                    }
+                }
+            }
+
+        }
 
         fun bind(chore: Chore) {
             binding.apply {

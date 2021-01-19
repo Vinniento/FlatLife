@@ -5,14 +5,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import fh.wfp2.flatlife.data.room.daos.AddExpenseDao
-import fh.wfp2.flatlife.data.room.daos.ChoresDao
-import fh.wfp2.flatlife.data.room.daos.ExpenseCategoryDao
-import fh.wfp2.flatlife.data.room.daos.FinanceActivityDao
-import fh.wfp2.flatlife.data.room.entities.Chore
-import fh.wfp2.flatlife.data.room.entities.ExpenseCategory
-import fh.wfp2.flatlife.data.room.entities.FinanceActivity
-import fh.wfp2.flatlife.data.room.entities.ShoppingItem
+import androidx.sqlite.db.SupportSQLiteDatabase
+import fh.wfp2.flatlife.data.room.daos.*
+import fh.wfp2.flatlife.data.room.entities.*
+import java.util.concurrent.Executors
 
 @Database(
     entities = [Task::class, ShoppingItem::class, ExpenseCategory::class, FinanceActivity::class, Chore::class],
@@ -32,6 +28,14 @@ abstract class FlatLifeRoomDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: FlatLifeRoomDatabase? = null
 
+        private val PREPOPULATE_CATEGORIES =
+            listOf<ExpenseCategory>(
+                ExpenseCategory(0, "Groceries"),
+                ExpenseCategory(0, "Household"),
+                ExpenseCategory(0, "Car"),
+                ExpenseCategory(0, "Garden"),
+            )
+
         fun getInstance(
             context: Context
         )
@@ -47,10 +51,31 @@ abstract class FlatLifeRoomDatabase : RoomDatabase() {
                     "database"
                 )
                     .fallbackToDestructiveMigration()
+                    .addCallback(object : Callback() {
+                        override fun onCreate(db: SupportSQLiteDatabase) {
+                            super.onCreate(db)
+                            ioThread {
+                                getInstance(context).expenseCategoryDao().insertList(
+                                    PREPOPULATE_CATEGORIES
+                                )
+                            }
+
+                        }
+                    })
                     .build()
+
                 INSTANCE = instance
                 instance
             }
         }
     }
+}
+
+private val IO_EXECUTOR = Executors.newSingleThreadExecutor()
+
+/**
+ * Utility method to run blocks on a dedicated background thread, used for io/database work.
+ */
+fun ioThread(f: () -> Unit) {
+    IO_EXECUTOR.execute(f)
 }

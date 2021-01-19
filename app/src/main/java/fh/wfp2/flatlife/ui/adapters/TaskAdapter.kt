@@ -13,7 +13,7 @@ import fh.wfp2.flatlife.databinding.TaskItemCardBinding
 import timber.log.Timber
 
 
-class TaskAdapter(private val listener: OnItemClickListener<Task>) :
+class TaskAdapter(private val listener: OnItemClickListener<Task>?) :
     ListAdapter<Task, RecyclerView.ViewHolder>(TaskDiffCallback()) {
 
     var taskList = listOf<Task>()
@@ -43,21 +43,23 @@ class TaskAdapter(private val listener: OnItemClickListener<Task>) :
         RecyclerView.ViewHolder(binding.root) {
 
         init {
-            binding.apply {
-                //wenn die todo view selbst gedrückt wird
-                root.setOnClickListener {
-                    val position = adapterPosition
-                    if (position != RecyclerView.NO_POSITION) {
-                        val task = taskList[position]
-                        listener.onItemClick(task)
+            listener?.let {
+                binding.apply {
+                    //wenn die todo view selbst gedrückt wird
+                    root.setOnClickListener {
+                        val position = adapterPosition
+                        if (position != RecyclerView.NO_POSITION) {
+                            val task = taskList[position]
+                            listener.onItemClick(task)
+                        }
                     }
-                }
-                cbTodoCompleted.setOnClickListener {
-                    val position = adapterPosition
-                    if (position != RecyclerView.NO_POSITION) //-1 -> Wenn die view gerade ausm Sichtfeld kommt
-                    {
-                        val task = taskList[position]
-                        listener.onCheckBoxClick(task, !task.isComplete)
+                    cbTodoCompleted.setOnClickListener {
+                        val position = adapterPosition
+                        if (position != RecyclerView.NO_POSITION) //-1 -> Wenn die view gerade ausm Sichtfeld kommt
+                        {
+                            val task = taskList[position]
+                            listener.onCheckBoxClick(task, !task.isComplete)
+                        }
                     }
                 }
             }
@@ -71,11 +73,6 @@ class TaskAdapter(private val listener: OnItemClickListener<Task>) :
                 ivImportant.isVisible = task.isImportant
             }
         }
-/*
-        val cbTodo: CheckBox = itemView.cb_todo_completed
-        val tvTodo: TextView = itemView.tv_todo_name
-        val ivImportant: ImageView = itemView.iv_important
-*/
     }
 }
 

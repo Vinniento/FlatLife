@@ -30,7 +30,11 @@ class FinanceActivityViewModel(application: Application) : AndroidViewModel(appl
 
     fun onActivityClicked(financeActivity: FinanceActivity) {
         viewModelScope.launch {
-            financeActivityChannel.send(FinanceActivityEvents.NavigateToAddExpenseActivityScreen(financeActivity))
+            financeActivityChannel.send(
+                FinanceActivityEvents.NavigateToAddExpenseActivityScreen(
+                    financeActivity
+                )
+            )
         }
     }
 
@@ -40,11 +44,19 @@ class FinanceActivityViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
+    fun onBalanceButtonClick() {
+        viewModelScope.launch {
+            financeActivityChannel.send(FinanceActivityEvents.NavigateToBalanceScreen)
+        }
+    }
+
 
     sealed class FinanceActivityEvents {
         object NavigateToAddExpenseCategoryScreen : FinanceActivityEvents()
         data class NavigateToAddExpenseActivityScreen(val financeActivity: FinanceActivity) :
             FinanceActivityEvents()
+
+        object NavigateToBalanceScreen : FinanceActivityEvents()
     }
 }
 

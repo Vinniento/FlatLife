@@ -36,7 +36,7 @@
     <dimen name="card_top_margin">26dp</dimen>
     <dimen name="card_elevation">2dp</dimen>
     <dimen name="card_corner_radius">12dp</dimen>
-
+    <dimen name="spinner_top_margin">16dp</dimen>
     <!-- elevation for Plant Detail toolbar - used to convert to pixels when hiding/showing -->
     <dimen name="toolbar_elevation">5dp</dimen>
 

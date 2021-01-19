@@ -13,6 +13,7 @@ import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.data.room.entities.FinanceActivity
 import fh.wfp2.flatlife.databinding.AddExpenseFragmentBinding
 import fh.wfp2.flatlife.ui.viewmodels.finance.AddExpenseViewModel
+import fh.wfp2.flatlife.util.getItemPositionByName
 import fh.wfp2.flatlife.util.hideKeyboard
 import kotlinx.coroutines.flow.collect
 
@@ -22,7 +23,7 @@ class AddExpenseFragment : Fragment(R.layout.add_expense_fragment) {
     private lateinit var binding: AddExpenseFragmentBinding
     private val args: AddExpenseFragmentArgs by navArgs()
     private lateinit var spinnerOptions: Spinner
-    private lateinit var spinnerArray: List<String>
+    private lateinit var spinnerCategoriesList: List<String>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = AddExpenseFragmentBinding.bind(view)
@@ -31,23 +32,20 @@ class AddExpenseFragment : Fragment(R.layout.add_expense_fragment) {
         val categoryArg = args.expenseCategory
         val financeActivityArg = args.financeActivity
 
-        viewModel.allCategories.observe(viewLifecycleOwner, {
+        viewModel.allCategories.observe(viewLifecycleOwner, { categoriesList ->
 
-            it?.let {
-                spinnerArray = it
+            categoriesList?.let { categories ->
+                spinnerCategoriesList = categories
                 spinnerOptions = binding.spCategories
                 spinnerOptions.adapter = ArrayAdapter(
                     requireContext(), android.R.layout.simple_dropdown_item_1line,
-                    spinnerArray
+                    spinnerCategoriesList
                 )
 
                 binding.apply {
                     financeActivityArg?.let { activity ->
                         spinnerOptions.setSelection(
-                            getPositionOfCategory(
-                                spinnerArray,
-                                activity.categoryName
-                            )
+                            spinnerCategoriesList.indexOf(activity.categoryName)
                         )
                         etAmount.setText(activity.price)
                         etDescription.setText(activity.description)
@@ -57,7 +55,7 @@ class AddExpenseFragment : Fragment(R.layout.add_expense_fragment) {
                                 FinanceActivity(
                                     activity.activityId,
                                     etDescription.text.toString(),
-                                    activity.categoryName,
+                                    spinnerOptions.selectedItem.toString(),
                                     etAmount.text.toString()//Todo schöner machen
                                 )
                             )
@@ -66,13 +64,19 @@ class AddExpenseFragment : Fragment(R.layout.add_expense_fragment) {
                     }
 
                     if (args.financeActivity == null) {
-                        categoryArg?.let {
+                        categoryArg?.let { ec ->
+                            spinnerOptions.setSelection(
+                                getPositionOfCategory(
+                                    spinnerCategoriesList,
+                                    ec.categoryName
+                                )
+                            )
                             bSaveExpense.setOnClickListener {
                                 viewModel.onSaveExpenseClick(
                                     FinanceActivity(
                                         0,
                                         etDescription.text.toString(),
-                                        categoryArg.categoryName,
+                                        spinnerOptions.selectedItem.toString(),
                                         etAmount.text.toString()//Todo schöner machen
                                     )
                                 )

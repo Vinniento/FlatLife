@@ -2,7 +2,7 @@ package fh.wfp2.flatlife.data.room.repositories
 
 import fh.wfp2.flatlife.data.preferences.SortOrder
 import fh.wfp2.flatlife.data.room.Task
-import fh.wfp2.flatlife.data.room.TaskDao
+import fh.wfp2.flatlife.data.room.daos.TaskDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -31,5 +31,7 @@ class TaskRepository(private val taskDao: TaskDao) : AbstractRepository<Task>(ta
             taskDao.deleteAllCompletedTasks()
         }
     }
+    fun getAllItems(): Flow<List<Task>> = taskDao.getAllTasks()
+
 }
 

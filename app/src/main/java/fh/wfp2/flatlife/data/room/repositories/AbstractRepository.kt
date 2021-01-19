@@ -1,9 +1,11 @@
 package fh.wfp2.flatlife.data.room.repositories
 
 import fh.wfp2.flatlife.data.room.daos.AbstractDao
+import fh.wfp2.flatlife.data.room.entities.ShoppingItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 abstract class AbstractRepository<T>(
@@ -32,4 +34,5 @@ abstract class AbstractRepository<T>(
             dao.delete(item)
         }
     }
+
 }
