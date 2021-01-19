@@ -49,6 +49,7 @@ dependencies {
     //database
 
     implementation "androidx.room:room-runtime:$room_version"
+    implementation 'androidx.security:security-crypto:1.1.0-alpha03'
     kapt "androidx.room:room-compiler:$room_version"
 
     // optional - Kotlin Extensions and Coroutines support for Room
@@ -66,6 +67,17 @@ dependencies {
     //dataStore
     implementation "androidx.datastore:datastore-preferences:1.0.0-alpha05"
 
+    //Dagger - Hilt
+    implementation "com.google.dagger:hilt-android:2.28-alpha"
+    kapt "com.google.dagger:hilt-android-compiler:2.28-alpha"
+
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha02"
+    kapt "androidx.hilt:hilt-compiler:1.0.0-alpha02"
+
+    // Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation "com.squareup.okhttp3:logging-interceptor:4.7.2"
 
     //navigation
     // Kotlin

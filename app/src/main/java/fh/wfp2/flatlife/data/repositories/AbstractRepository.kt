@@ -1,4 +1,4 @@
-package fh.wfp2.flatlife.data.room.repositories
+package fh.wfp2.flatlife.data.repositories
 
 import fh.wfp2.flatlife.data.room.daos.AbstractDao
 import fh.wfp2.flatlife.data.room.entities.ShoppingItem

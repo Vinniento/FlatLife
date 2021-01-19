@@ -5,7 +5,7 @@ import androidx.lifecycle.*
 import fh.wfp2.flatlife.data.room.FlatLifeRoomDatabase
 import fh.wfp2.flatlife.data.room.daos.ExpenseCategoryDao
 import fh.wfp2.flatlife.data.room.entities.ExpenseCategory
-import fh.wfp2.flatlife.data.room.repositories.ExpenseCategoryRepository
+import fh.wfp2.flatlife.data.repositories.ExpenseCategoryRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch

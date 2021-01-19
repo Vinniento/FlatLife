@@ -7,9 +7,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.databinding.ChoreStatisticsFragmentBinding
+import fh.wfp2.flatlife.ui.fragments.BaseFragment
 import fh.wfp2.flatlife.ui.viewmodels.chores.ChoreStatisticsViewModel
 
-class ChoreStatisticsFragment : Fragment(R.layout.chore_statistics_fragment) {
+class ChoreStatisticsFragment : BaseFragment(R.layout.chore_statistics_fragment) {
 
     companion object {
         fun newInstance() = ChoreStatisticsFragment()

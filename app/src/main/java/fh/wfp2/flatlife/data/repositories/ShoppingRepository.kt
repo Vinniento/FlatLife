@@ -1,4 +1,4 @@
-package fh.wfp2.flatlife.data.room.repositories
+package fh.wfp2.flatlife.data.repositories
 
 
 import fh.wfp2.flatlife.data.room.ShoppingDao
@@ -8,9 +8,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
-class ShoppingRepository(private val shoppingDao: ShoppingDao) :
+class ShoppingRepository @Inject constructor(private val shoppingDao: ShoppingDao) :
     AbstractRepository<ShoppingItem>(shoppingDao) {
     val shoppingRepositoryJob = Job()
 

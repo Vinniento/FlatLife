@@ -5,9 +5,13 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import fh.wfp2.flatlife.data.room.daos.*
-import fh.wfp2.flatlife.data.room.entities.*
+import fh.wfp2.flatlife.data.room.entities.Chore
+import fh.wfp2.flatlife.data.room.entities.ExpenseCategory
+import fh.wfp2.flatlife.data.room.entities.FinanceActivity
+import fh.wfp2.flatlife.data.room.entities.ShoppingItem
 import java.util.concurrent.Executors
 
 @Database(
@@ -15,6 +19,7 @@ import java.util.concurrent.Executors
     version = 1,
     exportSchema = false
 )
+@TypeConverters(Converters::class)
 abstract class FlatLifeRoomDatabase : RoomDatabase() {
 
     abstract fun shoppingDao(): ShoppingDao

@@ -1,4 +1,4 @@
-package fh.wfp2.flatlife.data.room.repositories
+package fh.wfp2.flatlife.data.repositories
 
 import fh.wfp2.flatlife.data.preferences.SortOrder
 import fh.wfp2.flatlife.data.room.Task
@@ -9,9 +9,11 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
 
-class TaskRepository(private val taskDao: TaskDao) : AbstractRepository<Task>(taskDao) {
+class TaskRepository @Inject constructor(private val taskDao: TaskDao) :
+    AbstractRepository<Task>(taskDao) {
     val todoRepositoryJob = Job()
 
     private val ioScope = CoroutineScope(todoRepositoryJob + Dispatchers.IO)
@@ -31,6 +33,7 @@ class TaskRepository(private val taskDao: TaskDao) : AbstractRepository<Task>(ta
             taskDao.deleteAllCompletedTasks()
         }
     }
+
     fun getAllItems(): Flow<List<Task>> = taskDao.getAllTasks()
 
 }

@@ -8,8 +8,8 @@ import androidx.lifecycle.asLiveData
 import fh.wfp2.flatlife.data.room.FlatLifeRoomDatabase
 import fh.wfp2.flatlife.data.room.Task
 import fh.wfp2.flatlife.data.room.entities.ShoppingItem
-import fh.wfp2.flatlife.data.room.repositories.ShoppingRepository
-import fh.wfp2.flatlife.data.room.repositories.TaskRepository
+import fh.wfp2.flatlife.data.repositories.ShoppingRepository
+import fh.wfp2.flatlife.data.repositories.TaskRepository
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private var taskRepository: TaskRepository

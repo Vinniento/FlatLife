@@ -8,7 +8,7 @@ import fh.wfp2.flatlife.databinding.HomeFragmentBinding
 import timber.log.Timber
 
 
-class HomeFragment : Fragment(R.layout.home_fragment) {
+class HomeFragment : BaseFragment(R.layout.home_fragment) {
 
     private lateinit var binding: HomeFragmentBinding
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

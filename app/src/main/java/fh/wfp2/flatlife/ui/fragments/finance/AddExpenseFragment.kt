@@ -12,12 +12,13 @@ import androidx.navigation.fragment.navArgs
 import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.data.room.entities.FinanceActivity
 import fh.wfp2.flatlife.databinding.AddExpenseFragmentBinding
+import fh.wfp2.flatlife.ui.fragments.BaseFragment
 import fh.wfp2.flatlife.ui.viewmodels.finance.AddExpenseViewModel
 import fh.wfp2.flatlife.util.getItemPositionByName
 import fh.wfp2.flatlife.util.hideKeyboard
 import kotlinx.coroutines.flow.collect
 
-class AddExpenseFragment : Fragment(R.layout.add_expense_fragment) {
+class AddExpenseFragment : BaseFragment(R.layout.add_expense_fragment) {
 
     private lateinit var viewModel: AddExpenseViewModel
     private lateinit var binding: AddExpenseFragmentBinding

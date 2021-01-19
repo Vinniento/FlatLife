@@ -2,7 +2,7 @@ package fh.wfp2.flatlife.ui.viewmodels.tasks
 
 import android.app.Application
 import androidx.lifecycle.*
-import fh.wfp2.flatlife.data.room.repositories.TaskRepository
+import fh.wfp2.flatlife.data.repositories.TaskRepository
 import fh.wfp2.flatlife.data.room.FlatLifeRoomDatabase
 import fh.wfp2.flatlife.data.room.Task
 import kotlinx.coroutines.channels.Channel

@@ -1,14 +1,14 @@
-package fh.wfp2.flatlife.data.room.repositories
+package fh.wfp2.flatlife.data.repositories
 
 import fh.wfp2.flatlife.data.room.daos.FinanceActivityDao
 import fh.wfp2.flatlife.data.room.entities.FinanceActivity
-import fh.wfp2.flatlife.data.room.entities.mapping.ExpenseCategoryWithFinanceActivity
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class FinanceActivityRepository(private val financeActivityDao: FinanceActivityDao) :
+class FinanceActivityRepository @Inject constructor(private val financeActivityDao: FinanceActivityDao) :
     AbstractRepository<FinanceActivity>(financeActivityDao) {
 
-     fun getAllActivities(): Flow<List<FinanceActivity>> {
+    fun getAllActivities(): Flow<List<FinanceActivity>> {
         return financeActivityDao.getAllActivities()
     }
 

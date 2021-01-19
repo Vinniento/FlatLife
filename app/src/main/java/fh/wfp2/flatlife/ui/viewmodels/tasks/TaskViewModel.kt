@@ -2,7 +2,7 @@ package fh.wfp2.flatlife.ui.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.*
-import fh.wfp2.flatlife.data.room.repositories.TaskRepository
+import fh.wfp2.flatlife.data.repositories.TaskRepository
 import fh.wfp2.flatlife.data.preferences.PreferencesManager
 import fh.wfp2.flatlife.data.preferences.SortOrder
 import fh.wfp2.flatlife.data.room.FlatLifeRoomDatabase
@@ -124,17 +124,4 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         val hideCompleted: Boolean,
         val sortOrder: SortOrder
     )
-}
-
-class TaskViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(TaskViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            Timber.i("Creating viewModel")
-            return TaskViewModel(application) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel Class")
-    }
-
-
 }

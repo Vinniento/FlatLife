@@ -13,10 +13,11 @@ import android.widget.Spinner
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import fh.wfp2.flatlife.databinding.AddChoreDialogBinding
+import fh.wfp2.flatlife.ui.fragments.BaseFragment
 import timber.log.Timber
 import java.util.*
 
-class AddChoreDialogFragment : Fragment(fh.wfp2.flatlife.R.layout.add_chore_dialog) {
+class AddChoreDialogFragment : BaseFragment(fh.wfp2.flatlife.R.layout.add_chore_dialog) {
     private lateinit var option: Spinner
     private lateinit var _datePickerDialog: DatePickerDialog
     private lateinit var _timePickerDialog: TimePickerDialog

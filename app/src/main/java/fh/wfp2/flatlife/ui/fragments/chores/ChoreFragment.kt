@@ -21,6 +21,7 @@ import fh.wfp2.flatlife.data.room.entities.Chore
 import fh.wfp2.flatlife.databinding.ChoreFragmentBinding
 import fh.wfp2.flatlife.ui.adapters.ChoreAdapter
 import fh.wfp2.flatlife.ui.adapters.OnItemClickListener
+import fh.wfp2.flatlife.ui.fragments.BaseFragment
 import fh.wfp2.flatlife.ui.viewmodels.chores.ChoreViewModel
 import fh.wfp2.flatlife.util.getItemPositionByName
 import kotlinx.android.synthetic.main.add_chore_dialog.*
@@ -29,7 +30,7 @@ import timber.log.Timber
 import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.N)
-class ChoreFragment : Fragment(R.layout.chore_fragment), OnItemClickListener<Chore> {
+class ChoreFragment : BaseFragment(R.layout.chore_fragment), OnItemClickListener<Chore> {
     private lateinit var _datePickerDialog: DatePickerDialog
     var day = 0
     var month: Int = 0

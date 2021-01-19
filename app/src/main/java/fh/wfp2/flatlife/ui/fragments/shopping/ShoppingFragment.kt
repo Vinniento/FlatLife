@@ -7,8 +7,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.annotation.RequiresApi
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -20,17 +19,17 @@ import fh.wfp2.flatlife.data.room.entities.ShoppingItem
 import fh.wfp2.flatlife.databinding.ShoppingFragmentBinding
 import fh.wfp2.flatlife.ui.adapters.OnItemClickListener
 import fh.wfp2.flatlife.ui.adapters.ShoppingAdapter
+import fh.wfp2.flatlife.ui.fragments.BaseFragment
 import fh.wfp2.flatlife.ui.viewmodels.shopping.ShoppingViewModel
-import fh.wfp2.flatlife.ui.viewmodels.shopping.ShoppingViewModelFactory
 import fh.wfp2.flatlife.util.hideKeyboard
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
 
-class ShoppingFragment : Fragment(R.layout.shopping_fragment), OnItemClickListener<ShoppingItem> {
+class ShoppingFragment : BaseFragment(R.layout.shopping_fragment),
+    OnItemClickListener<ShoppingItem> {
 
-    private lateinit var viewModel: ShoppingViewModel
-    private lateinit var viewModelFactory: ShoppingViewModelFactory
+    private val viewModel: ShoppingViewModel by viewModels()
     private lateinit var binding: ShoppingFragmentBinding
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -38,11 +37,6 @@ class ShoppingFragment : Fragment(R.layout.shopping_fragment), OnItemClickListen
         super.onViewCreated(view, savedInstanceState)
         hideKeyboard()
         binding = ShoppingFragmentBinding.bind(view)
-
-        val application = requireNotNull(this.activity).application
-        viewModelFactory = ShoppingViewModelFactory(application)
-
-        viewModel = ViewModelProvider(this, viewModelFactory).get(ShoppingViewModel::class.java)
 
         //Recyclerview
         val shoppingAdapter = ShoppingAdapter(this)

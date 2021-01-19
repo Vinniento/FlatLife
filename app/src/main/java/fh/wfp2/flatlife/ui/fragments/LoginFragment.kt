@@ -10,7 +10,7 @@ import fh.wfp2.flatlife.ui.viewmodels.LoginViewModel
 import timber.log.Timber
 
 
-class LoginFragment : Fragment(R.layout.login_fragment) {
+class LoginFragment : BaseFragment(R.layout.login_fragment) {
 
     companion object {
         fun newInstance() = LoginFragment()

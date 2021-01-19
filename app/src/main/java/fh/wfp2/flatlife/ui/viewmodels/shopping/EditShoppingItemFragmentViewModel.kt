@@ -2,7 +2,7 @@ package fh.wfp2.flatlife.ui.viewmodels.shopping
 
 import android.app.Application
 import androidx.lifecycle.*
-import fh.wfp2.flatlife.data.room.repositories.ShoppingRepository
+import fh.wfp2.flatlife.data.repositories.ShoppingRepository
 import fh.wfp2.flatlife.data.room.FlatLifeRoomDatabase
 import fh.wfp2.flatlife.data.room.entities.ShoppingItem
 import kotlinx.coroutines.channels.Channel

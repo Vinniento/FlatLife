@@ -8,8 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.SearchView
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -22,8 +21,8 @@ import fh.wfp2.flatlife.data.room.Task
 import fh.wfp2.flatlife.databinding.TaskFragmentBinding
 import fh.wfp2.flatlife.ui.adapters.OnItemClickListener
 import fh.wfp2.flatlife.ui.adapters.TaskAdapter
+import fh.wfp2.flatlife.ui.fragments.BaseFragment
 import fh.wfp2.flatlife.ui.viewmodels.TaskViewModel
-import fh.wfp2.flatlife.ui.viewmodels.TaskViewModelFactory
 import fh.wfp2.flatlife.util.hideKeyboard
 import fh.wfp2.flatlife.util.onQueryTextChanged
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -35,10 +34,9 @@ import timber.log.Timber
 
 
 @ExperimentalCoroutinesApi
-class TaskFragment : Fragment(R.layout.task_fragment), OnItemClickListener<Task> {
+class TaskFragment : BaseFragment(R.layout.task_fragment), OnItemClickListener<Task> {
 
-    private lateinit var viewModel: TaskViewModel
-    private lateinit var viewModelFactory: TaskViewModelFactory
+    private val viewModel: TaskViewModel by viewModels()
     private lateinit var binding: TaskFragmentBinding
 
     @InternalCoroutinesApi
@@ -49,10 +47,6 @@ class TaskFragment : Fragment(R.layout.task_fragment), OnItemClickListener<Task>
         hideKeyboard()
         binding = TaskFragmentBinding.bind(view)
 
-        val application = requireNotNull(this.activity).application
-        viewModelFactory = TaskViewModelFactory(application)
-
-        viewModel = ViewModelProvider(this, viewModelFactory).get(TaskViewModel::class.java)
         Timber.i("ViewModel created")
 
         //Recyclerview
@@ -77,8 +71,8 @@ class TaskFragment : Fragment(R.layout.task_fragment), OnItemClickListener<Task>
             // todoAdapter.submitList(it)
             it?.let {
                 todoAdapter.taskList = it
-                }
             }
+        }
 
 
         //coroutine will be canceled when onStop is called. Will only listen for events when fragment is displayed
