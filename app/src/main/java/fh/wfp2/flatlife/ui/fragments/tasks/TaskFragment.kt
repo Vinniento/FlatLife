@@ -15,16 +15,19 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.data.preferences.SortOrder
-import fh.wfp2.flatlife.data.room.Task
+import fh.wfp2.flatlife.data.room.entities.Task
 import fh.wfp2.flatlife.databinding.TaskFragmentBinding
+import fh.wfp2.flatlife.other.Status
 import fh.wfp2.flatlife.ui.adapters.OnItemClickListener
 import fh.wfp2.flatlife.ui.adapters.TaskAdapter
 import fh.wfp2.flatlife.ui.fragments.BaseFragment
 import fh.wfp2.flatlife.ui.viewmodels.TaskViewModel
 import fh.wfp2.flatlife.util.hideKeyboard
 import fh.wfp2.flatlife.util.onQueryTextChanged
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -32,12 +35,13 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-
+@AndroidEntryPoint
 @ExperimentalCoroutinesApi
 class TaskFragment : BaseFragment(R.layout.task_fragment), OnItemClickListener<Task> {
 
     private val viewModel: TaskViewModel by viewModels()
     private lateinit var binding: TaskFragmentBinding
+    val todoAdapter = TaskAdapter(this)
 
     @InternalCoroutinesApi
     @ExperimentalCoroutinesApi
@@ -51,7 +55,6 @@ class TaskFragment : BaseFragment(R.layout.task_fragment), OnItemClickListener<T
 
         //Recyclerview
         //fragment implements interface mit den listeners, also kann man hier eifnach sich selbst passen
-        val todoAdapter = TaskAdapter(this)
 
         binding.apply {
             taskListRecyclerview.apply {
@@ -66,15 +69,18 @@ class TaskFragment : BaseFragment(R.layout.task_fragment), OnItemClickListener<T
             addTask.setOnClickListener {
                 viewModel.onAddNewTaskClick()
             }
-        }
-        viewModel.tasks.observe(viewLifecycleOwner) {
-            // todoAdapter.submitList(it)
-            it?.let {
-                todoAdapter.taskList = it
+            constraintLayout.setOnClickListener {
+                viewModel.syncAllTasks()
             }
         }
 
+        subscribeToObservers()
 
+        setHasOptionsMenu(true)
+
+    }
+
+    private fun subscribeToObservers() {
         //coroutine will be canceled when onStop is called. Will only listen for events when fragment is displayed
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.tasksEvent.collect { event ->
@@ -97,7 +103,42 @@ class TaskFragment : BaseFragment(R.layout.task_fragment), OnItemClickListener<T
                 }
             }
         }
-        setHasOptionsMenu(true)
+
+
+        /*viewModel.tasks.observe(viewLifecycleOwner) {
+            // todoAdapter.submitList(it)
+            it?.let {
+                todoAdapter.taskList = it
+            }
+        }*/
+
+
+        viewModel.allTasks.observe(viewLifecycleOwner, {
+            it?.let { event ->
+                val result = event.peekContent()
+
+                when (result.status) {
+                    Status.SUCCESS -> {
+                        todoAdapter.taskList = result.data!!
+                    }
+                    Status.LOADING -> {
+                        result.data?.let { tasks ->
+                            todoAdapter.taskList = tasks
+                        }
+                    }
+                    Status.ERROR -> {
+                        event.getContentIfNotHandled()?.let { errorResource ->
+                            errorResource.message?.let { message ->
+                                showSnackbar(message)
+                            }
+                        }
+                        result.data?.let { tasks ->
+                            todoAdapter.taskList = tasks
+                        }
+                    }
+                }
+            }
+        })
 
     }
 
@@ -156,6 +197,7 @@ class TaskFragment : BaseFragment(R.layout.task_fragment), OnItemClickListener<T
 
     override fun onResume() {
         super.onResume()
+
         Timber.i("onResume called")
     }
 

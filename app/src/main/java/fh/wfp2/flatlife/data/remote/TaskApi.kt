@@ -1,9 +1,8 @@
 package fh.wfp2.flatlife.data.remote
 
 import com.androiddevs.ktornoteapp.data.remote.requests.AccountRequest
-import com.androiddevs.ktornoteapp.data.remote.requests.DeleteTaskRequest
 import com.androiddevs.ktornoteapp.data.remote.responses.SimpleResponse
-import fh.wfp2.flatlife.data.room.Task
+import fh.wfp2.flatlife.data.room.entities.Task
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -23,17 +22,17 @@ interface TaskApi {
     ): Response<SimpleResponse>
 
     @POST("/addTask")
-    suspend fun addNote(
+    suspend fun addTask(
         @Body task: Task
     ): Response<ResponseBody>
 
     @POST("/deleteTask")
     suspend fun deleteTask(
-        @Body deleteTaskRequest: DeleteTaskRequest
+        @Body task: Task
     ): Response<ResponseBody>
 
-    @GET("/getTasks")
-    suspend fun getTasks(): Response<List<Task>>
+    @GET("/getAllTasks")
+    suspend fun getAllTasks(): Response<List<Task>>
 }
 
 

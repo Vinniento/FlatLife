@@ -1,4 +1,4 @@
-package com.androiddevs.ktornoteapp.other
+package fh.wfp2.flatlife.other
 
 data class Resource<out T>(val status: Status, val data: T?, val message: String?) {
     companion object {

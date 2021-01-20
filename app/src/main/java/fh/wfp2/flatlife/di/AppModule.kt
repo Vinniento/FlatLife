@@ -1,13 +1,13 @@
-package com.androiddevs.ktornoteapp.di
+package fh.wfp2.flatlife.di
 
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.androiddevs.ktornoteapp.other.Constants.BASE_URL
-import com.androiddevs.ktornoteapp.other.Constants.DATABASE_NAME
-import com.androiddevs.ktornoteapp.other.Constants.ENCRYPTED_SHARED_PREF_NAME
+import fh.wfp2.flatlife.other.Constants.BASE_URL
+import fh.wfp2.flatlife.other.Constants.DATABASE_NAME
+import fh.wfp2.flatlife.other.Constants.ENCRYPTED_SHARED_PREF_NAME
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -51,6 +51,9 @@ object AppModule {
     @Provides
     fun provideFinanceCategoryDao(db: FlatLifeRoomDatabase) = db.expenseCategoryDao()
 
+    @Singleton
+    @Provides
+    fun provideAddExpenseDao(db: FlatLifeRoomDatabase) = db.addExpenseDao()
 
     @Singleton
     @Provides
@@ -58,11 +61,11 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideNoteApi(
+    fun provideTaskApi(
         basicAuthInterceptor: BasicAuthInterceptor
     ): TaskApi {
         val client = OkHttpClient.Builder()
-            .addInterceptor(basicAuthInterceptor)
+            //.addInterceptor(basicAuthInterceptor)
             .build()
         return Retrofit.Builder()
             .baseUrl(BASE_URL)

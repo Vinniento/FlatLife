@@ -9,8 +9,11 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import dagger.hilt.android.AndroidEntryPoint
 import fh.wfp2.flatlife.databinding.ActivityMainBinding
 import timber.log.Timber
+
+@AndroidEntryPoint
 
 class MainActivity : AppCompatActivity() {
 

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.data.room.entities.ShoppingItem
 import fh.wfp2.flatlife.databinding.ShoppingFragmentBinding
@@ -25,7 +26,7 @@ import fh.wfp2.flatlife.util.hideKeyboard
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
-
+@AndroidEntryPoint
 class ShoppingFragment : BaseFragment(R.layout.shopping_fragment),
     OnItemClickListener<ShoppingItem> {
 

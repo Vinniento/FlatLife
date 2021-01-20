@@ -1,4 +1,4 @@
-package com.androiddevs.ktornoteapp.other
+package fh.wfp2.flatlife.other
 
 object Constants {
 

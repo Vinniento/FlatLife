@@ -8,6 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.databinding.EditShoppingItemFragmentBinding
 import fh.wfp2.flatlife.ui.fragments.BaseFragment
@@ -15,7 +16,7 @@ import fh.wfp2.flatlife.ui.viewmodels.shopping.EditShoppingItemFragmentViewModel
 import fh.wfp2.flatlife.util.hideKeyboard
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
-
+@AndroidEntryPoint
 class EditShoppingItem : BaseFragment(R.layout.edit_shopping_item_fragment) {
 
     private lateinit var binding: EditShoppingItemFragmentBinding

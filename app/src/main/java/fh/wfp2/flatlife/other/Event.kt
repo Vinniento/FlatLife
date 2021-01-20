@@ -1,4 +1,4 @@
-package com.androiddevs.ktornoteapp.other
+package fh.wfp2.flatlife.other
 
 open class Event<out T>(private val content: T) {
 

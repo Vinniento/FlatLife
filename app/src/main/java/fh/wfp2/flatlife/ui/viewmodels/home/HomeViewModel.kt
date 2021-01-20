@@ -1,27 +1,19 @@
 package fh.wfp2.flatlife.ui.viewmodels.home
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
-import fh.wfp2.flatlife.data.room.FlatLifeRoomDatabase
-import fh.wfp2.flatlife.data.room.Task
-import fh.wfp2.flatlife.data.room.entities.ShoppingItem
 import fh.wfp2.flatlife.data.repositories.ShoppingRepository
 import fh.wfp2.flatlife.data.repositories.TaskRepository
+import fh.wfp2.flatlife.data.room.entities.ShoppingItem
+import fh.wfp2.flatlife.data.room.entities.Task
 
-class HomeViewModel(application: Application) : AndroidViewModel(application) {
-    private var taskRepository: TaskRepository
-    private var shoppingRepository: ShoppingRepository
-
-    init {
-        val taskDao = FlatLifeRoomDatabase.getInstance(application).taskDao()
-        taskRepository = TaskRepository(taskDao)
-        val shoppingDao = FlatLifeRoomDatabase.getInstance(application).shoppingDao()
-        shoppingRepository = ShoppingRepository(shoppingDao)
-
-    }
+class HomeViewModel @ViewModelInject constructor(
+    private val shoppingRepository: ShoppingRepository,
+    private val taskRepository: TaskRepository
+) : ViewModel() {
 
     private val _allShoppingItems: MutableLiveData<List<ShoppingItem>>
         get() = shoppingRepository.getAllItems().asLiveData() as MutableLiveData<List<ShoppingItem>>

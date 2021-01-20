@@ -3,7 +3,7 @@ package fh.wfp2.flatlife.data.room.daos
 import androidx.room.Dao
 import androidx.room.Query
 import fh.wfp2.flatlife.data.preferences.SortOrder
-import fh.wfp2.flatlife.data.room.Task
+import fh.wfp2.flatlife.data.room.entities.Task
 import kotlinx.coroutines.flow.Flow
 
 
@@ -32,6 +32,12 @@ interface TaskDao : AbstractDao<Task> {
 
     @Query("SELECT * FROM TASK")
     fun getAllTasks(): Flow<List<Task>>
+
+    @Query("select * from TASK where isSynced = 0")
+    suspend fun getAllUnsyncedTasks(): List<Task>
+
+    @Query("DELETE from TASK")
+    suspend fun deleteAllTasks()
 
 
 }

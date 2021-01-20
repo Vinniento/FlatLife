@@ -1,13 +1,14 @@
 package fh.wfp2.flatlife.ui.viewmodels
 
 import android.app.Application
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import fh.wfp2.flatlife.data.repositories.TaskRepository
 import fh.wfp2.flatlife.data.preferences.PreferencesManager
 import fh.wfp2.flatlife.data.preferences.SortOrder
-import fh.wfp2.flatlife.data.room.FlatLifeRoomDatabase
-import fh.wfp2.flatlife.data.room.Task
-import fh.wfp2.flatlife.data.room.daos.TaskDao
+import fh.wfp2.flatlife.data.repositories.TaskRepository
+import fh.wfp2.flatlife.data.room.entities.Task
+import fh.wfp2.flatlife.other.Event
+import fh.wfp2.flatlife.other.Resource
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.combine
@@ -16,10 +17,11 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import timber.log.Timber
 
 @ExperimentalCoroutinesApi
-class TaskViewModel(application: Application) : AndroidViewModel(application) {
+class TaskViewModel @ViewModelInject constructor(
+    private val repository: TaskRepository,
+    application: Application
+) : ViewModel() {
 
-    private val repository: TaskRepository
-    private var taskDao: TaskDao = FlatLifeRoomDatabase.getInstance(application).taskDao()
     private val taskViewModelJob = Job()
     private val state = SavedStateHandle()
 
@@ -33,16 +35,12 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         Timber.e(throwable.message.toString())
     }
 
+
     private val preferencesManager = PreferencesManager(application)
 
     //MutableStateFlow: Sobald sich etwas ändert, wird die entsprechende DB query abgesetzt
     val searchQuery = state.getLiveData("searchQuery", "")
     val preferencesFlow = preferencesManager.preferencesFlow
-
-    init {
-        repository = TaskRepository(taskDao)
-        Timber.i("Repository created in viewModel")
-    }
 
     private val tasksFlow = combine(searchQuery.asFlow(), preferencesFlow)
     { query, preferencesFlow ->
@@ -56,6 +54,17 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         }
 
     val tasks = tasksFlow.asLiveData()
+    private val _forceUpdate = MutableLiveData(false)
+
+    private val _allTasks = _forceUpdate.switchMap {
+        repository.getAllTasks().asLiveData()
+    }.switchMap {
+        MutableLiveData(Event(it))
+    }
+
+    val allTasks: LiveData<Event<Resource<List<Task>>>> = _allTasks
+
+    fun syncAllTasks() = _forceUpdate.postValue(true)
 
     fun onSortOrderSelected(sortOrder: SortOrder) {
         viewModelScope.launch {
@@ -82,7 +91,7 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
     fun onSwipedRight(task: Task) {
         uiScope.launch(errorHandler) {
 
-            repository.delete(task)
+            repository.deleteTask(task)
             tasksEventChannel.send(
                 TaskEvent.ShowUndoDeleteTaskMessage(task)
             )
@@ -92,13 +101,12 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
     fun deleteAllCompletedTasks() {
         uiScope.launch(errorHandler) {
             repository.deleteAllCompletedTasks()
-
         }
     }
 
     fun onUndoDeleteClick(task: Task) {
         viewModelScope.launch(errorHandler) {
-            repository.insert(task)
+            repository.insertTask(task)
         }
     }
 

@@ -33,7 +33,7 @@
         </action>
         <argument
             android:name="task"
-            app:argType="fh.wfp2.flatlife.data.room.Task"
+            app:argType="fh.wfp2.flatlife.data.room.entities.Task"
             app:nullable="true"
             android:defaultValue="@null" />
 

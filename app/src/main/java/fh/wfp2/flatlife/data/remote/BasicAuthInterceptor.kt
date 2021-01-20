@@ -1,6 +1,6 @@
 package fh.wfp2.flatlife.data.remote
 
-import com.androiddevs.ktornoteapp.other.Constants.IGNORE_AUTH_URLS
+import fh.wfp2.flatlife.other.Constants.IGNORE_AUTH_URLS
 import okhttp3.Credentials
 import okhttp3.Interceptor
 import okhttp3.Response

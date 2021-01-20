@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.data.room.entities.ExpenseCategory
 import fh.wfp2.flatlife.databinding.AddExpenseCategoryDialogBinding
@@ -19,7 +20,7 @@ import fh.wfp2.flatlife.ui.viewmodels.finance.FinanceCategoryViewModel
 import kotlinx.android.synthetic.main.add_expense_category_dialog.*
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
-
+@AndroidEntryPoint
 class FinanceCategoryFragment : BaseFragment(R.layout.finance_category_fragment) {
 
     private val viewModel: FinanceCategoryViewModel by viewModels()

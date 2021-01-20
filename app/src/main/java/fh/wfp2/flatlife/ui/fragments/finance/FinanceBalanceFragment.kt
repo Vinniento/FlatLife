@@ -5,11 +5,12 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import dagger.hilt.android.AndroidEntryPoint
 import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.databinding.FinanceBalanceFragmentBinding
 import fh.wfp2.flatlife.ui.fragments.BaseFragment
 import fh.wfp2.flatlife.ui.viewmodels.finance.FinanceBalanceViewModel
-
+@AndroidEntryPoint
 class FinanceBalanceFragment : BaseFragment(R.layout.finance_balance_fragment) {
 
     private val viewModel: FinanceBalanceViewModel by viewModels()

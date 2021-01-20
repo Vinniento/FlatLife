@@ -1,4 +1,4 @@
-package com.androiddevs.ktornoteapp.other
+package fh.wfp2.flatlife.other
 
 import kotlinx.coroutines.flow.*
 
@@ -6,7 +6,7 @@ inline fun <ResultType, RequestType> networkBoundResource(
     crossinline query: () -> Flow<ResultType>,
     crossinline fetch: suspend () -> RequestType,
     crossinline saveFetchResult: suspend (RequestType) -> Unit,
-    crossinline onFetchFailed: (Throwable) -> Unit = { Unit },
+    crossinline onFetchedFailed: (Throwable) -> Unit = { Unit },
     crossinline shouldFetch: (ResultType) -> Boolean = { true }
 ) = flow {
     emit(Resource.loading(null))
@@ -20,7 +20,7 @@ inline fun <ResultType, RequestType> networkBoundResource(
             saveFetchResult(fetchedResult)
             query().map { Resource.success(it) }
         } catch (t: Throwable) {
-            onFetchFailed(t)
+            onFetchedFailed(t)
             query().map {
                 Resource.error("Couldn't reach server. It might be down", it)
             }

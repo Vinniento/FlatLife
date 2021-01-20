@@ -2,30 +2,32 @@ package fh.wfp2.flatlife.ui.home
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import dagger.hilt.android.AndroidEntryPoint
 import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.databinding.HomeFragmentBinding
 import fh.wfp2.flatlife.ui.adapters.ShoppingAdapter
 import fh.wfp2.flatlife.ui.adapters.TaskAdapter
+import fh.wfp2.flatlife.ui.fragments.BaseFragment
 import fh.wfp2.flatlife.ui.viewmodels.home.HomeViewModel
 import fh.wfp2.flatlife.util.hideKeyboard
 import timber.log.Timber
 
-
-class HomeFragment : Fragment(R.layout.home_fragment) {
+@AndroidEntryPoint
+class HomeFragment : BaseFragment(R.layout.home_fragment) {
 
     private lateinit var binding: HomeFragmentBinding
-    private lateinit var viewModel: HomeViewModel
+    private val viewModel: HomeViewModel by viewModels()
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = HomeFragmentBinding.bind(view)
         hideKeyboard()
         val taskAdapter = TaskAdapter(null)
         val shoppingAdapter = ShoppingAdapter(null)
-        viewModel =
-            ViewModelProvider(this, defaultViewModelProviderFactory).get(HomeViewModel::class.java)
+
         binding.apply {
 
             rvTask.apply {
@@ -41,7 +43,7 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
 
             viewModel.allShoppingItems.observe(viewLifecycleOwner, {
                 it?.let {
-                        shoppingAdapter.shoppingList = it.filter { item -> !item.isBought }
+                    shoppingAdapter.shoppingList = it.filter { item -> !item.isBought }
                 }
             })
             viewModel.allTaskItems.observe(viewLifecycleOwner, {
@@ -76,6 +78,4 @@ class HomeFragment : Fragment(R.layout.home_fragment) {
         super.onStop()
         Timber.i("onStopCalled")
     }
-
-
 }

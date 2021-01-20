@@ -5,11 +5,12 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import dagger.hilt.android.AndroidEntryPoint
 import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.databinding.ChoreStatisticsFragmentBinding
 import fh.wfp2.flatlife.ui.fragments.BaseFragment
 import fh.wfp2.flatlife.ui.viewmodels.chores.ChoreStatisticsViewModel
-
+@AndroidEntryPoint
 class ChoreStatisticsFragment : BaseFragment(R.layout.chore_statistics_fragment) {
 
     companion object {

@@ -9,13 +9,13 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.annotation.RequiresApi
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
+import dagger.hilt.android.AndroidEntryPoint
 import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.data.room.entities.Chore
 import fh.wfp2.flatlife.databinding.ChoreFragmentBinding
@@ -23,12 +23,12 @@ import fh.wfp2.flatlife.ui.adapters.ChoreAdapter
 import fh.wfp2.flatlife.ui.adapters.OnItemClickListener
 import fh.wfp2.flatlife.ui.fragments.BaseFragment
 import fh.wfp2.flatlife.ui.viewmodels.chores.ChoreViewModel
-import fh.wfp2.flatlife.util.getItemPositionByName
 import kotlinx.android.synthetic.main.add_chore_dialog.*
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 import java.util.*
 
+@AndroidEntryPoint
 @RequiresApi(Build.VERSION_CODES.N)
 class ChoreFragment : BaseFragment(R.layout.chore_fragment), OnItemClickListener<Chore> {
     private lateinit var _datePickerDialog: DatePickerDialog
@@ -147,21 +147,25 @@ class ChoreFragment : BaseFragment(R.layout.chore_fragment), OnItemClickListener
             val choreName: String = dialog.et_chore_name.text.toString()
             val dueBy: String = dialog.tv_due_by.text.toString()
 
-            if(chore == null)
+            if (chore == null)
                 viewModel.addChore(
-                Chore(
-                    0,
-                    name = choreName,
-                    dueBy = dueBy,
-                    assignedTo = assignedTo,
-                    effort = effort
+                    Chore(
+                        0,
+                        name = choreName,
+                        dueBy = dueBy,
+                        assignedTo = assignedTo,
+                        effort = effort
+                    )
                 )
-            )
             else
-                viewModel.onUpdateChoreClick(chore.copy(  name = choreName,
-                    dueBy = dueBy,
-                    assignedTo = assignedTo,
-                    effort = effort))
+                viewModel.onUpdateChoreClick(
+                    chore.copy(
+                        name = choreName,
+                        dueBy = dueBy,
+                        assignedTo = assignedTo,
+                        effort = effort
+                    )
+                )
             Timber.i("name: $choreName  - dueBy: $dueBy")
             dialog.dismiss()
         }

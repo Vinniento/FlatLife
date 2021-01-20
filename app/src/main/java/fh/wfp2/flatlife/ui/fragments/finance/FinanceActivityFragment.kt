@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import dagger.hilt.android.AndroidEntryPoint
 import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.data.room.entities.FinanceActivity
 import fh.wfp2.flatlife.databinding.FinanceActivityFragmentBinding
@@ -14,7 +15,7 @@ import fh.wfp2.flatlife.ui.adapters.FinanceActivityAdapter
 import fh.wfp2.flatlife.ui.fragments.BaseFragment
 import fh.wfp2.flatlife.ui.viewmodels.finance.FinanceActivityViewModel
 import kotlinx.coroutines.flow.collect
-
+@AndroidEntryPoint
 class FinanceActivityFragment : BaseFragment(R.layout.finance_activity_fragment) {
 
     private val viewModel: FinanceActivityViewModel by viewModels()
