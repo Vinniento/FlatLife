@@ -8,6 +8,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.data.room.entities.Task
 import fh.wfp2.flatlife.databinding.TaskItemCardBinding
 import timber.log.Timber
@@ -71,6 +72,12 @@ class TaskAdapter(private val listener: OnItemClickListener<Task>?) :
                 tvTodoName.text = task.name
                 tvTodoName.paint.isStrikeThruText = task.isComplete
                 ivImportant.isVisible = task.isImportant
+                if (!task.isSynced) {
+                    ivSynced.setImageResource(R.drawable.ic_cross)
+                } else {
+                    ivSynced.setImageResource(R.drawable.ic_check)
+
+                }
             }
         }
     }

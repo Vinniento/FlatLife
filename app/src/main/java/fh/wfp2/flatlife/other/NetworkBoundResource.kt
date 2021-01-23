@@ -6,13 +6,13 @@ inline fun <ResultType, RequestType> networkBoundResource(
     crossinline query: () -> Flow<ResultType>,
     crossinline fetch: suspend () -> RequestType,
     crossinline saveFetchResult: suspend (RequestType) -> Unit,
-    crossinline onFetchedFailed: (Throwable) -> Unit = { Unit },
+    crossinline onFetchFailed: (Throwable) -> Unit = { Unit },
     crossinline shouldFetch: (ResultType) -> Boolean = { true }
 ) = flow {
     emit(Resource.loading(null))
     val data = query().first()
 
-    val flow = if(shouldFetch(data)) {
+    val flow = if (shouldFetch(data)) {
         emit(Resource.loading(data))
 
         try {
@@ -20,7 +20,7 @@ inline fun <ResultType, RequestType> networkBoundResource(
             saveFetchResult(fetchedResult)
             query().map { Resource.success(it) }
         } catch (t: Throwable) {
-            onFetchedFailed(t)
+            onFetchFailed(t) //todo: fehler handling implementieren
             query().map {
                 Resource.error("Couldn't reach server. It might be down", it)
             }
@@ -30,14 +30,3 @@ inline fun <ResultType, RequestType> networkBoundResource(
     }
     emitAll(flow)
 }
-
-
-
-
-
-
-
-
-
-
-

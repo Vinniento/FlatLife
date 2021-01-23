@@ -1,6 +1,7 @@
 package fh.wfp2.flatlife.data.repositories
 
 import android.app.Application
+import com.androiddevs.ktornoteapp.data.remote.requests.DeleteTaskRequest
 import com.androiddevs.ktornoteapp.other.checkForInternetConnection
 import fh.wfp2.flatlife.data.preferences.SortOrder
 import fh.wfp2.flatlife.data.remote.TaskApi
@@ -21,56 +22,63 @@ class TaskRepository @Inject constructor(
     private val taskDao: TaskDao,
     private val taskApi: TaskApi,
     private val context: Application
-) :
-    AbstractRepository<Task>(taskDao) {
+) : AbstractRepository<Task>(taskDao) {
+
     private val todoRepositoryJob = Job()
     private val ioScope = CoroutineScope(todoRepositoryJob + Dispatchers.IO)
-    private var curTasksResponse: Response<List<Task>>? = null
 
     suspend fun insertTask(task: Task) {
+
         val response = try {
             taskApi.addTask(task)
         } catch (e: Exception) {
             null
         }
         if (response != null && response.isSuccessful) {
-            taskDao.insert(task)
+            taskDao.insert(task.apply { isSynced = true; id = response.body()?.taskId!! })
         } else {
             taskDao.insert(task)
         }
     }
+
 
     private suspend fun insertTasks(tasks: List<Task>) {
         tasks.forEach { insertTask(it) }
     }
 
-    suspend fun deleteTask(task: Task) {
+    suspend fun deleteTask(task: Task): Boolean {
+
         val response = try {
-            taskApi.deleteTask(task)
+            taskApi.deleteTask(DeleteTaskRequest(task.id))
         } catch (e: Exception) {
             null
         }
-        if (response != null && response.isSuccessful) {
+        return if (response != null && response.isSuccessful) {
             taskDao.delete(task)
+            true;
         } else {
-            //todo in db markieren als gelöscht
+            taskDao.insert(task.apply { isDeletedLocally = true })
+            true;
         }
+
     }
 
+    private var curTaskResponse: Response<List<Task>>? = null
+
     private suspend fun syncTasks() {
-     /*   val locallyDeletedTaskIDs = taskDao.getAllLocallyDeletedTasksIDs()
-        locallyDeletedTaskIDs.forEach { id -> deleteTask(id.deletedTaskID) }
-*/
+        val locallyDeleteTaskIDs = taskDao.getLocallyDeletedTaskIDs()
+        locallyDeleteTaskIDs.forEach { task -> deleteTask(task) }
 
-        val unsyncedTasks: List<Task> = taskDao.getAllUnsyncedTasks()
+        val unsyncedTasks = taskDao.getAllUnsyncedTasks()
+        unsyncedTasks.forEach {
+            insertTask(it)
+        }
+        curTaskResponse = taskApi.getAllTasks()
 
-        unsyncedTasks.forEach { task -> insertTask(task) }
-        curTasksResponse = taskApi.getAllTasks()
-        curTasksResponse?.body()?.let { tasks ->
+        curTaskResponse?.body()?.let {
             taskDao.deleteAllTasks()
-            tasks.forEach { task ->
-                taskDao.insert(task.apply { isSynced = true })
-            }
+            Timber.i("all tasks deleted")
+            //insertTasks(tasks.onEach { task -> task.isSynced = true })
         }
     }
 
@@ -81,17 +89,22 @@ class TaskRepository @Inject constructor(
             },
             fetch = {
                 syncTasks()
-                curTasksResponse
+                Timber.i("Tasks synchronized: ${curTaskResponse?.body()?.size}")
+                curTaskResponse
             },
             saveFetchResult = { response ->
                 response?.body()?.let {
-                    insertTasks(it.onEach { task -> task.isSynced = true })
+                    insertTasksLocal(it.onEach { task -> task.isSynced = true })
                 }
             },
             shouldFetch = {
                 checkForInternetConnection(context)
             }
         )
+    }
+
+    private suspend fun insertTasksLocal(list: List<Task>) {
+        list.forEach { task -> insert(task) }
     }
 
     fun getTasks(
@@ -106,10 +119,32 @@ class TaskRepository @Inject constructor(
 
     suspend fun deleteAllCompletedTasks() {
         ioScope.launch {
-            taskDao.deleteAllCompletedTasks()
+            val response = try {
+                taskApi.deleteAllCompletedTasks()
+            } catch (e: Exception) {
+                null
+            }
+            if (response != null && response.isSuccessful) {
+                taskDao.deleteAllCompletedTasks()
+            } else {
+                val deletedTasks = taskDao.getAllLocallyDeletedTasks()
+                insertTasksLocal(deletedTasks.onEach { it.isDeletedLocally = true })
+            }
         }
     }
 
     fun getAllItems(): Flow<List<Task>> = taskDao.getAllTasks()
 
+    suspend fun updateTask(task: Task) {
+        val response = try {
+            taskApi.addTask(task)
+        } catch (e: Exception) {
+            null
+        }
+        return if (response != null && response.isSuccessful) {
+            taskDao.update(task)
+        } else {
+            taskDao.insert(task.apply { !isComplete; isSynced = false })
+        }
+    }
 }

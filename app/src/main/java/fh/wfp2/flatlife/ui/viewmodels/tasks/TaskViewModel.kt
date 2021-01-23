@@ -1,14 +1,14 @@
-package fh.wfp2.flatlife.ui.viewmodels
+package fh.wfp2.flatlife.ui.viewmodels.tasks
 
 import android.app.Application
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
+import fh.wfp2.flatlife.other.Event
+import fh.wfp2.flatlife.other.Resource
 import fh.wfp2.flatlife.data.preferences.PreferencesManager
 import fh.wfp2.flatlife.data.preferences.SortOrder
 import fh.wfp2.flatlife.data.repositories.TaskRepository
 import fh.wfp2.flatlife.data.room.entities.Task
-import fh.wfp2.flatlife.other.Event
-import fh.wfp2.flatlife.other.Resource
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.combine
@@ -24,7 +24,7 @@ class TaskViewModel @ViewModelInject constructor(
 
     private val taskViewModelJob = Job()
     private val state = SavedStateHandle()
-
+    private val _forceUpdate = MutableLiveData(false)
 
     private val uiScope = CoroutineScope(taskViewModelJob + Dispatchers.Main)
 
@@ -35,12 +35,19 @@ class TaskViewModel @ViewModelInject constructor(
         Timber.e(throwable.message.toString())
     }
 
-
     private val preferencesManager = PreferencesManager(application)
 
     //MutableStateFlow: Sobald sich etwas ändert, wird die entsprechende DB query abgesetzt
     val searchQuery = state.getLiveData("searchQuery", "")
     val preferencesFlow = preferencesManager.preferencesFlow
+
+    private val _allTasks = _forceUpdate.switchMap {
+        repository.getAllTasks().asLiveData(viewModelScope.coroutineContext)
+    }.switchMap {
+        MutableLiveData(Event(it))
+    }
+
+    val allTasks: LiveData<Event<Resource<List<Task>>>> = _allTasks
 
     private val tasksFlow = combine(searchQuery.asFlow(), preferencesFlow)
     { query, preferencesFlow ->
@@ -48,22 +55,11 @@ class TaskViewModel @ViewModelInject constructor(
             query,
             preferencesFlow
         ) //angeblich CustomClass besser falls sich was ändert
+    }.flatMapLatest { (query, filterPreferences) ->
+        repository.getTasks(query, filterPreferences.hideCompleted, filterPreferences.sortOrder)
     }
-        .flatMapLatest { (query, filterPreferences) ->
-            repository.getTasks(query, filterPreferences.hideCompleted, filterPreferences.sortOrder)
-        }
 
     val tasks = tasksFlow.asLiveData()
-    private val _forceUpdate = MutableLiveData(false)
-
-    private val _allTasks = _forceUpdate.switchMap {
-        repository.getAllTasks().asLiveData()
-    }.switchMap {
-        MutableLiveData(Event(it))
-    }
-
-    val allTasks: LiveData<Event<Resource<List<Task>>>> = _allTasks
-
     fun syncAllTasks() = _forceUpdate.postValue(true)
 
     fun onSortOrderSelected(sortOrder: SortOrder) {
@@ -79,7 +75,7 @@ class TaskViewModel @ViewModelInject constructor(
     }
 
     fun onTaskCheckChanged(task: Task, isChecked: Boolean) = uiScope.launch(errorHandler) {
-        repository.update(task.copy(isComplete = isChecked))
+        repository.updateTask(task.copy(isComplete = isChecked))
         Timber.i("CheckedState : $isChecked")
     }
 
@@ -90,7 +86,6 @@ class TaskViewModel @ViewModelInject constructor(
 
     fun onSwipedRight(task: Task) {
         uiScope.launch(errorHandler) {
-
             repository.deleteTask(task)
             tasksEventChannel.send(
                 TaskEvent.ShowUndoDeleteTaskMessage(task)
@@ -111,7 +106,9 @@ class TaskViewModel @ViewModelInject constructor(
     }
 
     fun onAddNewTaskClick() = viewModelScope.launch {
-        tasksEventChannel.send(TaskEvent.NavigateToAddTaskScreen)
+
+    //repository.insertTask(Task(0, "bla", false, 2334564545, true))
+      tasksEventChannel.send(TaskEvent.NavigateToAddTaskScreen)
     }
 
     fun onTaskSelected(task: Task) = viewModelScope.launch {

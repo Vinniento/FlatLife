@@ -1,7 +1,9 @@
 package fh.wfp2.flatlife.data.remote
 
 import com.androiddevs.ktornoteapp.data.remote.requests.AccountRequest
+import com.androiddevs.ktornoteapp.data.remote.requests.DeleteTaskRequest
 import com.androiddevs.ktornoteapp.data.remote.responses.SimpleResponse
+import fh.wfp2.flatlife.data.remote.responses.AddTaskResponse
 import fh.wfp2.flatlife.data.room.entities.Task
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -24,15 +26,23 @@ interface TaskApi {
     @POST("/addTask")
     suspend fun addTask(
         @Body task: Task
+    ): Response<AddTaskResponse> //TODO: wegen doppelter ID vl immer wieder neu einfügen ?
+
+    @POST("/updateTask")
+    suspend fun updateTask(
+        @Body task: Task
     ): Response<ResponseBody>
 
     @POST("/deleteTask")
     suspend fun deleteTask(
-        @Body task: Task
+        @Body request: DeleteTaskRequest
     ): Response<ResponseBody>
 
     @GET("/getAllTasks")
     suspend fun getAllTasks(): Response<List<Task>>
+
+    @GET("/deleteAllCompletedTasks")
+    suspend fun deleteAllCompletedTasks(): Response<ResponseBody>
 }
 
 
