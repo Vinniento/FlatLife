@@ -1,10 +1,11 @@
-package fh.wfp2.flatlife.ui.fragments
+package fh.wfp2.flatlife.ui.fragments.authentication
 
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.databinding.LoginFragmentBinding
+import fh.wfp2.flatlife.ui.fragments.BaseFragment
 import fh.wfp2.flatlife.ui.viewmodels.authentication.LoginViewModel
 import timber.log.Timber
 
@@ -17,7 +18,6 @@ class LoginFragment : BaseFragment(R.layout.login_fragment) {
 
     private lateinit var _viewModel: LoginViewModel
     private lateinit var binding: LoginFragmentBinding
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -51,6 +51,4 @@ class LoginFragment : BaseFragment(R.layout.login_fragment) {
         super.onStop()
         Timber.i("onStopCalled")
     }
-
-
 }

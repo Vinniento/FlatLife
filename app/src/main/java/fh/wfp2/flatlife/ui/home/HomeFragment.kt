@@ -20,7 +20,6 @@ class HomeFragment : BaseFragment(R.layout.home_fragment) {
     private lateinit var binding: HomeFragmentBinding
     private val viewModel: HomeViewModel by viewModels()
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = HomeFragmentBinding.bind(view)
@@ -41,11 +40,11 @@ class HomeFragment : BaseFragment(R.layout.home_fragment) {
                 setHasFixedSize(true)
             }
 
-            viewModel.allShoppingItems.observe(viewLifecycleOwner, {
+            /*viewModel.allShoppingItems.observe(viewLifecycleOwner, {
                 it?.let {
                     shoppingAdapter.shoppingList = it.filter { item -> !item.isBought }
                 }
-            })
+            })*/
             viewModel.allTaskItems.observe(viewLifecycleOwner, {
 
                 taskAdapter.taskList = it.filter { item -> !item.isComplete }

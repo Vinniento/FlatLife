@@ -1,23 +1,26 @@
 package fh.wfp2.flatlife.ui.viewmodels.shopping
 
 import android.app.Application
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import fh.wfp2.flatlife.data.room.FlatLifeRoomDatabase
-import fh.wfp2.flatlife.data.room.entities.ShoppingItem
 import fh.wfp2.flatlife.data.repositories.ShoppingRepository
+import fh.wfp2.flatlife.data.room.entities.ShoppingItem
+import fh.wfp2.flatlife.other.Event
+import fh.wfp2.flatlife.other.Resource
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import timber.log.Timber
 
 
-class ShoppingViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val shoppingDao = FlatLifeRoomDatabase.getInstance(application).shoppingDao()
-    private val repository: ShoppingRepository = ShoppingRepository(shoppingDao)
+class ShoppingViewModel @ViewModelInject constructor(
+    private val repository: ShoppingRepository,
+    application: Application
+) : AndroidViewModel(application) {
 
     private val shoppingViewModelJob = Job()
     private val uiScope = CoroutineScope(shoppingViewModelJob + Dispatchers.Main)
+    private val _forceUpdate = MutableLiveData(false)
 
     private val addShoppingItemChannel = Channel<ShoppingEvents>()
     val addShoppingItemEvents = addShoppingItemChannel.receiveAsFlow()
@@ -26,11 +29,15 @@ class ShoppingViewModel(application: Application) : AndroidViewModel(application
         Timber.e(throwable.message.toString())
     }
 
-    //TODO ultra hässlich, wie macht man das schöner? mit switchMap oder so?
-    private val _allItems: MutableLiveData<List<ShoppingItem>>
-        get() = repository.getAllItems().asLiveData() as MutableLiveData<List<ShoppingItem>>
+    private val _allItems = _forceUpdate.switchMap {
+        repository.getAllItems().asLiveData(viewModelScope.coroutineContext)
+    }.switchMap {
+        MutableLiveData(Event(it))
+    }
 
-    val allItems: LiveData<List<ShoppingItem>> = _allItems
+    val allItems: LiveData<Event<Resource<List<ShoppingItem>>>> = _allItems
+
+    fun syncAllTasks() = _forceUpdate.postValue(true)
 
     fun onAddItemClick(itemName: String) {
         if (itemName.isEmpty())
@@ -39,11 +46,10 @@ class ShoppingViewModel(application: Application) : AndroidViewModel(application
             }
         else
             viewModelScope.launch {
-                repository.insert(ShoppingItem(name = itemName))
+                repository.insertItem(ShoppingItem(name = itemName))
                 addShoppingItemChannel.send(ShoppingEvents.ShowItemAddedMessage(itemName))
             }
     }
-
 
     override fun onCleared() {
         super.onCleared()
@@ -54,7 +60,6 @@ class ShoppingViewModel(application: Application) : AndroidViewModel(application
         viewModelScope.launch {
             addShoppingItemChannel.send(ShoppingEvents.NavigateToEditShoppingItemFragment(item))
         }
-
     }
 
     fun deleteAllBoughtItems() {
@@ -71,15 +76,14 @@ class ShoppingViewModel(application: Application) : AndroidViewModel(application
 
     fun onShoppingItemCheckedChanged(item: ShoppingItem, isChecked: Boolean) {
         viewModelScope.launch {
-            repository.update(item.copy(isBought = isChecked))
+            repository.updateItem(item.copy(isBought = isChecked))
             Timber.i("Item checked updated: isChecked = $isChecked")
         }
     }
 
     fun onSwipedRight(item: ShoppingItem) {
         uiScope.launch(errorHandler) {
-
-            repository.delete(item)
+            repository.deleteItem(item)
             addShoppingItemChannel.send(
                 ShoppingEvents.ShowUndoDeleteTaskMessage(item)
             )

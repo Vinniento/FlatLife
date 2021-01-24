@@ -1,31 +1,27 @@
 package fh.wfp2.flatlife.ui.viewmodels.shopping
 
-import android.app.Application
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import fh.wfp2.flatlife.data.repositories.ShoppingRepository
-import fh.wfp2.flatlife.data.room.FlatLifeRoomDatabase
 import fh.wfp2.flatlife.data.room.entities.ShoppingItem
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
-class EditShoppingItemFragmentViewModel(application: Application) : AndroidViewModel(application) {
+class EditShoppingItemFragmentViewModel @ViewModelInject constructor(
+    private val repository: ShoppingRepository
+) :
+    ViewModel() {
 
     private val editShopppingItemEventChannel = Channel<EditShoppingItemEvent>()
     val editShoppingItemEvent = editShopppingItemEventChannel.receiveAsFlow()
 
     private val state = SavedStateHandle()
-    private val repository: ShoppingRepository
 
     var _item = MutableLiveData<ShoppingItem>()
 
     val item: LiveData<ShoppingItem>
         get() = _item
-
-    init {
-        val shoppingDao = FlatLifeRoomDatabase.getInstance(application).shoppingDao()
-        repository = ShoppingRepository(shoppingDao)
-    };
 
     fun onArgumentsPassed(shoppingItem: ShoppingItem) {
         _item.value = shoppingItem

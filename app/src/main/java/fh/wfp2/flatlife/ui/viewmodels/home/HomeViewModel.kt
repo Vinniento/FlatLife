@@ -15,10 +15,10 @@ class HomeViewModel @ViewModelInject constructor(
     private val taskRepository: TaskRepository
 ) : ViewModel() {
 
-    private val _allShoppingItems: MutableLiveData<List<ShoppingItem>>
+   /* private val _allShoppingItems: MutableLiveData<List<ShoppingItem>>
         get() = shoppingRepository.getAllItems().asLiveData() as MutableLiveData<List<ShoppingItem>>
 
-    val allShoppingItems: LiveData<List<ShoppingItem>> = _allShoppingItems
+    val allShoppingItems: LiveData<List<ShoppingItem>> = _allShoppingItems*/
 
     private val _allTaskItems: MutableLiveData<List<Task>>
         get() = taskRepository.getAllItems().asLiveData() as MutableLiveData<List<Task>>

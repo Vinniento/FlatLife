@@ -1,4 +1,4 @@
-package fh.wfp2.flatlife.ui.viewmodels
+package fh.wfp2.flatlife.ui.viewmodels.authentication
 
 import androidx.lifecycle.ViewModel
 

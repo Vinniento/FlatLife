@@ -14,6 +14,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import fh.wfp2.flatlife.data.remote.BasicAuthInterceptor
+import fh.wfp2.flatlife.data.remote.ShoppingApi
 import fh.wfp2.flatlife.data.remote.TaskApi
 import fh.wfp2.flatlife.data.room.FlatLifeRoomDatabase
 import okhttp3.OkHttpClient
@@ -73,6 +74,22 @@ object AppModule {
             .client(client)
             .build()
             .create(TaskApi::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideShoppingApi(
+        basicAuthInterceptor: BasicAuthInterceptor
+    ): ShoppingApi {
+        val client = OkHttpClient.Builder()
+            //.addInterceptor(basicAuthInterceptor)
+            .build()
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build()
+            .create(ShoppingApi::class.java)
     }
 
     @Singleton

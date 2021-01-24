@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.data.room.entities.ShoppingItem
 import fh.wfp2.flatlife.databinding.ShoppingItemCardBinding
 import timber.log.Timber
@@ -63,10 +64,17 @@ class ShoppingAdapter(private val listener: OnItemClickListener<ShoppingItem>?) 
             }
         }
 
-        fun bind(shoppingItem: ShoppingItem) {
+        fun bind(item: ShoppingItem) {
             binding.apply {
-                tvItemName.text = shoppingItem.name
-                cbItemBought.isChecked = shoppingItem.isBought
+                tvItemName.text = item.name
+                cbItemBought.isChecked = item.isBought
+
+                if (!item.isSynced) {
+                    ivSynced.setImageResource(R.drawable.ic_cross)
+                } else {
+                    ivSynced.setImageResource(R.drawable.ic_check)
+
+                }
             }
         }
     }

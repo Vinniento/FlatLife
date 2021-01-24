@@ -1,10 +1,10 @@
 package fh.wfp2.flatlife.data.repositories
 
 import android.app.Application
-import com.androiddevs.ktornoteapp.data.remote.requests.DeleteTaskRequest
 import com.androiddevs.ktornoteapp.other.checkForInternetConnection
 import fh.wfp2.flatlife.data.preferences.SortOrder
 import fh.wfp2.flatlife.data.remote.TaskApi
+import fh.wfp2.flatlife.data.remote.requests.DeleteItemRequest
 import fh.wfp2.flatlife.data.room.daos.TaskDao
 import fh.wfp2.flatlife.data.room.entities.Task
 import fh.wfp2.flatlife.other.Resource
@@ -35,7 +35,7 @@ class TaskRepository @Inject constructor(
             null
         }
         if (response != null && response.isSuccessful) {
-            taskDao.insert(task.apply { isSynced = true; id = response.body()?.taskId!! })
+            taskDao.insert(task.apply { isSynced = true; id = response.body()?.itemID!! })
         } else {
             taskDao.insert(task)
         }
@@ -49,7 +49,7 @@ class TaskRepository @Inject constructor(
     suspend fun deleteTask(task: Task): Boolean {
 
         val response = try {
-            taskApi.deleteTask(DeleteTaskRequest(task.id))
+            taskApi.deleteTask(DeleteItemRequest(task.id))
         } catch (e: Exception) {
             null
         }
@@ -60,7 +60,6 @@ class TaskRepository @Inject constructor(
             taskDao.insert(task.apply { isDeletedLocally = true })
             true;
         }
-
     }
 
     private var curTaskResponse: Response<List<Task>>? = null
@@ -70,9 +69,7 @@ class TaskRepository @Inject constructor(
         locallyDeleteTaskIDs.forEach { task -> deleteTask(task) }
 
         val unsyncedTasks = taskDao.getAllUnsyncedTasks()
-        unsyncedTasks.forEach {
-            insertTask(it)
-        }
+        insertTasks(unsyncedTasks)
         curTaskResponse = taskApi.getAllTasks()
 
         curTaskResponse?.body()?.let {
@@ -127,7 +124,8 @@ class TaskRepository @Inject constructor(
             if (response != null && response.isSuccessful) {
                 taskDao.deleteAllCompletedTasks()
             } else {
-                val deletedTasks = taskDao.getAllLocallyDeletedTasks()
+                //val deletedTasks = taskDao.getAllLocallyDeletedTasks()
+                val deletedTasks = taskDao.getAllCompletedTasks()
                 insertTasksLocal(deletedTasks.onEach { it.isDeletedLocally = true })
             }
         }

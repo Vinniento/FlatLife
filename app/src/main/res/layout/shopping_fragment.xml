@@ -1,53 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
-    android:id="@+id/constraintLayout_shopping"
+    android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.fragments.shopping.ShoppingFragment">
+    android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/shopping_list_recyclerview"
+    <androidx.constraintlayout.widget.ConstraintLayout
+
+        android:id="@+id/constraintLayout_shopping"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="90dp"
-        android:textAllCaps="false"
-        android:background="@android:color/transparent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_shopping_item_input"
-        tools:listitem="@layout/shopping_item_card" />
+        tools:context=".ui.fragments.shopping.ShoppingFragment">
+
+        <EditText
+            android:id="@+id/et_shopping_item_input"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="20dp"
+            android:autofillHints=""
+            android:ems="10"
+            android:hint="Bananas..."
+            android:inputType="textPersonName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/addShoppingItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:contentDescription="AddButton"
+            android:src="@drawable/ic_add"
+            app:layout_constraintBottom_toBottomOf="@+id/et_shopping_item_input"
+            app:layout_constraintStart_toEndOf="@+id/et_shopping_item_input"
+            app:layout_constraintTop_toTopOf="@+id/et_shopping_item_input"
+            app:layout_constraintVertical_bias="0.0" />
 
 
-    <EditText
-        android:id="@+id/et_shopping_item_input"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:autofillHints=""
-        android:ems="10"
-        android:hint="Bananas..."
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@id/shopping_list_recyclerview"
-        app:layout_constraintStart_toStartOf="parent" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/shopping_list_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="90dp"
+            android:background="@android:color/transparent"
+            android:textAllCaps="false"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:listitem="@layout/shopping_item_card" />
 
-    <ImageButton
-        android:id="@+id/addShoppingItem"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:contentDescription="AddButton"
-        android:src="@drawable/ic_add"
-        app:layout_constraintBottom_toBottomOf="@+id/et_shopping_item_input"
-        app:layout_constraintStart_toEndOf="@+id/et_shopping_item_input"
-        app:layout_constraintTop_toTopOf="@+id/et_shopping_item_input"
-        app:layout_constraintVertical_bias="0.0" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

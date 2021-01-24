@@ -16,13 +16,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import fh.wfp2.flatlife.other.Status
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.data.preferences.SortOrder
 import fh.wfp2.flatlife.data.room.entities.Task
 import fh.wfp2.flatlife.databinding.TaskFragmentBinding
+import fh.wfp2.flatlife.other.Status
 import fh.wfp2.flatlife.ui.adapters.OnItemClickListener
 import fh.wfp2.flatlife.ui.adapters.TaskAdapter
 import fh.wfp2.flatlife.ui.fragments.BaseFragment
@@ -42,7 +42,7 @@ class TaskFragment : BaseFragment(R.layout.task_fragment), OnItemClickListener<T
 
     private val viewModel: TaskViewModel by viewModels()
     private lateinit var binding: TaskFragmentBinding
-    val todoAdapter = TaskAdapter(this)
+    private val todoAdapter = TaskAdapter(this)
     private val swipingItem = MutableLiveData(false)
 
     @InternalCoroutinesApi
@@ -55,7 +55,20 @@ class TaskFragment : BaseFragment(R.layout.task_fragment), OnItemClickListener<T
         subscribeToObservers()
         subscribeToEvents()
         setupSwipeRefreshLayout()
+        setupRecyclerviewAdapter()
+        setupOnClickListeners()
 
+    }
+
+    private fun setupOnClickListeners() {
+        binding.apply {
+            addTask.setOnClickListener {
+                viewModel.onAddNewTaskClick()
+            }
+        }
+    }
+
+    private fun setupRecyclerviewAdapter() {
         //Recyclerview
         //fragment implements interface mit den listeners, also kann man hier eifnach sich selbst passen
         binding.apply {
@@ -63,18 +76,12 @@ class TaskFragment : BaseFragment(R.layout.task_fragment), OnItemClickListener<T
                 adapter = todoAdapter
                 layoutManager = LinearLayoutManager(requireContext())
                 setHasFixedSize(true)
-
                 ItemTouchHelper(SwipeToDelete(todoAdapter)).attachToRecyclerView(
                     taskListRecyclerview
                 )
             }
-            addTask.setOnClickListener {
-                viewModel.onAddNewTaskClick()
-            }
         }
-
         setHasOptionsMenu(true)
-
     }
 
     private fun subscribeToEvents() {
@@ -194,7 +201,6 @@ class TaskFragment : BaseFragment(R.layout.task_fragment), OnItemClickListener<T
                 true
             }
             else -> super.onOptionsItemSelected(item)
-
         }
     }
 
@@ -254,6 +260,4 @@ class TaskFragment : BaseFragment(R.layout.task_fragment), OnItemClickListener<T
         super.onStop()
         Timber.i("onStopCalled")
     }
-
 }
-

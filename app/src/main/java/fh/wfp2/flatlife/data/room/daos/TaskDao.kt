@@ -30,21 +30,22 @@ interface TaskDao : AbstractDao<Task> {
     @Query("DELETE FROM task where isComplete = 1")
     suspend fun deleteAllCompletedTasks()
 
-    @Query("SELECT * FROM TASK where isDeletedLocally = 0")
-    fun getAllTasks(): Flow<List<Task>>
-
     @Query("select * from TASK where isSynced = 0 AND isDeletedLocally = 0 " )
     suspend fun getAllUnsyncedTasks(): List<Task>
 
     @Query("select * from TASK where isDeletedLocally = 1 " )
     suspend fun getAllLocallyDeletedTasks(): List<Task>
 
-
+    @Query("SELECT * FROM TASK where isDeletedLocally = 0")
+    fun getAllTasks(): Flow<List<Task>>
 
     @Query("DELETE from TASK")
     suspend fun deleteAllTasks()
 
     @Query("SELECT * from task where isDeletedLocally = 1")
     suspend fun getLocallyDeletedTaskIDs(): List<Task>
+
+    @Query("SELECT * FROM TASK WHERE isComplete = 1")
+    suspend fun getAllCompletedTasks() : List<Task>
 
 }

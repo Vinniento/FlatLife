@@ -1,5 +1,6 @@
 package fh.wfp2.flatlife.ui.fragments.shopping
 
+import android.graphics.Canvas
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
@@ -8,6 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -18,11 +20,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.data.room.entities.ShoppingItem
 import fh.wfp2.flatlife.databinding.ShoppingFragmentBinding
+import fh.wfp2.flatlife.other.Status
 import fh.wfp2.flatlife.ui.adapters.OnItemClickListener
 import fh.wfp2.flatlife.ui.adapters.ShoppingAdapter
 import fh.wfp2.flatlife.ui.fragments.BaseFragment
 import fh.wfp2.flatlife.ui.viewmodels.shopping.ShoppingViewModel
 import fh.wfp2.flatlife.util.hideKeyboard
+import kotlinx.android.synthetic.main.shopping_fragment.*
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
@@ -33,47 +37,77 @@ class ShoppingFragment : BaseFragment(R.layout.shopping_fragment),
     private val viewModel: ShoppingViewModel by viewModels()
     private lateinit var binding: ShoppingFragmentBinding
 
+    //Recyclerview
+    private val shoppingAdapter = ShoppingAdapter(this)
+
+    private val swipingItem = MutableLiveData(false)
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         hideKeyboard()
         binding = ShoppingFragmentBinding.bind(view)
-
-        //Recyclerview
-        val shoppingAdapter = ShoppingAdapter(this)
-
+        setupRecyclerviewAdapter()
+        setupSwipeRefreshLayout()
+        setupOnClickListeners()
+        setupEventListeners()
+        subscribeToObservers()
         //binding.taskViewModel = viewModel
         Timber.i("ViewModel created and recyclerview added to binding")
+
+        setHasOptionsMenu(true)
+    }
+
+    private fun subscribeToObservers() {
+        viewModel.allItems.observe(viewLifecycleOwner, {
+            it?.let { event ->
+                val result = event.peekContent()
+                when (result.status) {
+                    Status.SUCCESS -> {
+                        shoppingAdapter.shoppingList = result.data!!
+                        binding.swipeRefreshLayout.isRefreshing = false
+                    }
+                    Status.ERROR -> {
+                        event.getContentIfNotHandled()?.let { errorResource ->
+                            errorResource.message?.let { message ->
+                                showSnackbar(message)
+                            }
+                        }
+                        result.data?.let { items ->
+                            shoppingAdapter.shoppingList = items
+                        }
+                        binding.swipeRefreshLayout.isRefreshing = false
+                    }
+                    Status.LOADING -> {
+                        result.data?.let { items ->
+                            shoppingAdapter.shoppingList = items
+                        }
+                        binding.swipeRefreshLayout.isRefreshing = true
+                    }
+                }
+            }
+        })
+        swipingItem.observe(viewLifecycleOwner, {
+            binding.swipeRefreshLayout.isEnabled = !it
+        })
+
+    }
+
+    private fun setupRecyclerviewAdapter() {
         binding.apply {
             shoppingListRecyclerview.apply {
-
                 adapter = shoppingAdapter
                 layoutManager = LinearLayoutManager(requireContext())
                 setHasFixedSize(true)
+
                 ItemTouchHelper(SwipeToDelete(shoppingAdapter)).attachToRecyclerView(
                     shoppingListRecyclerview
                 )
             }
-            //onclickLIsteners
-            addShoppingItem.setOnClickListener {
-                viewModel.onAddItemClick(binding.etShoppingItemInput.text.toString())
-                etShoppingItemInput.setText("")
-            }
         }
+    }
 
-
-        //observers\
-        viewModel.allItems.observe(viewLifecycleOwner, {
-            it?.let {
-                //shoppingAdapter.submitList(it)
-                shoppingAdapter.shoppingList = it
-                it.forEach { item ->
-                    Timber.i("\nItem: ${item.name}")
-                }
-            }
-        })
-
-
+    private fun setupEventListeners() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.addShoppingItemEvents.collect { event ->
                 when (event) {
@@ -103,13 +137,25 @@ class ShoppingFragment : BaseFragment(R.layout.shopping_fragment),
                             )
                         findNavController().navigate(action)
                     }
-
-
                 }
             }
         }
-        setHasOptionsMenu(true)
+    }
 
+    private fun setupOnClickListeners() {
+        //onclickLIsteners
+        binding.apply {
+            addShoppingItem.setOnClickListener {
+                viewModel.onAddItemClick(binding.etShoppingItemInput.text.toString())
+                etShoppingItemInput.setText("")
+            }
+        }
+    }
+
+    private fun setupSwipeRefreshLayout() {
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.syncAllTasks()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -123,11 +169,8 @@ class ShoppingFragment : BaseFragment(R.layout.shopping_fragment),
                 viewModel.deleteAllBoughtItems()
                 true
             }
-
             else -> super.onOptionsItemSelected(item)
         }
-
-
     }
 
     override fun onItemClick(instance: ShoppingItem) {
@@ -176,8 +219,21 @@ class ShoppingFragment : BaseFragment(R.layout.shopping_fragment),
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             val position = viewHolder.adapterPosition
             viewModel.onSwipedRight(adapter.shoppingList[position])
+        }
 
-
+        override fun onChildDraw(
+            c: Canvas,
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            dX: Float,
+            dY: Float,
+            actionState: Int,
+            isCurrentlyActive: Boolean
+        ) {
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+            if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+                swipingItem.postValue(isCurrentlyActive)
+            }
         }
     }
 }
