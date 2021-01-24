@@ -52,7 +52,6 @@ class ShoppingFragment : BaseFragment(R.layout.shopping_fragment),
         setupOnClickListeners()
         setupEventListeners()
         subscribeToObservers()
-        //binding.taskViewModel = viewModel
         Timber.i("ViewModel created and recyclerview added to binding")
 
         setHasOptionsMenu(true)

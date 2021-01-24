@@ -14,9 +14,8 @@ import timber.log.Timber
 
 
 class ShoppingViewModel @ViewModelInject constructor(
-    private val repository: ShoppingRepository,
-    application: Application
-) : AndroidViewModel(application) {
+    private val repository: ShoppingRepository
+) : ViewModel() {
 
     private val shoppingViewModelJob = Job()
     private val uiScope = CoroutineScope(shoppingViewModelJob + Dispatchers.Main)
@@ -89,7 +88,6 @@ class ShoppingViewModel @ViewModelInject constructor(
             )
         }
     }
-
 
     sealed class ShoppingEvents {
         object ShowIncompleteItemMessage : ShoppingEvents()

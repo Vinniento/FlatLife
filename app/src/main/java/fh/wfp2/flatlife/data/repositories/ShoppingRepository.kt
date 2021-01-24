@@ -24,7 +24,7 @@ class ShoppingRepository @Inject constructor(
     private val context: Application
 ) :
     AbstractRepository<ShoppingItem>(shoppingDao) {
-    val shoppingRepositoryJob = Job()
+    private val shoppingRepositoryJob = Job()
 
     private val ioScope = CoroutineScope(shoppingRepositoryJob + Dispatchers.IO)
 
@@ -92,7 +92,7 @@ class ShoppingRepository @Inject constructor(
             },
             saveFetchResult = { response ->
                 response?.body()?.let {
-                    insertItemsLocal(it.onEach { task -> task.isSynced = true })
+                    insertItemsLocal(it.onEach { item -> item.isSynced = true })
                 }
             },
             shouldFetch = {

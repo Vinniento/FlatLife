@@ -1,41 +1,42 @@
 package fh.wfp2.flatlife.ui.viewmodels.finance
 
-import android.app.Application
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import fh.wfp2.flatlife.data.room.FlatLifeRoomDatabase
-import fh.wfp2.flatlife.data.room.daos.ExpenseCategoryDao
-import fh.wfp2.flatlife.data.room.entities.ExpenseCategory
 import fh.wfp2.flatlife.data.repositories.ExpenseCategoryRepository
+import fh.wfp2.flatlife.data.room.entities.ExpenseCategory
+import fh.wfp2.flatlife.data.room.entities.ShoppingItem
+import fh.wfp2.flatlife.other.Event
+import fh.wfp2.flatlife.other.Resource
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
-class FinanceCategoryViewModel(application: Application) : AndroidViewModel(application) {
-    private var repository: ExpenseCategoryRepository
-    private var categoryDao: ExpenseCategoryDao
+class FinanceCategoryViewModel @ViewModelInject constructor(
+    private val repository: ExpenseCategoryRepository
+) :
+    ViewModel() {
+
+    private val _forceUpdate = MutableLiveData(false)
 
     private val financeCategoryChannel = Channel<FinanceCategoryEvents>()
     val financeCategoryEvents = financeCategoryChannel.receiveAsFlow()
 
-    private val _allItems: MutableLiveData<List<ExpenseCategory>>
-        get() = repository.getAllItems().asLiveData() as MutableLiveData<List<ExpenseCategory>>
-
-    init {
-        categoryDao = FlatLifeRoomDatabase.getInstance(application).expenseCategoryDao()
-        repository = ExpenseCategoryRepository(categoryDao)
+    private val _allItems = _forceUpdate.switchMap {
+        repository.getAllItems().asLiveData(viewModelScope.coroutineContext)
+    }.switchMap {
+        MutableLiveData(Event(it))
     }
 
-    val allItems: LiveData<List<ExpenseCategory>> = _allItems
+    val allItems: LiveData<Event<Resource<List<ExpenseCategory>>>> = _allItems
 
     fun onAddCategoryClick(expenseCategory: ExpenseCategory) {
         viewModelScope.launch {
-            repository.insert(expenseCategory)
+            repository.insertItem(expenseCategory)
         }
     }
 
     fun onCategoryClicked(expenseCategory: ExpenseCategory) {
         viewModelScope.launch {
-
             financeCategoryChannel.send(
                 FinanceCategoryEvents.NavigateToAddExpenseActivityScreen(
                     expenseCategory

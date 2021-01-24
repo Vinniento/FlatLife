@@ -5,21 +5,23 @@ import android.content.SharedPreferences
 import androidx.room.Room
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import fh.wfp2.flatlife.other.Constants.BASE_URL
-import fh.wfp2.flatlife.other.Constants.DATABASE_NAME
-import fh.wfp2.flatlife.other.Constants.ENCRYPTED_SHARED_PREF_NAME
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import fh.wfp2.flatlife.data.remote.BasicAuthInterceptor
+import fh.wfp2.flatlife.data.remote.FinanceApi
 import fh.wfp2.flatlife.data.remote.ShoppingApi
 import fh.wfp2.flatlife.data.remote.TaskApi
 import fh.wfp2.flatlife.data.room.FlatLifeRoomDatabase
+import fh.wfp2.flatlife.other.Constants.BASE_URL
+import fh.wfp2.flatlife.other.Constants.DATABASE_NAME
+import fh.wfp2.flatlife.other.Constants.ENCRYPTED_SHARED_PREF_NAME
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.*
 import javax.inject.Singleton
 
 @Module
@@ -64,32 +66,39 @@ object AppModule {
     @Provides
     fun provideTaskApi(
         basicAuthInterceptor: BasicAuthInterceptor
-    ): TaskApi {
-        val client = OkHttpClient.Builder()
-            //.addInterceptor(basicAuthInterceptor)
-            .build()
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(client)
-            .build()
-            .create(TaskApi::class.java)
-    }
+    ): TaskApi = Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .client(buildHttp3Client(basicAuthInterceptor))
+        .build()
+        .create(TaskApi::class.java)
 
     @Singleton
     @Provides
     fun provideShoppingApi(
         basicAuthInterceptor: BasicAuthInterceptor
-    ): ShoppingApi {
-        val client = OkHttpClient.Builder()
+    ): ShoppingApi = Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .client(buildHttp3Client(basicAuthInterceptor))
+        .build()
+        .create(ShoppingApi::class.java)
+
+    @Singleton
+    @Provides
+    fun provideFinanceApi(
+        basicAuthInterceptor: BasicAuthInterceptor
+    ): FinanceApi = Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .client(buildHttp3Client(basicAuthInterceptor))
+        .build()
+        .create(FinanceApi::class.java)
+
+    private fun buildHttp3Client(basicAuthInterceptor: BasicAuthInterceptor): OkHttpClient {
+        return OkHttpClient().newBuilder()
             //.addInterceptor(basicAuthInterceptor)
             .build()
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(client)
-            .build()
-            .create(ShoppingApi::class.java)
     }
 
     @Singleton

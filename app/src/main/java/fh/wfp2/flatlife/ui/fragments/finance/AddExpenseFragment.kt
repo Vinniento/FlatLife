@@ -102,7 +102,7 @@ class AddExpenseFragment : BaseFragment(R.layout.add_expense_fragment) {
         }
     }
 
-    fun getPositionOfCategory(list: List<String>, categoryName: String): Int {
+    private fun getPositionOfCategory(list: List<String>, categoryName: String): Int {
         list.forEachIndexed { index, it ->
             if (it == categoryName)
                 return index

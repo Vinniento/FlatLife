@@ -1,18 +1,15 @@
 package fh.wfp2.flatlife.ui.viewmodels.chores
 
-import android.app.Application
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import fh.wfp2.flatlife.data.room.FlatLifeRoomDatabase
-import fh.wfp2.flatlife.data.room.daos.ChoresDao
-import fh.wfp2.flatlife.data.room.entities.Chore
 import fh.wfp2.flatlife.data.repositories.ChoresRepository
+import fh.wfp2.flatlife.data.room.entities.Chore
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
-class ChoreViewModel @ViewModelInject constructor(private val repository: ChoresRepository) : ViewModel() {
-
+class ChoreViewModel @ViewModelInject constructor(private val repository: ChoresRepository) :
+    ViewModel() {
 
 
     private val _allChores: MutableLiveData<List<Chore>>

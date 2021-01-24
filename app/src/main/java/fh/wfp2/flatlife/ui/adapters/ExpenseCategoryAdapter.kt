@@ -56,7 +56,7 @@ class ExpenseCategoryAdapter(val clickListener: (ExpenseCategory) -> Unit) :
 
 private class ExpenseCategoryDiffCallback : DiffUtil.ItemCallback<ExpenseCategory>() {
     override fun areItemsTheSame(oldItem: ExpenseCategory, newItem: ExpenseCategory): Boolean {
-        return oldItem.categoryId == newItem.categoryId
+        return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(oldItem: ExpenseCategory, newItem: ExpenseCategory): Boolean {
