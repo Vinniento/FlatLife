@@ -12,7 +12,7 @@ import fh.wfp2.flatlife.data.room.entities.ShoppingItem
 import fh.wfp2.flatlife.databinding.ShoppingItemCardBinding
 import timber.log.Timber
 
-class ShoppingAdapter(private val listener: OnItemClickListener<ShoppingItem>?) :
+class ShoppingAdapter :
     ListAdapter<ShoppingItem, RecyclerView.ViewHolder>(ShoppingDiffCallback()) {
 
     var shoppingList = listOf<ShoppingItem>()
@@ -22,6 +22,7 @@ class ShoppingAdapter(private val listener: OnItemClickListener<ShoppingItem>?) 
         }
 
     private var onCheckboxClickListener: ((ShoppingItem) -> Unit)? = null
+    private var onItemClickListener: ((ShoppingItem) -> Unit)? = null
 
     override fun getItemCount(): Int = shoppingList.size
 
@@ -47,27 +48,31 @@ class ShoppingAdapter(private val listener: OnItemClickListener<ShoppingItem>?) 
         this.onCheckboxClickListener = onCheckBoxClick
     }
 
+    fun setOnItemClickListener(onItemClick: (ShoppingItem) -> Unit) {
+        this.onItemClickListener = onItemClick
+    }
+
     inner class ShoppingItemViewHolder(private val binding: ShoppingItemCardBinding) :
         RecyclerView.ViewHolder(binding.root) {
         init {
 
             //onClickListeners
             binding.apply {
+                constraintLayout.setOnClickListener {
+                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                        val shoppingItem = shoppingList[adapterPosition]
+                        onItemClickListener?.let {
+                            it(shoppingItem)
+                        }
+                    }
+                }
+
                 cbItemBought.setOnClickListener {
                     if (adapterPosition != RecyclerView.NO_POSITION) //-1 -> Wenn die view gerade ausm Sichtfeld kommt
                     {
                         val shoppingItem = shoppingList[adapterPosition]
                         onCheckboxClickListener?.let {
                             it(shoppingItem.apply { isBought = !isBought })
-                        }
-                        // listener.onCheckBoxClick(shoppingItem, !shoppingItem.isBought)
-                    }
-                }
-                listener?.let { listener ->
-                    root.setOnClickListener {
-                        if (adapterPosition != RecyclerView.NO_POSITION) {
-                            val shoppingItem = shoppingList[adapterPosition]
-                            listener.onItemClick(shoppingItem)
                         }
                     }
                 }

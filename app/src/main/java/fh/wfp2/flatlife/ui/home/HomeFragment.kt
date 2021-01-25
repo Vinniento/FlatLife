@@ -50,7 +50,7 @@ class HomeFragment : BaseFragment(R.layout.home_fragment) {
         binding = HomeFragmentBinding.bind(view)
         hideKeyboard()
         val taskAdapter = TaskAdapter(null)
-        val shoppingAdapter = ShoppingAdapter(null)
+        val shoppingAdapter = ShoppingAdapter()
 
         binding.apply {
 
@@ -61,6 +61,7 @@ class HomeFragment : BaseFragment(R.layout.home_fragment) {
                 taskAdapter.setOnCheckBoxListener {
                     taskViewModel.onTaskCheckChanged(it)
                 }
+
             }
             rvShopping.apply {
                 adapter = shoppingAdapter

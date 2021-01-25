@@ -14,9 +14,10 @@
 
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/cb_item_bought"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="@id/tv_item_name"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/tv_item_name" />
 
         <androidx.appcompat.widget.AppCompatTextView

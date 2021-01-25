@@ -18,10 +18,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import fh.wfp2.flatlife.R
-import fh.wfp2.flatlife.data.room.entities.ShoppingItem
 import fh.wfp2.flatlife.databinding.ShoppingFragmentBinding
 import fh.wfp2.flatlife.other.Status
-import fh.wfp2.flatlife.ui.adapters.OnItemClickListener
 import fh.wfp2.flatlife.ui.adapters.ShoppingAdapter
 import fh.wfp2.flatlife.ui.fragments.BaseFragment
 import fh.wfp2.flatlife.ui.viewmodels.shopping.ShoppingViewModel
@@ -30,14 +28,13 @@ import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
 @AndroidEntryPoint
-class ShoppingFragment : BaseFragment(R.layout.shopping_fragment),
-    OnItemClickListener<ShoppingItem> {
+class ShoppingFragment : BaseFragment(R.layout.shopping_fragment) {
 
     private val viewModel: ShoppingViewModel by viewModels()
     private lateinit var binding: ShoppingFragmentBinding
 
     //Recyclerview
-    private val shoppingAdapter = ShoppingAdapter(this)
+    private val shoppingAdapter = ShoppingAdapter()
 
     private val swipingItem = MutableLiveData(false)
 
@@ -104,6 +101,9 @@ class ShoppingFragment : BaseFragment(R.layout.shopping_fragment),
             }
             shoppingAdapter.setOnCheckboxClickListener {
                 viewModel.onShoppingItemCheckedChanged(it)
+            }
+            shoppingAdapter.setOnItemClickListener {
+                viewModel.onShoppingItemSelected(it)
             }
         }
     }
@@ -174,13 +174,6 @@ class ShoppingFragment : BaseFragment(R.layout.shopping_fragment),
         }
     }
 
-    override fun onItemClick(instance: ShoppingItem) {
-        viewModel.onShoppingItemSelected(instance)
-    }
-
-    override fun onCheckBoxClick(instance: ShoppingItem, isChecked: Boolean) {
-        viewModel.onShoppingItemCheckedChanged(instance)
-    }
 
     override fun onResume() {
         super.onResume()
