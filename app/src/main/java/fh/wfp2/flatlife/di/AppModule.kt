@@ -103,9 +103,20 @@ object AppModule {
         .build()
         .create(ChoreApi::class.java)
 
+    @Singleton
+    @Provides
+    fun provideAuthApi(
+        basicAuthInterceptor: BasicAuthInterceptor
+    ): AuthApi = Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .client(buildHttp3Client(basicAuthInterceptor))
+        .build()
+        .create(AuthApi::class.java)
+
     private fun buildHttp3Client(basicAuthInterceptor: BasicAuthInterceptor): OkHttpClient {
         return OkHttpClient().newBuilder()
-            //.addInterceptor(basicAuthInterceptor)
+            .addInterceptor(basicAuthInterceptor)
             .build()
     }
 
@@ -126,18 +137,3 @@ object AppModule {
         )
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

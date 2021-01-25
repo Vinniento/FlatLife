@@ -7,4 +7,12 @@
     <color name="light_gray">#9f9ea2</color>
     <color name="red">#901e26</color>
     <color name="dark_blue">#0057ef</color>
+
+<!--
+    <color name="colorPrimary">#039BE5</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#039BE5</color>-->
+    <color name="mediumDarkBackground">#303030</color>
+    <color name="darkBackground">#202020</color>
+    <color name="lightBackground">#404040</color>
 </resources>

@@ -3,13 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/authFragment">
 
     <fragment
         android:id="@+id/homeFragment"
         android:name="fh.wfp2.flatlife.ui.home.HomeFragment"
         android:label="Flatlife"
-        tools:layout="@layout/home_fragment" />
+        tools:layout="@layout/home_fragment" >
+        <action
+            android:id="@+id/action_homeFragment_to_authFragment"
+            app:destination="@id/authFragment" />
+    </fragment>
     <fragment
         android:id="@+id/taskFragment"
         android:name="fh.wfp2.flatlife.ui.fragments.tasks.TaskFragment"
@@ -136,5 +140,13 @@
             app:destination="@id/choreFragment"
             app:popUpTo="@id/choreFragment"
             app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/authFragment"
+        android:name="fh.wfp2.flatlife.ui.fragments.authentication.AuthFragment"
+        android:label="AuthFragment" >
+        <action
+            android:id="@+id/action_authFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
     </fragment>
 </navigation>

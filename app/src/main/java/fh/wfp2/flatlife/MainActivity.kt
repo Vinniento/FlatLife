@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 
 
         setSupportActionBar(binding.toolbar)
-        binding.bottomNavigationView.setupWithNavController(navController)
+        binding.bottomNavigation.setupWithNavController(navController)
         //connecting action bar (=toolbar bei uns) zu navController
         setupActionBarWithNavController(navController)
 
