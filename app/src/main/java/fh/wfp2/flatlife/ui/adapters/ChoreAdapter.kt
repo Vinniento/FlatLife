@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.data.room.entities.Chore
 import fh.wfp2.flatlife.databinding.ChoreItemCardBinding
 import timber.log.Timber
@@ -67,6 +68,12 @@ class ChoreAdapter(private val listener: OnItemClickListener<Chore>) :
                 tvDueBy.text = chore.dueBy.toString()
                 tvUsername.text = chore.assignedTo
                 cbChoreCompleted.isChecked = chore.isComplete
+                if (!chore.isSynced) {
+                    ivSynced.setImageResource(R.drawable.ic_cross)
+                } else {
+                    ivSynced.setImageResource(R.drawable.ic_check)
+                }
+
 
             }
 
@@ -76,7 +83,7 @@ class ChoreAdapter(private val listener: OnItemClickListener<Chore>) :
 
 private class ChoreDiffCallback : DiffUtil.ItemCallback<Chore>() {
     override fun areItemsTheSame(oldItem: Chore, newItem: Chore): Boolean {
-        return oldItem.choreId == newItem.choreId
+        return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(oldItem: Chore, newItem: Chore): Boolean {

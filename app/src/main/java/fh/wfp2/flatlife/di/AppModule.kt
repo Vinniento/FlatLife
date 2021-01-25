@@ -10,10 +10,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
-import fh.wfp2.flatlife.data.remote.BasicAuthInterceptor
-import fh.wfp2.flatlife.data.remote.FinanceApi
-import fh.wfp2.flatlife.data.remote.ShoppingApi
-import fh.wfp2.flatlife.data.remote.TaskApi
+import fh.wfp2.flatlife.data.remote.*
 import fh.wfp2.flatlife.data.room.FlatLifeRoomDatabase
 import fh.wfp2.flatlife.other.Constants.BASE_URL
 import fh.wfp2.flatlife.other.Constants.DATABASE_NAME
@@ -94,6 +91,17 @@ object AppModule {
         .client(buildHttp3Client(basicAuthInterceptor))
         .build()
         .create(FinanceApi::class.java)
+
+    @Singleton
+    @Provides
+    fun provideChoreApi(
+        basicAuthInterceptor: BasicAuthInterceptor
+    ): ChoreApi = Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .client(buildHttp3Client(basicAuthInterceptor))
+        .build()
+        .create(ChoreApi::class.java)
 
     private fun buildHttp3Client(basicAuthInterceptor: BasicAuthInterceptor): OkHttpClient {
         return OkHttpClient().newBuilder()
