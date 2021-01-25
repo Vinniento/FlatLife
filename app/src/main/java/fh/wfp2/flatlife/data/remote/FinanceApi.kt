@@ -28,7 +28,7 @@ interface FinanceApi {
         @Body request: DeleteItemRequest
     ): Response<ResponseBody>
 
-    @GET("/finance/getAllItems")
+    @GET("/finance/getAllActivities")
     suspend fun getAllActivities(): Response<List<FinanceActivity>>
 
     @GET("/finance/getAllCategories")

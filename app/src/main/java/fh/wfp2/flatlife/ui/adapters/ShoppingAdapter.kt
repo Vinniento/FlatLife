@@ -73,7 +73,6 @@ class ShoppingAdapter(private val listener: OnItemClickListener<ShoppingItem>?) 
                     ivSynced.setImageResource(R.drawable.ic_cross)
                 } else {
                     ivSynced.setImageResource(R.drawable.ic_check)
-
                 }
             }
         }

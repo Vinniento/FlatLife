@@ -1,52 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/constraintLayout"
+    android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.fragments.finance.FinanceActivityFragment">
 
-    <Button
-        android:id="@+id/b_activity"
-        style="@style/ClickableMenuButton"
-        android:text="Activity"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
 
-    <Button
-        android:id="@+id/b_balance"
-        style="@style/ClickableMenuButton"
-        android:text="Balance"
-        app:layout_constraintBottom_toBottomOf="@+id/b_activity"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
-        app:layout_constraintStart_toEndOf="@+id/b_activity"
-        app:layout_constraintTop_toTopOf="@+id/b_activity"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/finance_activity_recyclerview"
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="148dp"
-        android:layout_marginBottom="90dp"
-        android:background="@android:color/transparent"
-        android:textAllCaps="false"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/b_activity"
-        tools:listitem="@layout/finance_activity_card" />
+        tools:context=".ui.fragments.finance.FinanceActivityFragment">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addActivity"
-        style="@style/AddButton"
-        android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/b_activity"
+            style="@style/ClickableMenuButton"
+            android:text="Activity"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        android:layout_height="wrap_content"
-        android:contentDescription=""
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_input_add" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/b_balance"
+            style="@style/ClickableMenuButton"
+            android:text="Balance"
+            app:layout_constraintBottom_toBottomOf="@+id/b_activity"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.503"
+            app:layout_constraintStart_toEndOf="@+id/b_activity"
+            app:layout_constraintTop_toTopOf="@+id/b_activity"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/finance_activity_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="148dp"
+            android:layout_marginBottom="90dp"
+            android:background="@android:color/transparent"
+            android:textAllCaps="false"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/b_activity"
+            tools:listitem="@layout/finance_activity_card" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addActivity"
+            style="@style/AddButton"
+            android:layout_width="wrap_content"
+
+            android:layout_height="wrap_content"
+            android:contentDescription=""
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@android:drawable/ic_input_add" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

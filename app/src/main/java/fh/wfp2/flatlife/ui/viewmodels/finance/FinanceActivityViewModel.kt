@@ -4,21 +4,29 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import fh.wfp2.flatlife.data.repositories.FinanceActivityRepository
 import fh.wfp2.flatlife.data.room.entities.FinanceActivity
+import fh.wfp2.flatlife.other.Event
+import fh.wfp2.flatlife.other.Resource
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
-class FinanceActivityViewModel @ViewModelInject constructor(private val financeActivityRepository: FinanceActivityRepository) :
+class FinanceActivityViewModel @ViewModelInject constructor(
+    private val repository: FinanceActivityRepository
+) :
     ViewModel() {
 
     private val financeActivityChannel = Channel<FinanceActivityEvents>()
     val financeActivityEvents = financeActivityChannel.receiveAsFlow()
 
-    private val _allItems: MutableLiveData<List<FinanceActivity>>
-        get() = financeActivityRepository.getAllActivities()
-            .asLiveData() as MutableLiveData<List<FinanceActivity>>
+    private val _forceUpdate = MutableLiveData(false)
 
-    val allItems: LiveData<List<FinanceActivity>> = _allItems
+    private val _allItems = _forceUpdate.switchMap {
+        repository.getAllActivities().asLiveData(viewModelScope.coroutineContext)
+    }.switchMap {
+        MutableLiveData(Event(it))
+    }
+
+    val allItems: LiveData<Event<Resource<List<FinanceActivity>>>> = _allItems
 
     fun onActivityClicked(financeActivity: FinanceActivity) {
         viewModelScope.launch {
@@ -29,6 +37,8 @@ class FinanceActivityViewModel @ViewModelInject constructor(private val financeA
             )
         }
     }
+
+    fun syncAllItems() = _forceUpdate.postValue(true)
 
     fun onAddActivityClick() {
         viewModelScope.launch {
@@ -42,10 +52,27 @@ class FinanceActivityViewModel @ViewModelInject constructor(private val financeA
         }
     }
 
+    fun onSwipedRight(item: FinanceActivity) {
+        viewModelScope.launch {
+            repository.deleteItem(item)
+            financeActivityChannel.send(
+                FinanceActivityEvents.ShowUndoDeleteActivityMessage(item)
+            )
+        }
+    }
+
+    fun undoDeleteClick(item: FinanceActivity) {
+        viewModelScope.launch {
+            repository.insertItem(item)
+        }
+    }
 
     sealed class FinanceActivityEvents {
         object NavigateToAddExpenseCategoryScreen : FinanceActivityEvents()
         data class NavigateToAddExpenseActivityScreen(val financeActivity: FinanceActivity) :
+            FinanceActivityEvents()
+
+        data class ShowUndoDeleteActivityMessage(val item: FinanceActivity) :
             FinanceActivityEvents()
 
         object NavigateToBalanceScreen : FinanceActivityEvents()

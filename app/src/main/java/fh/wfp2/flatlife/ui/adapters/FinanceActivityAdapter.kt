@@ -7,8 +7,8 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import fh.wfp2.flatlife.R
 import fh.wfp2.flatlife.data.room.entities.FinanceActivity
-import fh.wfp2.flatlife.data.room.entities.mapping.ExpenseCategoryWithFinanceActivity
 import fh.wfp2.flatlife.databinding.FinanceActivityCardBinding
 import timber.log.Timber
 
@@ -40,12 +40,18 @@ class FinanceActivityAdapter(val clickListener: (FinanceActivity) -> Unit) :
     inner class FinanceActivityViewHolder(private val binding: FinanceActivityCardBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(financeActivity: FinanceActivity, clickListener: (FinanceActivity) -> Unit) {
+        fun bind(item: FinanceActivity, clickListener: (FinanceActivity) -> Unit) {
             binding.apply {
-                tvAmount.text = financeActivity.price + " €"
-                tvDescription.text = financeActivity.description
-                tvDate.text = financeActivity.createdDateFormatted
-                root.setOnClickListener { clickListener(financeActivity) }
+                tvAmount.text = item.price + " €"
+                tvDescription.text = item.description
+                tvDate.text = item.createdDateFormatted
+                root.setOnClickListener { clickListener(item) }
+
+                if (!item.isSynced) {
+                    ivSynced.setImageResource(R.drawable.ic_cross)
+                } else {
+                    ivSynced.setImageResource(R.drawable.ic_check)
+                }
             }
         }
     }
@@ -53,7 +59,7 @@ class FinanceActivityAdapter(val clickListener: (FinanceActivity) -> Unit) :
 
 private class FinanceActivityDiffCallback : DiffUtil.ItemCallback<FinanceActivity>() {
     override fun areItemsTheSame(oldItem: FinanceActivity, newItem: FinanceActivity): Boolean {
-        return oldItem.activityId == newItem.activityId
+        return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(oldItem: FinanceActivity, newItem: FinanceActivity): Boolean {

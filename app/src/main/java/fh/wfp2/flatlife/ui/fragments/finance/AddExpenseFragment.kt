@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -15,9 +14,9 @@ import fh.wfp2.flatlife.data.room.entities.FinanceActivity
 import fh.wfp2.flatlife.databinding.AddExpenseFragmentBinding
 import fh.wfp2.flatlife.ui.fragments.BaseFragment
 import fh.wfp2.flatlife.ui.viewmodels.finance.AddExpenseViewModel
-import fh.wfp2.flatlife.util.getItemPositionByName
 import fh.wfp2.flatlife.util.hideKeyboard
 import kotlinx.coroutines.flow.collect
+
 @AndroidEntryPoint
 class AddExpenseFragment : BaseFragment(R.layout.add_expense_fragment) {
 
@@ -31,9 +30,12 @@ class AddExpenseFragment : BaseFragment(R.layout.add_expense_fragment) {
         binding = AddExpenseFragmentBinding.bind(view)
         viewModel = ViewModelProvider(this).get(AddExpenseViewModel::class.java)
 
-        val categoryArg = args.expenseCategory
-        val financeActivityArg = args.financeActivity
+        setupExpenseEvents()
+        subscribeToObservers()
 
+    }
+
+    private fun subscribeToObservers() {
         viewModel.allCategories.observe(viewLifecycleOwner, { categoriesList ->
 
             categoriesList?.let { categories ->
@@ -45,31 +47,19 @@ class AddExpenseFragment : BaseFragment(R.layout.add_expense_fragment) {
                 )
 
                 binding.apply {
-                    financeActivityArg?.let { activity ->
+                    args.financeActivity?.let { activity ->
                         spinnerOptions.setSelection(
                             spinnerCategoriesList.indexOf(activity.categoryName)
                         )
                         etAmount.setText(activity.price)
                         etDescription.setText(activity.description)
 
-                        bSaveExpense.setOnClickListener {
-                            viewModel.onUpdateExpenseClick(
-                                FinanceActivity(
-                                    activity.activityId,
-                                    etDescription.text.toString(),
-                                    spinnerOptions.selectedItem.toString(),
-                                    etAmount.text.toString()//Todo schöner machen
-                                )
-                            )
-                            hideKeyboard()
-                        }
                     }
 
                     if (args.financeActivity == null) {
-                        categoryArg?.let { ec ->
+                        args.expenseCategory?.let { ec ->
                             spinnerOptions.setSelection(
-                                getPositionOfCategory(
-                                    spinnerCategoriesList,
+                                spinnerCategoriesList.indexOf(
                                     ec.categoryName
                                 )
                             )
@@ -89,6 +79,9 @@ class AddExpenseFragment : BaseFragment(R.layout.add_expense_fragment) {
                 }
             }
         })
+    }
+
+    private fun setupExpenseEvents() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.addExpenseEvents.collect { event ->
                 when (event) {
