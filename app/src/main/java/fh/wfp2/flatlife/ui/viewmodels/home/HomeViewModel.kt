@@ -14,11 +14,14 @@ class HomeViewModel @ViewModelInject constructor(
     private val shoppingRepository: ShoppingRepository,
     private val taskRepository: TaskRepository
 ) : ViewModel() {
+    fun addUserToFlat(userName: String) {
 
-   /* private val _allShoppingItems: MutableLiveData<List<ShoppingItem>>
-        get() = shoppingRepository.getAllItems().asLiveData() as MutableLiveData<List<ShoppingItem>>
+    }
 
-    val allShoppingItems: LiveData<List<ShoppingItem>> = _allShoppingItems*/
+    private val _allShoppingItems: MutableLiveData<List<ShoppingItem>>
+         get() = shoppingRepository.getAllItems().asLiveData() as MutableLiveData<List<ShoppingItem>>
+
+     val allShoppingItems: LiveData<List<ShoppingItem>> = _allShoppingItems
 
     private val _allTaskItems: MutableLiveData<List<Task>>
         get() = taskRepository.getAllItems().asLiveData() as MutableLiveData<List<Task>>

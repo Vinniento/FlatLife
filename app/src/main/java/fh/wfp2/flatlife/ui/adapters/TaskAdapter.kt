@@ -25,6 +25,12 @@ class TaskAdapter(private val listener: OnItemClickListener<Task>?) :
 
     override fun getItemCount(): Int = taskList.size
 
+    private var onCheckBoxClickListener: ((Task) -> Unit)? = null
+
+    fun setOnCheckBoxListener(listener: ((Task) -> Unit)) {
+        this.onCheckBoxClickListener = listener
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         Timber.i("viewHolder created")
         val binding =
@@ -44,22 +50,25 @@ class TaskAdapter(private val listener: OnItemClickListener<Task>?) :
         RecyclerView.ViewHolder(binding.root) {
 
         init {
-            listener?.let {
-                binding.apply {
+            binding.apply {
+                cbTodoCompleted.setOnClickListener {
+                    if (adapterPosition != RecyclerView.NO_POSITION) //-1 -> Wenn die view gerade ausm Sichtfeld kommt
+                    {
+                        val taskItem = taskList[adapterPosition]
+                        onCheckBoxClickListener?.let {
+                            //hier geändert damit es nur an einer stelle geändert werden muss -> vielleicht unschön weil es ein var sein muss?
+                            it(taskItem.apply { isComplete = !isComplete })
+                        }
+                        //listener.onCheckBoxClick(task, !task.isComplete)
+                    }
+                }
+                listener?.let {
+
                     //wenn die todo view selbst gedrückt wird
                     root.setOnClickListener {
-                        val position = adapterPosition
-                        if (position != RecyclerView.NO_POSITION) {
-                            val task = taskList[position]
+                        if (adapterPosition != RecyclerView.NO_POSITION) {
+                            val task = taskList[adapterPosition]
                             listener.onItemClick(task)
-                        }
-                    }
-                    cbTodoCompleted.setOnClickListener {
-                        val position = adapterPosition
-                        if (position != RecyclerView.NO_POSITION) //-1 -> Wenn die view gerade ausm Sichtfeld kommt
-                        {
-                            val task = taskList[position]
-                            listener.onCheckBoxClick(task, !task.isComplete)
                         }
                     }
                 }

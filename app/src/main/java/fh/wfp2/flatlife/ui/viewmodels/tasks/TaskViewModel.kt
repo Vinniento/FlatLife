@@ -3,12 +3,12 @@ package fh.wfp2.flatlife.ui.viewmodels.tasks
 import android.app.Application
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import fh.wfp2.flatlife.other.Event
-import fh.wfp2.flatlife.other.Resource
 import fh.wfp2.flatlife.data.preferences.PreferencesManager
 import fh.wfp2.flatlife.data.preferences.SortOrder
 import fh.wfp2.flatlife.data.repositories.TaskRepository
 import fh.wfp2.flatlife.data.room.entities.Task
+import fh.wfp2.flatlife.other.Event
+import fh.wfp2.flatlife.other.Resource
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.combine
@@ -74,9 +74,9 @@ class TaskViewModel @ViewModelInject constructor(
         }
     }
 
-    fun onTaskCheckChanged(task: Task, isChecked: Boolean) = uiScope.launch(errorHandler) {
-        repository.updateTask(task.copy(isComplete = isChecked))
-        Timber.i("CheckedState : $isChecked")
+    fun onTaskCheckChanged(task: Task) = uiScope.launch(errorHandler) {
+        repository.insertTask(task.copy(id = task.id, isComplete = task.isComplete))
+        Timber.i("CheckedState : ${task.isComplete}")
     }
 
     override fun onCleared() {
@@ -107,8 +107,8 @@ class TaskViewModel @ViewModelInject constructor(
 
     fun onAddNewTaskClick() = viewModelScope.launch {
 
-    //repository.insertTask(Task(0, "bla", false, 2334564545, true))
-      tasksEventChannel.send(TaskEvent.NavigateToAddTaskScreen)
+        //repository.insertTask(Task(0, "bla", false, 2334564545, true))
+        tasksEventChannel.send(TaskEvent.NavigateToAddTaskScreen)
     }
 
     fun onTaskSelected(task: Task) = viewModelScope.launch {

@@ -5,4 +5,8 @@
         android:id="@+id/action_logout"
         android:title="Logout"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_add_user_to_flat"
+        android:title="Add user to flat"
+        app:showAsAction="never" />
 </menu>

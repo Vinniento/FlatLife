@@ -12,7 +12,7 @@ import fh.wfp2.flatlife.data.room.entities.FinanceActivity
 import fh.wfp2.flatlife.databinding.FinanceActivityCardBinding
 import timber.log.Timber
 
-class FinanceActivityAdapter(val clickListener: (FinanceActivity) -> Unit) :
+class FinanceActivityAdapter(private val clickListener: (FinanceActivity) -> Unit) :
     ListAdapter<FinanceActivity, RecyclerView.ViewHolder>(FinanceActivityDiffCallback()) {
 
     var activityList = listOf<FinanceActivity>()
@@ -45,6 +45,7 @@ class FinanceActivityAdapter(val clickListener: (FinanceActivity) -> Unit) :
                 tvAmount.text = item.price + " €"
                 tvDescription.text = item.description
                 tvDate.text = item.createdDateFormatted
+                tvCategory.text = item.categoryName
                 root.setOnClickListener { clickListener(item) }
 
                 if (!item.isSynced) {

@@ -5,8 +5,9 @@ import android.app.Application
 import com.androiddevs.ktornoteapp.other.checkForInternetConnection
 import fh.wfp2.flatlife.data.remote.ShoppingApi
 import fh.wfp2.flatlife.data.remote.requests.DeleteItemRequest
-import fh.wfp2.flatlife.data.room.ShoppingDao
+import fh.wfp2.flatlife.data.room.daos.ShoppingDao
 import fh.wfp2.flatlife.data.room.entities.ShoppingItem
+import fh.wfp2.flatlife.data.room.entities.Task
 import fh.wfp2.flatlife.other.Resource
 import fh.wfp2.flatlife.other.networkBoundResource
 import kotlinx.coroutines.CoroutineScope
@@ -80,7 +81,9 @@ class ShoppingRepository @Inject constructor(
         }
     }
 
-    fun getAllItems(): Flow<Resource<List<ShoppingItem>>> {
+    fun getAllItems(): Flow<List<ShoppingItem>> = shoppingDao.getAllItems()
+
+    fun getAllShoppingItems(): Flow<Resource<List<ShoppingItem>>> {
         return networkBoundResource(
             query = {
                 shoppingDao.getItemsSortedByIsBought()

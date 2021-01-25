@@ -80,6 +80,10 @@ class TaskFragment : BaseFragment(R.layout.task_fragment), OnItemClickListener<T
                     taskListRecyclerview
                 )
             }
+            todoAdapter.setOnCheckBoxListener {
+                viewModel.onTaskCheckChanged(it)
+
+            }
         }
         setHasOptionsMenu(true)
     }
@@ -153,7 +157,7 @@ class TaskFragment : BaseFragment(R.layout.task_fragment), OnItemClickListener<T
     }
 
     override fun onCheckBoxClick(task: Task, isChecked: Boolean) {
-        viewModel.onTaskCheckChanged(task, isChecked)
+        viewModel.onTaskCheckChanged(task)
     }
 
     private fun setupSwipeRefreshLayout() {

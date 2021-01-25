@@ -25,7 +25,6 @@ abstract class BaseFragment(layoutId: Int): Fragment(layoutId) {
     }
     fun showBottomNavigation(){
         activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)?.visibility = View.VISIBLE
-
     }
 
 }

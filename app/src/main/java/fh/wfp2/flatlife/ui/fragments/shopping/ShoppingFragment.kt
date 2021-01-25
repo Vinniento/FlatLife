@@ -26,7 +26,6 @@ import fh.wfp2.flatlife.ui.adapters.ShoppingAdapter
 import fh.wfp2.flatlife.ui.fragments.BaseFragment
 import fh.wfp2.flatlife.ui.viewmodels.shopping.ShoppingViewModel
 import fh.wfp2.flatlife.util.hideKeyboard
-import kotlinx.android.synthetic.main.shopping_fragment.*
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
@@ -103,6 +102,9 @@ class ShoppingFragment : BaseFragment(R.layout.shopping_fragment),
                     shoppingListRecyclerview
                 )
             }
+            shoppingAdapter.setOnCheckboxClickListener {
+                viewModel.onShoppingItemCheckedChanged(it)
+            }
         }
     }
 
@@ -177,7 +179,7 @@ class ShoppingFragment : BaseFragment(R.layout.shopping_fragment),
     }
 
     override fun onCheckBoxClick(instance: ShoppingItem, isChecked: Boolean) {
-        viewModel.onShoppingItemCheckedChanged(instance, isChecked)
+        viewModel.onShoppingItemCheckedChanged(instance)
     }
 
     override fun onResume() {

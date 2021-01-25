@@ -12,7 +12,7 @@ import java.text.DateFormat
 data class Task(
     @PrimaryKey(autoGenerate = false) var id: Long = 0,
     val name: String,
-    val isComplete: Boolean = false,
+    var isComplete: Boolean = false,
     val createdAt: Long = System.currentTimeMillis(),
     val isImportant: Boolean = false,
     @Expose(deserialize = false, serialize = false)

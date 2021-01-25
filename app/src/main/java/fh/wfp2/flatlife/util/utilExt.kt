@@ -6,6 +6,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 inline fun SearchView.onQueryTextChanged(crossinline listener: (String) -> Unit) {
     this.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -30,7 +31,7 @@ fun Context.hideKeyboard(view: View) {
     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
 }
 
-fun <T>List<T>.getItemPositionByName(item: T): Int {
+fun <T> List<T>.getItemPositionByName(item: T): Int {
     this.forEachIndexed { index, it ->
         if (it == item)
             return index
@@ -41,3 +42,13 @@ fun <T>List<T>.getItemPositionByName(item: T): Int {
 fun <T> List<T>.getItemPositionByNameWithIndexVersion(item: T) = withIndex()
     .first { (_, value) -> item == value }
     .index
+
+
+//not used but interesting
+fun BottomNavigationView.hideLayout() {
+    this.visibility = View.GONE
+}
+
+fun BottomNavigationView.showLayout() {
+    this.visibility = View.VISIBLE
+}

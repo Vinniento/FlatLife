@@ -1,4 +1,4 @@
-package fh.wfp2.flatlife.data.room
+package fh.wfp2.flatlife.data.room.daos
 
 import androidx.room.Dao
 import androidx.room.Query
@@ -26,4 +26,7 @@ interface ShoppingDao : AbstractDao<ShoppingItem> {
 
     @Query("DELETE from shopping_items")
     suspend fun deleteAllItems()
+
+    @Query("SELECT * FROM shopping_items where isDeletedLocally = 0")
+    fun getAllItems(): Flow<List<ShoppingItem>>
 }

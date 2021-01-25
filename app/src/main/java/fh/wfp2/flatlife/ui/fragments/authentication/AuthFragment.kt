@@ -20,6 +20,8 @@ import fh.wfp2.flatlife.other.Constants.NO_USERNAME
 import fh.wfp2.flatlife.other.Status
 import fh.wfp2.flatlife.ui.fragments.BaseFragment
 import fh.wfp2.flatlife.ui.viewmodels.auth.AuthViewModel
+import fh.wfp2.flatlife.util.OptionsMenuInterface
+import fh.wfp2.flatlife.util.hideKeyboard
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -55,6 +57,7 @@ class AuthFragment : BaseFragment(R.layout.auth_fragment) {
                 val password = etRegisterPassword.text.toString()
                 val confirmedPassword = etRegisterPasswordConfirm.text.toString()
                 viewModel.register(email, password, confirmedPassword)
+                hideKeyboard()
             }
             btnLogin.setOnClickListener {
                 val email = etLoginEmail.text.toString()
@@ -62,6 +65,7 @@ class AuthFragment : BaseFragment(R.layout.auth_fragment) {
                 curUsername = email
                 curPassword = password
                 viewModel.login(email, password)
+                hideKeyboard()
             }
         }
         setHasOptionsMenu(false)
@@ -133,4 +137,5 @@ class AuthFragment : BaseFragment(R.layout.auth_fragment) {
             }
         })
     }
+
 }

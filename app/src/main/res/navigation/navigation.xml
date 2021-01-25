@@ -58,15 +58,15 @@
     <fragment
         android:id="@+id/editShoppingItem"
         android:name="fh.wfp2.flatlife.ui.fragments.shopping.EditShoppingItem"
-        android:label="EditShoppingItem" >
+        android:label="Add or edit an item">
         <action
             android:id="@+id/action_editShoppingItem_to_shoppingFragment"
             app:destination="@id/shoppingFragment" />
         <argument
             android:name="shoppingItem"
+            android:defaultValue="@null"
             app:argType="fh.wfp2.flatlife.data.room.entities.ShoppingItem"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/financeActivityFragment2"
@@ -86,7 +86,7 @@
     <fragment
         android:id="@+id/financeCategoryFragment"
         android:name="fh.wfp2.flatlife.ui.fragments.finance.FinanceCategoryFragment"
-        android:label="FinanceCategoryFragment" >
+        android:label="Choose a category">
         <action
             android:id="@+id/action_financeCategoryFragment_to_addExpenseFragment"
             app:destination="@id/addExpenseFragment" />
@@ -94,27 +94,27 @@
     <fragment
         android:id="@+id/addExpenseFragment"
         android:name="fh.wfp2.flatlife.ui.fragments.finance.AddExpenseFragment"
-        android:label="add_expense_fragment"
-        tools:layout="@layout/add_expense_fragment" >
+        android:label="Where did you shop?"
+        tools:layout="@layout/add_expense_fragment">
         <action
             android:id="@+id/action_addExpenseFragment_to_financeActivityFragment2"
             app:destination="@id/financeActivityFragment2" />
         <argument
             android:name="expenseCategory"
+            android:defaultValue="@null"
             app:argType="fh.wfp2.flatlife.data.room.entities.ExpenseCategory"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
         <argument
             android:name="financeActivity"
+            android:defaultValue="@null"
             app:argType="fh.wfp2.flatlife.data.room.entities.FinanceActivity"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/choreFragment"
         android:name="fh.wfp2.flatlife.ui.fragments.chores.ChoreFragment"
-        android:label="chore_fragment"
-        tools:layout="@layout/chore_fragment" >
+        android:label="Tasks"
+        tools:layout="@layout/chore_fragment">
         <action
             android:id="@+id/action_choreFragment_to_choreStatisticsFragment"
             app:destination="@id/choreStatisticsFragment"
@@ -124,8 +124,8 @@
     <fragment
         android:id="@+id/financeBalanceFragment"
         android:name="fh.wfp2.flatlife.ui.fragments.finance.FinanceBalanceFragment"
-        android:label="finance_balance_fragment"
-        tools:layout="@layout/finance_balance_fragment" >
+        android:label="Financial balance"
+        tools:layout="@layout/finance_balance_fragment">
         <action
             android:id="@+id/action_financeBalanceFragment_to_financeActivityFragment2"
             app:destination="@id/financeActivityFragment2" />
@@ -133,8 +133,8 @@
     <fragment
         android:id="@+id/choreStatisticsFragment"
         android:name="fh.wfp2.flatlife.ui.fragments.chores.ChoreStatisticsFragment"
-        android:label="chore_statistics_fragment"
-        tools:layout="@layout/chore_statistics_fragment" >
+        android:label="Task Statistics"
+        tools:layout="@layout/chore_statistics_fragment">
         <action
             android:id="@+id/action_choreStatisticsFragment_to_choreFragment"
             app:destination="@id/choreFragment"
@@ -144,7 +144,7 @@
     <fragment
         android:id="@+id/authFragment"
         android:name="fh.wfp2.flatlife.ui.fragments.authentication.AuthFragment"
-        android:label="AuthFragment" >
+        android:label="Login">
         <action
             android:id="@+id/action_authFragment_to_homeFragment"
             app:destination="@id/homeFragment" />

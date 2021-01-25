@@ -1,6 +1,5 @@
 package fh.wfp2.flatlife.ui.viewmodels.shopping
 
-import android.app.Application
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import fh.wfp2.flatlife.data.repositories.ShoppingRepository
@@ -29,7 +28,7 @@ class ShoppingViewModel @ViewModelInject constructor(
     }
 
     private val _allItems = _forceUpdate.switchMap {
-        repository.getAllItems().asLiveData(viewModelScope.coroutineContext)
+        repository.getAllShoppingItems().asLiveData(viewModelScope.coroutineContext)
     }.switchMap {
         MutableLiveData(Event(it))
     }
@@ -73,10 +72,10 @@ class ShoppingViewModel @ViewModelInject constructor(
         }
     }
 
-    fun onShoppingItemCheckedChanged(item: ShoppingItem, isChecked: Boolean) {
+    fun onShoppingItemCheckedChanged(item: ShoppingItem) {
         viewModelScope.launch {
-            repository.updateItem(item.copy(isBought = isChecked))
-            Timber.i("Item checked updated: isChecked = $isChecked")
+            repository.insertItem(item.copy(id = item.id, isBought = item.isBought))
+            Timber.i("Item checked updated: isChecked = $item.isBought")
         }
     }
 

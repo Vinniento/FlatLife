@@ -13,7 +13,7 @@ import java.text.DateFormat
 data class ShoppingItem(
     @PrimaryKey(autoGenerate = true) var id: Long = 0,
     val name: String,
-    val isBought: Boolean = false,
+    var isBought: Boolean = false,
     val createdAt: Long = System.currentTimeMillis(),
     @Expose(deserialize = false, serialize = false)
     var isSynced: Boolean = false,

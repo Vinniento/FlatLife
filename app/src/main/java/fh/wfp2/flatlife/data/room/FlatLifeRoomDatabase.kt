@@ -6,10 +6,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import androidx.sqlite.db.SupportSQLiteDatabase
 import fh.wfp2.flatlife.data.room.daos.*
 import fh.wfp2.flatlife.data.room.entities.*
-import java.util.concurrent.Executors
 
 @Database(
     entities = [Task::class, ShoppingItem::class, ExpenseCategory::class, FinanceActivity::class, Chore::class],
