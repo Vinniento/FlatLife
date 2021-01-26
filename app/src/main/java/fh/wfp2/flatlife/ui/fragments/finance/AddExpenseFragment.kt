@@ -53,7 +53,17 @@ class AddExpenseFragment : BaseFragment(R.layout.add_expense_fragment) {
                         )
                         etAmount.setText(activity.price)
                         etDescription.setText(activity.description)
-
+                        bSaveExpense.setOnClickListener {
+                            viewModel.onSaveExpenseClick(
+                                FinanceActivity(
+                                    activity.id ,
+                            etDescription.text.toString(),
+                            spinnerOptions.selectedItem.toString(),
+                            etAmount.text.toString()//Todo schöner machen
+                            )
+                            )
+                            hideKeyboard()
+                        }
                     }
 
                     if (args.financeActivity == null) {
