@@ -38,9 +38,6 @@ class ShoppingAdapter :
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val shoppingItem = shoppingList[position]
 
-        holder.itemView.setOnClickListener {
-
-        }
         (holder as ShoppingItemViewHolder).bind(shoppingItem)
     }
 

@@ -41,7 +41,6 @@ class TaskRepository @Inject constructor(
         }
     }
 
-
     private suspend fun insertTasks(tasks: List<Task>) {
         tasks.forEach { insertTask(it) }
     }
@@ -75,7 +74,6 @@ class TaskRepository @Inject constructor(
         curTaskResponse?.body()?.let {
             taskDao.deleteAllTasks()
             Timber.i("all tasks deleted")
-            //insertTasks(tasks.onEach { task -> task.isSynced = true })
         }
     }
 

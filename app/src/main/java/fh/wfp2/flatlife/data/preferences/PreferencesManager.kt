@@ -3,7 +3,8 @@ package fh.wfp2.flatlife.data.preferences
 import android.app.Application
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
-import androidx.datastore.preferences.core.preferencesKey
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.createDataStore
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -50,7 +51,7 @@ class PreferencesManager(application: Application) {
     }
 
     private object PreferencesKeys {
-        val SORT_ORDER = preferencesKey<String>("sort_order")
-        val HIDE_COMPLETED = preferencesKey<Boolean>("hide_completed")
+        val SORT_ORDER = stringPreferencesKey("sort_order")
+        val HIDE_COMPLETED = booleanPreferencesKey("hide_completed")
     }
 }

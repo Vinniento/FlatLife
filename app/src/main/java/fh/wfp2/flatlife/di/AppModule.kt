@@ -8,8 +8,8 @@ import androidx.security.crypto.MasterKey
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 import fh.wfp2.flatlife.data.remote.*
 import fh.wfp2.flatlife.data.room.FlatLifeRoomDatabase
 import fh.wfp2.flatlife.other.Constants.BASE_URL
@@ -27,7 +27,7 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 @Module
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 object AppModule {
 
     @Singleton
@@ -138,7 +138,7 @@ object AppModule {
 
     @Singleton
     @Provides
-     fun provideHttp3Client(): OkHttpClient.Builder {
+    fun provideHttp3Client(): OkHttpClient.Builder {
         val trustAllCertificates: Array<TrustManager> = arrayOf(object : X509TrustManager {
             override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {
                 /*NO-OP*/
